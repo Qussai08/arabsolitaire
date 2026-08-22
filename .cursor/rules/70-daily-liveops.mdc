@@ -1,0 +1,42 @@
+---
+description: Daily systems and launch LiveOps boundaries
+globs:
+  - "lib/**/daily_*"
+  - "firebase/**/daily/**"
+alwaysApply: false
+---
+
+# Daily Systems
+
+Daily Reward:
+- repeating 7-day calendar;
+- missed day does not reset calendar.
+- D1 100 Coins
+- D2 125
+- D3 150
+- D4 1 Hint
+- D5 175
+- D6 200
+- D7 300 + 1 Hint
+
+Daily Streak:
+- missed day breaks streak.
+- 3d 100 Coins
+- 7d 250
+- 14d 400
+- 30d 750
+
+Daily Challenge:
+- deterministic board per cohort;
+- unlimited retries;
+- 150 Coins;
+- reward first completion only;
+- reset 00:00 validated player-local timezone;
+- backend authoritative.
+
+Launch notifications:
+- Daily Challenge.
+- Streak Risk.
+- quiet hours 22:00–09:00 local.
+
+Do not implement Post-MVP Packs/Leaderboards/XP/Achievements without explicit approval.

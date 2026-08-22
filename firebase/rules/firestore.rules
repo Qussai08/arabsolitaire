@@ -1,0 +1,11 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Sprint 0 baseline: deny all client access by default.
+    // Explicit collection rules are added when product data models ship.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

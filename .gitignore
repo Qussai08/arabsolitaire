@@ -1,0 +1,84 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ / IDE
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+
+# Flutter / Dart / Pub
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+**/build/
+/coverage/
+**/coverage/
+
+# Symbolication / obfuscation
+app.*.symbols
+app.*.map.json
+
+# Android
+**/android/app/debug
+**/android/app/profile
+**/android/app/release
+**/android/local.properties
+**/android/.gradle/
+**/android/**/captures/
+*.jks
+*.keystore
+
+# iOS / macOS
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/macos/Pods/
+**/macos/.symlinks/
+**/DerivedData/
+
+# Firebase / secrets — never commit credentials
+**/google-services.json
+**/GoogleService-Info.plist
+**/firebase_options.dart
+**/firebase_app_id_file.json
+.env
+.env.*
+!.env.example
+**/serviceAccount*.json
+**/secrets/
+*.pem
+
+# Local Firebase emulators / tooling
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+
+# Cursor local state (commit rules only)
+.cursor/*
+!.cursor/rules/
+!.cursor/rules/**
+
+# Archives / temp tooling
+*.rar
+docs/.tmp-xlsx-tools/
+
+# Platform ephemeral
+**/ephemeral/

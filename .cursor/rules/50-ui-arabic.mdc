@@ -1,0 +1,20 @@
+---
+description: Arabic-first Flutter UI, RTL and accessibility rules
+globs:
+  - "apps/mobile/**"
+  - "lib/**"
+alwaysApply: false
+---
+
+# UI / Arabic
+
+- Arabic-first.
+- RTL from the first implementation.
+- Portrait-only.
+- Responsive tablet support.
+- No business rules in widgets.
+- Riverpod orchestrates state; Game Engine decides legality.
+- Drag/drop feedback must clearly show valid/rejected result.
+- Do not rely only on color.
+- Support readable Arabic typography and text scaling.
+- Story moments are skippable immediately.

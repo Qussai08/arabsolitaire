@@ -1,0 +1,35 @@
+---
+description: Approved economy, ads and IAP rules
+globs:
+  - "lib/**/economy/**"
+  - "lib/**/shop/**"
+  - "lib/**/monetization/**"
+  - "firebase/**/economy/**"
+  - "firebase/**/purchase/**"
+alwaysApply: false
+---
+
+# Economy
+
+Approved:
+- Starting Coins: 300.
+- Starting Hints: 3.
+- Hint: 75 Coins.
+- Extra Moves: +5.
+- Extra Moves: 150 then 250 Coins.
+- Max Extra Moves rescues: 2/Attempt.
+- Dead-End Rescue: 200 Coins, max 1/Attempt.
+- Rewarded Coins: 100, max 3/day.
+- Base reward: 50 Coins.
+- Remaining Move reward: 2 Coins each.
+- Chapter reward: 500 Coins + 2 Hints.
+
+Interstitial:
+- adaptive baseline 3–5 completed Levels;
+- max 3/session.
+
+Remove Ads removes Interstitial only.
+Rewarded Ads remain optional.
+
+Coin packs: 1k / 3k / 7k / 15k.
+Real-money prices are TBD. Do not invent them.

@@ -1,0 +1,78 @@
+name: PR Validation
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+concurrency:
+  group: pr-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Analyze, test, Android build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Resolve workspace dependencies
+        run: dart pub get
+
+      - name: Dependency boundary check
+        run: dart run scripts/check_dependency_boundaries.dart
+
+      - name: Format check
+        run: |
+          dart format --output=none --set-exit-if-changed \
+            apps/mobile/lib \
+            apps/mobile/test \
+            packages \
+            scripts
+
+      - name: Analyze packages
+        run: |
+          dart analyze packages/game_engine
+          dart analyze packages/game_solver
+          dart analyze packages/level_generator
+
+      - name: Analyze mobile app
+        working-directory: apps/mobile
+        run: flutter analyze
+
+      - name: Test game_engine
+        working-directory: packages/game_engine
+        run: dart test
+
+      - name: Test game_solver
+        working-directory: packages/game_solver
+        run: dart test
+
+      - name: Test level_generator
+        working-directory: packages/level_generator
+        run: dart test
+
+      - name: Codegen (Drift)
+        working-directory: apps/mobile
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Flutter tests
+        working-directory: apps/mobile
+        run: flutter test
+
+      - name: Android debug build (dev flavor)
+        working-directory: apps/mobile
+        run: flutter build apk --debug --flavor dev -t lib/main_dev.dart
+
+      # iOS CI build intentionally deferred (requires macOS runner budget).
+      # Local macOS: flutter build ios --no-codesign --flavor not fully wired;
+      # use Xcode with iOS 15+ deployment target configured in the project.

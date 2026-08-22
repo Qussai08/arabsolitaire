@@ -1,0 +1,19 @@
+---
+description: Architecture boundaries for Flutter, Game Engine, Solver, Generator, Firebase
+alwaysApply: true
+---
+
+# Architecture
+
+- Flutter client.
+- Riverpod for application/UI state only.
+- Drift/SQLite for local persistence.
+- Firebase-first/serverless-first MVP.
+
+`game_engine` must be pure Dart and must not depend on Flutter UI, Riverpod, Firebase, AdMob, IAP, Drift implementation, HTTP, or analytics SDKs.
+
+`game_solver` must be compatible with authoritative Game Engine rules.
+
+`level_generator` may depend on Game Engine + Solver and must never bypass Solver acceptance.
+
+Avoid premature microservices, Kubernetes, Redis, brokers, and always-on compute.

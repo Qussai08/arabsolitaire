@@ -1,0 +1,34 @@
+---
+description: Authoritative gameplay and Game Engine rules
+globs:
+  - "packages/game_engine/**"
+  - "lib/**/gameplay/**"
+alwaysApply: false
+---
+
+# Game Engine Rules
+
+Preferred model:
+
+`GameState + GameAction -> GameTransition`
+
+Core approved invariants:
+- Stacks are atomic; no splitting.
+- Association Card inactive in Tableau.
+- Association Card may move onto matching Member Stack.
+- Member Stack cannot move onto inactive Association Card.
+- Association Stack cannot receive Members in Tableau.
+- Empty Tableau accepts any movable unit.
+- Automatic reveal costs no Move.
+- Stock shows up to 3 visible; only final/top card playable.
+- Restore Stock is unlimited, same remaining order, costs 1 Move.
+- Every valid Move costs 1.
+- Invalid move costs 0 and resets streak counter.
+- Hint suggests only.
+- Undo cannot reverse Association completion.
+- Win clears all cards.
+- Fixed visible Move Limit per Level.
+- Restart generates a new valid shuffle.
+- Generated board accepted only if Solver-valid within Move Limit.
+
+Gameplay implementation is not complete without tests.

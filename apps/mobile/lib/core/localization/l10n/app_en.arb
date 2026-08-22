@@ -1,0 +1,8 @@
+{
+  "@@locale": "en",
+  "appTitle": "Solitaire Al-Arab",
+  "appSubtitle": "The Legend of Meanings",
+  "bootstrapReady": "Ready for development",
+  "bootstrapError": "Bootstrap could not complete",
+  "environmentLabel": "Environment: {env}"
+}

@@ -1,0 +1,12 @@
+name: game_engine
+description: Pure Dart authoritative game rules for Solitaire Al-Arab.
+version: 0.0.1
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.12.1
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.6

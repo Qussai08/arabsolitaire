@@ -1,0 +1,28 @@
+{
+  "@@locale": "ar",
+  "appTitle": "سوليتير العرب",
+  "@appTitle": {
+    "description": "Primary product title"
+  },
+  "appSubtitle": "أسطورة المعاني",
+  "@appSubtitle": {
+    "description": "Product subtitle on bootstrap shell"
+  },
+  "bootstrapReady": "جاهز للتطوير",
+  "@bootstrapReady": {
+    "description": "Shown when bootstrap completes successfully"
+  },
+  "bootstrapError": "تعذر إكمال التهيئة",
+  "@bootstrapError": {
+    "description": "Shown on recoverable bootstrap error"
+  },
+  "environmentLabel": "البيئة: {env}",
+  "@environmentLabel": {
+    "description": "Current app environment label",
+    "placeholders": {
+      "env": {
+        "type": "String"
+      }
+    }
+  }
+}

@@ -1,0 +1,36 @@
+---
+description: Locked narrative canon rules
+globs:
+  - "docs/**/narrative/**"
+  - "lib/**/story/**"
+  - "assets/**/story/**"
+alwaysApply: false
+---
+
+# Narrative Canon
+
+Official title:
+`سوليتير العرب: أسطورة المعاني`
+
+Locked:
+- دار الروابط.
+- التشويش.
+- عدو العرب = self-chosen title.
+- المُبدِّد = name given by Arabs.
+- بصيرة المعنى.
+- شيبوب.
+- Arc 1 = صحوة الروابط.
+- Cairo → Alexandria → Beirut → Marrakech → Dubai.
+- player earns title أسطورة المعاني at end of Chapter 5.
+
+Narrative thesis:
+`اللغة لا تعيش بالكلمات وحدها؛ تعيش بالمعاني والروابط التي نصنعها بينها.`
+
+Story:
+- 10–20 second beats.
+- Chapter start/mid/end.
+- immediately skippable.
+- simplified MSA.
+- Shiboub may use light broadly understandable colloquial Arabic.
+
+Do not change canon without explicit approval.

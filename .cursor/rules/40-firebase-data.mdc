@@ -1,0 +1,38 @@
+---
+description: Firebase-first backend, cloud save, offline and security rules
+globs:
+  - "firebase/**"
+  - "lib/**/data/**"
+  - "lib/**/account/**"
+  - "lib/**/sync/**"
+alwaysApply: false
+---
+
+# Firebase / Data
+
+MVP is Firebase-first and cost-conscious.
+
+Use:
+- Firebase Auth.
+- Firestore.
+- Firebase Storage.
+- Cloud Functions / Cloud Run.
+- FCM.
+- Remote Config.
+- Analytics.
+- Crashlytics.
+
+Do not write gameplay state to cloud per Move.
+
+Active Attempt is local-first in Drift.
+
+Server-authoritative:
+- Wallet mutations.
+- IAP validation.
+- entitlements.
+- Daily eligibility/rewards.
+- privileged Admin writes.
+
+Every economic mutation needs idempotency and duplicate protection.
+
+Offline Coin spend uses pending idempotent transactions and later reconciliation.

@@ -1,0 +1,37 @@
+---
+description: Testing, QA, release and security gates
+alwaysApply: true
+---
+
+# Quality / Security
+
+Severity:
+- S0 Blocker
+- S1 Critical
+- S2 Major
+- S3 Minor
+- S4 Trivial
+
+Release blocked by:
+- any S0;
+- unresolved core-path S1.
+
+Critical templates/configs require 10,000+ generated-board simulation before release.
+
+Required automated coverage:
+- critical Game Engine rule paths;
+- Solver parity/replay;
+- Generator acceptance;
+- Economy idempotency;
+- Purchase validation/restore.
+
+Security:
+- never trust client Wallet balance;
+- never trust client purchase status;
+- no wildcard production Firestore rules;
+- no secrets in client;
+- privileged Admin writes through trusted backend boundary.
+
+Before launch:
+- automated security checks;
+- focused manual/external penetration test.

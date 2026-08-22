@@ -1,0 +1,44 @@
+name: mobile
+description: سوليتير العرب — Flutter mobile application
+publish_to: none
+version: 0.1.0+1
+resolution: workspace
+
+environment:
+  sdk: ^3.12.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  flutter_riverpod: ^2.6.1
+  drift: ^2.26.0
+  sqlite3_flutter_libs: ^0.5.32
+  path: ^1.9.1
+  path_provider: ^2.1.5
+  firebase_core: ^3.13.0
+  firebase_auth: ^5.5.2
+  cloud_firestore: ^5.6.6
+  firebase_storage: ^12.4.5
+  firebase_remote_config: ^5.4.3
+  firebase_analytics: ^11.4.5
+  firebase_crashlytics: ^4.3.5
+  game_engine:
+    path: ../../packages/game_engine
+  game_solver:
+    path: ../../packages/game_solver
+  level_generator:
+    path: ../../packages/level_generator
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.4.15
+  drift_dev: ^2.26.0
+
+flutter:
+  uses-material-design: true
+  generate: true

@@ -1,0 +1,26 @@
+---
+description: How Cursor should work and report implementation changes
+alwaysApply: true
+---
+
+# Cursor Working Rule
+
+Before coding:
+- read relevant approved specs;
+- identify affected rule/domain boundary.
+
+After coding, report:
+1. What changed.
+2. Which approved requirement it implements.
+3. Tests added/updated.
+4. Any unresolved decision discovered.
+5. Any migration/config action required.
+
+Stop and ask instead of guessing when:
+- product behavior is undefined;
+- economy value is undefined;
+- real-money price is needed;
+- canon would change;
+- cloud choice adds meaningful recurring cost;
+- Solver change alters gameplay rules;
+- migration risks player data.

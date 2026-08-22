@@ -1,0 +1,22 @@
+---
+description: Source of truth and decision discipline
+alwaysApply: true
+---
+
+# Source of Truth
+
+Read `CURSOR_PROJECT_CONTEXT.md` first.
+
+Priority:
+1. Latest explicit approved user decision.
+2. Latest Final Decision Register.
+3. Latest Narrative Canon for narrative.
+4. Latest gameplay/engine/solver specifications.
+5. Latest scope documents.
+6. Architecture documents.
+7. Backlog/estimation.
+8. Older proposals.
+
+Never invent product decisions.
+Treat missing behavior as `TBD`.
+Do not revive superseded Azure / ASP.NET Core / PostgreSQL MVP assumptions.

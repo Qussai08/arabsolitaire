@@ -1,0 +1,31 @@
+---
+description: Solver and level generation correctness rules
+globs:
+  - "packages/game_solver/**"
+  - "packages/level_generator/**"
+alwaysApply: false
+---
+
+# Solver / Generator
+
+Solver:
+- Pure Dart.
+- No Arabic NLP for compatibility decisions.
+- Use stable IDs.
+- Must return only Engine-valid moves.
+- Replays must win through authoritative Engine.
+- Timeout/inconclusive != Dead-End.
+- Support move-bounded solvability, Hint, Dead-End, metrics.
+
+Generator:
+1. load Level Configuration;
+2. select approved content;
+3. create pool;
+4. randomize;
+5. deal;
+6. solve;
+7. validate fixed Move Limit;
+8. validate target difficulty;
+9. accept or retry.
+
+Never dynamically change visible Move Limit per Attempt.
