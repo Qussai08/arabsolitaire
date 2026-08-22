@@ -9,6 +9,7 @@ import 'package:mobile/features/gameplay/presentation/widgets/gameplay_overlay.d
 import 'package:mobile/features/gameplay/presentation/widgets/gameplay_toolbar.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/stock_view.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/tableau_view.dart';
+import 'package:mobile/features/journey/presentation/screens/level_result_screen.dart';
 
 /// Main gameplay screen — Sprint 4 vertical slice.
 class GameplayScreen extends ConsumerWidget {
@@ -18,6 +19,24 @@ class GameplayScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final viewState = ref.watch(gameplayControllerProvider);
     final controller = ref.read(gameplayControllerProvider.notifier);
+
+    // Navigate to LevelResultScreen when the player wins.
+    ref.listen<GameplayViewState>(gameplayControllerProvider, (prev, next) {
+      if (next is GameplayWon && prev is! GameplayWon) {
+        final level = ref.read(currentPlayingLevelProvider);
+        if (level != null) {
+          Navigator.of(context).push<void>(
+            MaterialPageRoute(
+              builder: (_) => LevelResultScreen(
+                reward: next.reward,
+                levelId: level.levelDefinitionId,
+                globalLevelNumber: level.globalLevelNumber,
+              ),
+            ),
+          );
+        }
+      }
+    });
 
     return Directionality(
       textDirection: TextDirection.rtl,

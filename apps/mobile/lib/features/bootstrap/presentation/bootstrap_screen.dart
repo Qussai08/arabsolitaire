@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/bootstrap/bootstrap.dart';
 import 'package:mobile/app/bootstrap/bootstrap_controller.dart';
 import 'package:mobile/app/navigation/app_router.dart';
+import 'package:mobile/features/journey/application/journey_providers.dart';
 
 /// Technical startup shell — Arabic-first, no gameplay.
 class BootstrapScreen extends ConsumerWidget {
@@ -18,7 +19,14 @@ class BootstrapScreen extends ConsumerWidget {
     ref.listen(bootstrapControllerProvider, (previous, next) {
       next.whenData((state) {
         if (state.status == BootstrapStatus.ready) {
-          Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+          final journeyState = ref.read(journeyControllerProvider);
+          final isFirstLaunch = switch (journeyState) {
+            JourneyReady(:final flags) => flags.isFirstLaunch,
+            _ => true,
+          };
+          Navigator.of(context).pushReplacementNamed(
+            isFirstLaunch ? AppRoutes.tutorial : AppRoutes.home,
+          );
         }
       });
     });

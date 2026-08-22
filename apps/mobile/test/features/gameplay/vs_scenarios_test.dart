@@ -119,7 +119,7 @@ void main() {
       final initialMoves = playing0.gameState.movesRemaining;
 
       // Try AdvanceStock — may or may not be legal.
-      final engine = const GameEngine();
+      const engine = GameEngine();
       final legalActions =
           engine.enumerateLegalActions(playing0.gameState);
 
@@ -246,7 +246,7 @@ void main() {
         generationAttemptIndex: 0,
       );
 
-      final engine = const GameEngine();
+      const engine = GameEngine();
       GameState state = candidate.initialGameState;
       final legal = engine.enumerateLegalActions(state);
 
@@ -296,7 +296,7 @@ void main() {
       final s0 = await _awaitPlaying(container, maxMs: 60000);
       if (s0 is! GameplayPlaying) return; // skip if generation failed
 
-      final engine = const GameEngine();
+      const engine = GameEngine();
       final legal = engine.enumerateLegalActions(s0.gameState);
 
       if (legal.isEmpty) return; // no legal actions; skip
@@ -471,3 +471,4 @@ final class _FakeAttemptRepository implements ActiveAttemptRepository {
   @override
   Future<void> clear() async => lastAttempt = null;
 }
+
