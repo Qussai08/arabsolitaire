@@ -1,0 +1,15 @@
+{
+  "name": "arabsolitaire-firebase",
+  "private": true,
+  "scripts": {
+    "build": "npm run build --prefix functions",
+    "emulators": "node scripts/start-emulators.mjs",
+    "emulators:full": "npm run build && firebase emulators:start",
+    "emulators:lite": "npm run build && firebase emulators:start --only functions,auth",
+    "emulators:export": "firebase emulators:export ./emulator-data",
+    "emulators:import": "npm run build && firebase emulators:start --import=./emulator-data"
+  },
+  "devDependencies": {
+    "firebase-tools": "^15.28.1"
+  }
+}

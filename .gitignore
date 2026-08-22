@@ -70,6 +70,10 @@ app.*.map.json
 firebase-debug.log
 firestore-debug.log
 ui-debug.log
+firebase/emulator-data/
+firebase/node_modules/
+firebase/functions/node_modules/
+firebase/functions/lib/
 
 # Cursor local state (commit rules only)
 .cursor/*

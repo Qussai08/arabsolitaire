@@ -1,0 +1,9 @@
+{
+  "projects": {
+    "default": "demo-arabsolitaire",
+    "dev": "solitaire-al-arab-dev",
+    "test": "solitaire-al-arab-test",
+    "staging": "solitaire-al-arab-staging",
+    "prod": "solitaire-al-arab-prod"
+  }
+}
