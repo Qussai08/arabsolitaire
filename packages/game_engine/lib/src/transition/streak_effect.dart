@@ -1,0 +1,1 @@
+enum StreakEffect { correct, neutral }
