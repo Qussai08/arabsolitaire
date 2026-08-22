@@ -7,9 +7,12 @@
     "emulators:full": "npm run build && firebase emulators:start",
     "emulators:lite": "npm run build && firebase emulators:start --only functions,auth",
     "emulators:export": "firebase emulators:export ./emulator-data",
-    "emulators:import": "npm run build && firebase emulators:start --import=./emulator-data"
+    "emulators:import": "npm run build && firebase emulators:start --import=./emulator-data",
+    "rules:test": "mocha --timeout 60000 rules/test/firestore_rules_test.js"
   },
   "devDependencies": {
-    "firebase-tools": "^15.28.1"
+    "@firebase/rules-unit-testing": "^4.0.1",
+    "firebase-tools": "^15.28.1",
+    "mocha": "^11.7.1"
   }
 }
