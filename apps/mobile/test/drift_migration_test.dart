@@ -10,7 +10,7 @@ void main() {
 
     final versions = await db.select(db.schemaMetadata).get();
     expect(versions, isNotEmpty);
-    expect(versions.first.schemaVersion, 1);
+    expect(versions.first.schemaVersion, 8);
 
     await db.upsertMetadata('sprint', '0');
     expect(await db.readMetadata('sprint'), '0');

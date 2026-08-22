@@ -1,0 +1,21 @@
+{
+  "bundleId": "arabsolitaire-content",
+  "bundleVersion": "bundled",
+  "schemaVersion": 1,
+  "rulesVersion": 1,
+  "createdAt": "2026-08-22T00:00:00Z",
+  "publishedAt": "2026-08-22T00:00:00Z",
+  "contentHash": "trusted-bundled",
+  "files": [
+    { "path": "chapters.json",         "sha256": "trusted", "size": 0 },
+    { "path": "levels.json",           "sha256": "trusted", "size": 0 },
+    { "path": "associations.json",     "sha256": "trusted", "size": 0 },
+    { "path": "story_beats.json",      "sha256": "trusted", "size": 0 },
+    { "path": "localization/ar.json",  "sha256": "trusted", "size": 0 }
+  ],
+  "contentTypes": ["chapters", "levels", "associations", "storyBeats", "localization"],
+  "status": "published",
+  "bundleBuilderVersion": "1.0.0",
+  "contentValidatorVersion": "1.0.0",
+  "source": "bundled"
+}

@@ -1,0 +1,14 @@
+{
+  "locale": "ar",
+  "version": 1,
+  "strings": {
+    "chapterUnlocked": "تم فتح فصل جديد!",
+    "levelComplete": "أحسنت!",
+    "dailyChallengeTitle": "التحدي اليومي",
+    "streakDays": "{days} يوم متواصل",
+    "claimReward": "احصل على مكافأتك",
+    "continueJourney": "متابعة الرحلة",
+    "contentUpdating": "جارٍ تحديث المحتوى...",
+    "contentReady": "المحتوى جاهز"
+  }
+}

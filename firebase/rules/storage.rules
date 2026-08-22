@@ -1,10 +1,37 @@
 rules_version = '2';
 
+// Sprint 10 — Firebase Storage security rules for content bundles.
+//
+// Mobile clients may read published bundle files.
+// Clients may NOT upload, overwrite, or delete content files.
+// Trusted backend (Cloud Functions / Admin SDK) uses privileged credentials for writes.
+
 service firebase.storage {
   match /b/{bucket}/o {
-    // Sprint 0 baseline: deny all client access by default.
+
+    // ── Default deny ─────────────────────────────────────────────────────────
     match /{allPaths=**} {
       allow read, write: if false;
     }
+
+    // ── Published content bundles ────────────────────────────────────────────
+    // Authenticated players may download bundle files.
+    // Path: content/{environment}/bundles/{bundleVersion}/{file}
+    match /content/{environment}/bundles/{bundleVersion}/{file=**} {
+      allow read: if request.auth != null
+        && environment in ['prod', 'staging'];
+      allow write: if false;
+    }
+
+    // ── Published content assets (images, audio, etc.) ───────────────────────
+    // Path: content/{environment}/assets/{assetId}
+    match /content/{environment}/assets/{assetId=**} {
+      allow read: if request.auth != null
+        && environment in ['prod', 'staging'];
+      allow write: if false;
+    }
+
+    // Clients cannot write anywhere in content paths.
+    // Admin SDK bypasses these rules via Firebase Admin credentials.
   }
 }

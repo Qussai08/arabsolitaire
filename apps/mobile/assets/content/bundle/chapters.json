@@ -1,0 +1,57 @@
+[
+  {
+    "chapterId": "ch_cairo",
+    "order": 1,
+    "nameAr": "القاهرة: أول خيط",
+    "nameEn": "Cairo: The First Thread",
+    "cityAr": "القاهرة",
+    "cityEn": "Cairo",
+    "levelCount": 50,
+    "unlockLevel": 1,
+    "enabled": true
+  },
+  {
+    "chapterId": "ch_alexandria",
+    "order": 2,
+    "nameAr": "الإسكندرية: أصداء الغياب",
+    "nameEn": "Alexandria: Echoes of Absence",
+    "cityAr": "الإسكندرية",
+    "cityEn": "Alexandria",
+    "levelCount": 50,
+    "unlockLevel": 51,
+    "enabled": true
+  },
+  {
+    "chapterId": "ch_beirut",
+    "order": 3,
+    "nameAr": "بيروت: ما بين السطور",
+    "nameEn": "Beirut: Between the Lines",
+    "cityAr": "بيروت",
+    "cityEn": "Beirut",
+    "levelCount": 50,
+    "unlockLevel": 101,
+    "enabled": true
+  },
+  {
+    "chapterId": "ch_marrakech",
+    "order": 4,
+    "nameAr": "مراكش: متاهة المعنى",
+    "nameEn": "Marrakech: Labyrinth of Meaning",
+    "cityAr": "مراكش",
+    "cityEn": "Marrakech",
+    "levelCount": 50,
+    "unlockLevel": 151,
+    "enabled": true
+  },
+  {
+    "chapterId": "ch_dubai",
+    "order": 5,
+    "nameAr": "دبي: ما بعد الذاكرة",
+    "nameEn": "Dubai: Beyond Memory",
+    "cityAr": "دبي",
+    "cityEn": "Dubai",
+    "levelCount": 50,
+    "unlockLevel": 201,
+    "enabled": true
+  }
+]

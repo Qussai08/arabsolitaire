@@ -1,0 +1,188 @@
+[
+  {
+    "storyBeatId": "sb_ch_cairo_start",
+    "chapterId": "ch_cairo",
+    "beatType": "chapter_start",
+    "triggerLevel": 1,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "في أعماق القاهرة القديمة، حيث تتشابك الكلمات مع الأزقة، بدأت رحلة البحث عن المعنى.", "emotion": "neutral" },
+      { "speaker": "layla", "textAr": "كل كلمة تحمل سراً، وكل سر يقودنا إلى كلمة أخرى.", "emotion": "curious" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_cairo_mid",
+    "chapterId": "ch_cairo",
+    "beatType": "chapter_midpoint",
+    "triggerLevel": 25,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "في منتصف الطريق، كشفت القاهرة عن وجهها الخفي.", "emotion": "mysterious" },
+      { "speaker": "layla", "textAr": "كنت أظن أنني أفهم المعنى، لكن الكلمات أعمق مما تبدو.", "emotion": "reflective" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_cairo_end",
+    "chapterId": "ch_cairo",
+    "beatType": "chapter_end",
+    "triggerLevel": 50,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "انتهت رحلة القاهرة، وبدأت رحلة جديدة نحو الإسكندرية.", "emotion": "triumphant" },
+      { "speaker": "layla", "textAr": "الذاكرة والمعنى وجهان لعملة واحدة.", "emotion": "wise" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_alexandria_start",
+    "chapterId": "ch_alexandria",
+    "beatType": "chapter_start",
+    "triggerLevel": 51,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "الإسكندرية، مدينة الأصداء والغياب، حيث تتحدث الأمواج بلغة المنفى.", "emotion": "melancholic" },
+      { "speaker": "karim", "textAr": "هنا بدأت الحكاية الأولى، وهنا نبحث عن بقاياها.", "emotion": "nostalgic" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_alexandria_mid",
+    "chapterId": "ch_alexandria",
+    "beatType": "chapter_midpoint",
+    "triggerLevel": 75,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "بين أصداء البحر وصمت المكتبة القديمة، وجدت ليلى ما كانت تبحث عنه.", "emotion": "revelatory" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_alexandria_end",
+    "chapterId": "ch_alexandria",
+    "beatType": "chapter_end",
+    "triggerLevel": 100,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "ودّعت الإسكندرية وأخذت معها أصداء لن تنساها أبداً.", "emotion": "bittersweet" },
+      { "speaker": "layla", "textAr": "الغياب أيضاً نوع من الحضور.", "emotion": "philosophical" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_beirut_start",
+    "chapterId": "ch_beirut",
+    "beatType": "chapter_start",
+    "triggerLevel": 101,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "بيروت، ما بين السطور، حيث تختبئ الحقيقة في الفجوات بين الكلمات.", "emotion": "intense" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_beirut_mid",
+    "chapterId": "ch_beirut",
+    "beatType": "chapter_midpoint",
+    "triggerLevel": 125,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "في قلب بيروت، اكتشفت أن الكلمات يمكنها أن تشفي الجراح.", "emotion": "hopeful" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_beirut_end",
+    "chapterId": "ch_beirut",
+    "beatType": "chapter_end",
+    "triggerLevel": 150,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "تركت بيروت وراءها، ومعها سر السطور المخفية.", "emotion": "resolved" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_marrakech_start",
+    "chapterId": "ch_marrakech",
+    "beatType": "chapter_start",
+    "triggerLevel": 151,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "مراكش، متاهة المعنى، حيث تتداخل الألوان والأصوات والكلمات في رقصة لا تنتهي.", "emotion": "vibrant" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_marrakech_mid",
+    "chapterId": "ch_marrakech",
+    "beatType": "chapter_midpoint",
+    "triggerLevel": 175,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "في وسط المتاهة، وجدت الخيط الذي يقود إلى المركز.", "emotion": "enlightened" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_marrakech_end",
+    "chapterId": "ch_marrakech",
+    "beatType": "chapter_end",
+    "triggerLevel": 200,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "انجلى الغموض وبقيت الحقيقة: المعنى هو ما نصنعه بأنفسنا.", "emotion": "triumphant" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_dubai_start",
+    "chapterId": "ch_dubai",
+    "beatType": "chapter_start",
+    "triggerLevel": 201,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "دبي، ما بعد الذاكرة، حيث يلتقي الماضي بالمستقبل في لحظة واحدة.", "emotion": "awestruck" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_dubai_mid",
+    "chapterId": "ch_dubai",
+    "beatType": "chapter_midpoint",
+    "triggerLevel": 225,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "في ارتفاعات دبي، رأت ليلى الصورة كاملة للمرة الأولى.", "emotion": "revelatory" }
+    ],
+    "skippable": true,
+    "status": "published",
+    "canonVersion": 1
+  },
+  {
+    "storyBeatId": "sb_ch_dubai_end",
+    "chapterId": "ch_dubai",
+    "beatType": "chapter_end",
+    "triggerLevel": 250,
+    "dialogueLines": [
+      { "speaker": "narrator", "textAr": "اكتملت الرحلة. خمس مدن، خمسة أسرار، ومعنى واحد: اللغة العربية هي روح الحضارة.", "emotion": "transcendent" },
+      { "speaker": "layla", "textAr": "وهذا ليس النهاية — بل بداية فهم جديد.", "emotion": "hopeful" }
+    ],
+    "skippable": false,
+    "status": "published",
+    "canonVersion": 1
+  }
+]
