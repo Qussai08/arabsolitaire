@@ -14,7 +14,7 @@ class HomePlaceholderScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final config = ref.watch(appConfigProvider);
-    final generator = PlaceholderLevelGenerator();
+    final generator = LevelGenerator();
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.appTitle)),
@@ -39,6 +39,7 @@ class HomePlaceholderScreen extends ConsumerWidget {
               const Text('level_generator: $levelGeneratorPackageVersion'),
               Text('generator↔engine: ${generator.enginePackageVersion}'),
               Text('generator↔solver: ${generator.solverPackageVersion}'),
+              Text('generatorVersion: ${generator.generatorVersion}'),
             ],
           ),
         ),
