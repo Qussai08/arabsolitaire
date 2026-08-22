@@ -2,9 +2,108 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Sprint 0 baseline: deny all client access by default.
-    // Explicit collection rules are added when product data models ship.
+
+    // ── Default deny ──────────────────────────────────────────────────────────
     match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // ── Player document ───────────────────────────────────────────────────────
+    match /players/{uid} {
+      // Player may read own profile; only trusted backend writes.
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+
+      // ── Progression / Story / Settings state ─────────────────────────────
+      match /state/{stateDoc} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow write: if false;
+      }
+
+      // ── Economy: wallet ──────────────────────────────────────────────────
+      // Client MAY read own wallet; MUST NOT write directly.
+      match /economy/wallet {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow write: if false;
+      }
+
+      // ── Economy: transactions (ledger) ───────────────────────────────────
+      // Client may NOT read or write ledger directly.
+      match /economy/transactions/{txnId} {
+        allow read, write: if false;
+      }
+
+      // ── Economy: operation receipts ──────────────────────────────────────
+      // Client may read own receipts for crash recovery; MUST NOT write.
+      match /economy/operations/{opId} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow write: if false;
+      }
+
+      // ── Monetization: entitlements ──────────────────────────────────────
+      // Client may read own entitlements for Remove Ads gate; MUST NOT write.
+      match /entitlements/{entitlementId} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow write: if false;
+      }
+
+      // ── Monetization: purchase receipts ──────────────────────────────────
+      // Client may read own purchase receipts for restore; MUST NOT write.
+      match /purchase_receipts/{receiptId} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow write: if false;
+      }
+
+      // ── Daily: reward / streak / challenge / timezone / prefs ──────────────
+      // Client reads own daily state; backend (trusted) writes.
+      match /daily/{dailyDoc} {
+        allow read: if request.auth != null && request.auth.uid == uid;
+        allow write: if false;
+      }
+
+      // ── FCM device tokens ────────────────────────────────────────────────────
+      // Client may NOT read device tokens directly; backend manages them.
+      match /devices/{deviceId} {
+        allow read, write: if false;
+      }
+
+      // ── Deny cross-player access ─────────────────────────────────────────
+      // Catch-all: other-uid access is denied by the outer rules.
+    }
+
+    // ── Daily challenge definitions (global, read-only for all players) ──────
+    // Published by admin/scheduled function; players may read for display.
+    match /dailyChallenges/{dayKey} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // ── Content control plane ─────────────────────────────────────────────────
+    // Active bundle pointer: players read to discover updates; backend writes.
+    match /content/pointer {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Staging pointer: same access pattern.
+    match /content/pointer_staging {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Disable metadata: players read to enforce emergency disables; backend writes.
+    match /content/disableMetadata {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Audit log: backend writes only; no client read of raw audit entries.
+    match /contentAuditLog/{logId} {
+      allow read, write: if false;
+    }
+
+    // CMS content entities (managed by trusted backend/admin; client never reads/writes directly).
+    match /cmsContent/{entityType}/{entityId} {
       allow read, write: if false;
     }
   }
