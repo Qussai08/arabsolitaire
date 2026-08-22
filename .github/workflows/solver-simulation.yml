@@ -1,0 +1,71 @@
+name: Solver 10k Simulation Gate
+
+# Heavy job — runs nightly and on manual dispatch, NOT on every PR.
+# For release validation, trigger manually with `workflow_dispatch`.
+on:
+  schedule:
+    # 03:00 UTC every night
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    inputs:
+      target_boards:
+        description: 'Boards per template (default: 10000)'
+        required: false
+        default: '10000'
+
+jobs:
+  simulate:
+    name: 10k+ board simulation
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install workspace dependencies
+        run: dart pub get
+
+      - name: Run 10k simulation gate — early3x1
+        working-directory: packages/level_generator
+        run: |
+          dart test test/simulation/simulation_10k_test.dart \
+            --name "early3x1" \
+            --reporter=expanded \
+            --timeout=30m
+
+      - name: Run 10k simulation gate — stockHeavy
+        working-directory: packages/level_generator
+        run: |
+          dart test test/simulation/simulation_10k_test.dart \
+            --name "stockHeavy" \
+            --reporter=expanded \
+            --timeout=30m
+
+      - name: Run 10k simulation gate — revealHeavy
+        working-directory: packages/level_generator
+        run: |
+          dart test test/simulation/simulation_10k_test.dart \
+            --name "revealHeavy" \
+            --reporter=expanded \
+            --timeout=30m
+
+      - name: Run 10k simulation gate — mixedGroups
+        working-directory: packages/level_generator
+        run: |
+          dart test test/simulation/simulation_10k_test.dart \
+            --name "mixedGroups" \
+            --reporter=expanded \
+            --timeout=30m
+
+      - name: Engine parity — Solver Golden Boards replay
+        working-directory: packages/level_generator
+        run: dart test test/golden/generator_golden_test.dart --reporter=expanded
+
+      - name: Solver Golden Boards
+        working-directory: packages/game_solver
+        run: dart test --reporter=expanded

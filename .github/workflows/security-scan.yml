@@ -1,0 +1,76 @@
+name: Security Scan
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+  schedule:
+    # Weekly on Monday 02:00 UTC
+    - cron: '0 2 * * 1'
+
+jobs:
+  secret-scan:
+    name: Secret detection (gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history for git-log scan
+
+      - name: Gitleaks scan (current tree + git history)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # GITLEAKS_LICENSE: ${{ secrets.GITLEAKS_LICENSE }}  # required for org repos
+
+  dart-dependency-audit:
+    name: Dart/Flutter dependency vulnerability audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Resolve dependencies
+        run: dart pub get
+
+      - name: Dart pub audit (packages)
+        run: |
+          dart pub audit --directory packages/game_engine   || true
+          dart pub audit --directory packages/game_solver   || true
+          dart pub audit --directory packages/level_generator || true
+
+      - name: Flutter pub audit (mobile)
+        working-directory: apps/mobile
+        run: flutter pub audit || true
+
+  npm-dependency-audit:
+    name: npm dependency audit (Firebase functions)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: npm audit — firebase root
+        working-directory: firebase
+        run: |
+          npm ci --prefer-offline || npm install
+          npm audit --audit-level=high || true
+
+      - name: npm audit — functions
+        working-directory: firebase/functions
+        run: |
+          npm ci --prefer-offline || npm install
+          npm audit --audit-level=high || true

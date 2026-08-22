@@ -1,0 +1,144 @@
+name: Release Candidate
+
+# Run manually on the release commit/tag to produce a validated RC artifact.
+on:
+  workflow_dispatch:
+    inputs:
+      rc_tag:
+        description: 'RC tag (e.g. rc/1.0.0-RC1)'
+        required: true
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options: [staging, prod]
+
+jobs:
+  rc-gate:
+    name: RC release gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.rc_tag }}
+          fetch-depth: 0
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: firebase/package-lock.json
+
+      - name: Resolve all dependencies
+        run: dart pub get
+
+      - name: Codegen (Drift)
+        working-directory: apps/mobile
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      - name: Format check
+        run: |
+          dart format --output=none --set-exit-if-changed \
+            apps/mobile/lib apps/mobile/test packages scripts
+
+      - name: Dart/Flutter analyze
+        run: |
+          dart analyze packages/game_engine
+          dart analyze packages/game_solver
+          dart analyze packages/level_generator
+          cd apps/mobile && flutter analyze
+
+      - name: Engine tests
+        working-directory: packages/game_engine
+        run: dart test
+
+      - name: Solver tests + Golden Boards
+        working-directory: packages/game_solver
+        run: dart test
+
+      - name: Generator tests + GG suite
+        working-directory: packages/level_generator
+        run: dart test
+
+      - name: Flutter unit tests
+        working-directory: apps/mobile
+        run: flutter test
+
+      - name: Install Firebase deps
+        working-directory: firebase
+        run: npm ci
+
+      - name: Firebase Rules tests
+        working-directory: firebase
+        run: |
+          npx firebase emulators:exec \
+            --only firestore \
+            --project demo-arabsolitaire \
+            "npm run rules:test"
+
+      - name: 10k simulation gate — early3x1
+        working-directory: packages/level_generator
+        run: |
+          dart test test/simulation/simulation_10k_test.dart \
+            --name "early3x1" --reporter=expanded --timeout=30m
+
+      - name: 10k simulation gate — stockHeavy
+        working-directory: packages/level_generator
+        run: |
+          dart test test/simulation/simulation_10k_test.dart \
+            --name "stockHeavy" --reporter=expanded --timeout=30m
+
+      - name: 10k simulation gate — revealHeavy
+        working-directory: packages/level_generator
+        run: |
+          dart test test/simulation/simulation_10k_test.dart \
+            --name "revealHeavy" --reporter=expanded --timeout=30m
+
+      - name: 10k simulation gate — mixedGroups
+        working-directory: packages/level_generator
+        run: |
+          dart test test/simulation/simulation_10k_test.dart \
+            --name "mixedGroups" --reporter=expanded --timeout=30m
+
+      - name: Android release build (staging)
+        working-directory: apps/mobile
+        run: |
+          flutter build appbundle \
+            --flavor staging \
+            -t lib/main_staging.dart \
+            --release
+
+      - name: Upload RC build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rc-android-${{ github.event.inputs.rc_tag }}
+          path: apps/mobile/build/app/outputs/bundle/**/*.aab
+          retention-days: 30
+
+      - name: Generate RC artifact manifest
+        run: |
+          echo "RC: ${{ github.event.inputs.rc_tag }}" >> rc_manifest.txt
+          echo "Commit: ${{ github.sha }}" >> rc_manifest.txt
+          echo "Timestamp: $(date -u)" >> rc_manifest.txt
+          echo "Environment: ${{ github.event.inputs.environment }}" >> rc_manifest.txt
+          cat rc_manifest.txt
+
+      - name: Upload RC manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: rc-manifest-${{ github.event.inputs.rc_tag }}
+          path: rc_manifest.txt
+          retention-days: 90
