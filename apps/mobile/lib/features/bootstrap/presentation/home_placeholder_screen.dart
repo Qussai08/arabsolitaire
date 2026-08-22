@@ -14,8 +14,7 @@ class HomePlaceholderScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final config = ref.watch(appConfigProvider);
-    final solver = PlaceholderSolver();
-    final generator = PlaceholderLevelGenerator(solver: solver);
+    final generator = PlaceholderLevelGenerator();
 
     return Scaffold(
       appBar: AppBar(title: Text(l10n.appTitle)),
@@ -38,8 +37,8 @@ class HomePlaceholderScreen extends ConsumerWidget {
               const Text('game_engine: $gameEnginePackageVersion'),
               const Text('game_solver: $gameSolverPackageVersion'),
               const Text('level_generator: $levelGeneratorPackageVersion'),
-              Text('solver↔engine: ${solver.enginePackageVersion}'),
               Text('generator↔engine: ${generator.enginePackageVersion}'),
+              Text('generator↔solver: ${generator.solverPackageVersion}'),
             ],
           ),
         ),

@@ -1,6 +1,6 @@
 name: game_solver
 description: Pure Dart solver for Solitaire Al-Arab (depends on game_engine).
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 resolution: workspace
 

@@ -1,23 +1,19 @@
 import 'package:game_engine/game_engine.dart';
 import 'package:game_solver/game_solver.dart';
 
-/// Placeholder generator boundary for Sprint 0.
+/// Placeholder generator boundary until Sprint 3.
 abstract interface class LevelGeneratorContract {
   String get enginePackageVersion;
   String get solverPackageVersion;
 }
 
-/// Minimal Sprint 0 stub proving Engine + Solver wiring.
+/// Minimal stub proving Engine + Solver package wiring.
 final class PlaceholderLevelGenerator implements LevelGeneratorContract {
-  PlaceholderLevelGenerator({SolverContract? solver})
-    : _solver = solver ?? PlaceholderSolver();
-
-  final SolverContract _solver;
+  PlaceholderLevelGenerator();
 
   @override
   String get enginePackageVersion => gameEnginePackageVersion;
 
   @override
-  String get solverPackageVersion =>
-      '${gameSolverPackageVersion}+${_solver.enginePackageVersion}';
+  String get solverPackageVersion => gameSolverPackageVersion;
 }

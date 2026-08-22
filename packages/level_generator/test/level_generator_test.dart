@@ -8,6 +8,6 @@ void main() {
     expect(levelGeneratorPackageVersion, isNotEmpty);
     final generator = PlaceholderLevelGenerator();
     expect(generator.enginePackageVersion, gameEnginePackageVersion);
-    expect(generator.solverPackageVersion, contains(gameSolverPackageVersion));
+    expect(generator.solverPackageVersion, gameSolverPackageVersion);
   });
 }
