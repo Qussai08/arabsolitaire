@@ -1,6 +1,7 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/bootstrap/bootstrap.dart';
+import 'package:mobile/app/config/app_environment.dart';
 import 'package:mobile/core/feature_flags/feature_flag_defaults.dart';
 
 /// Safe Remote Config wrapper — defaults always win on failure.
@@ -26,7 +27,14 @@ final class RemoteConfigService {
 
   Future<void> initializeSafely() async {
     final logger = _ref.read(appLoggerProvider);
+    final config = _ref.read(appConfigProvider);
     try {
+      // DEV + emulators: no Remote Config emulator — keep local defaults only.
+      if (config.environment == AppEnvironment.dev) {
+        logger.info('Remote Config skipped in DEV — using local defaults');
+        return;
+      }
+
       final remoteConfig = FirebaseRemoteConfig.instance;
       await remoteConfig.setConfigSettings(
         RemoteConfigSettings(

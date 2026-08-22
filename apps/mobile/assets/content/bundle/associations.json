@@ -1,122 +1,2542 @@
 [
   {
-    "associationVariantId": "av_light_01",
-    "associationId": "a_light",
+    "associationVariantId": "av_001",
+    "associationId": "a_001",
+    "associationClue": "ألوان أساسية",
+    "memberCards": [
+      "أحمر",
+      "أزرق",
+      "أصفر"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_002",
+    "associationId": "a_002",
+    "associationClue": "فواكه صيفية",
+    "memberCards": [
+      "بطيخ",
+      "مانجو",
+      "خوخ"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_003",
+    "associationId": "a_003",
+    "associationClue": "حيوانات أليفة",
+    "memberCards": [
+      "قطة",
+      "كلب",
+      "أرنب"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_004",
+    "associationId": "a_004",
+    "associationClue": "أجزاء الوجه",
+    "memberCards": [
+      "عين",
+      "أنف",
+      "فم"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_005",
+    "associationId": "a_005",
+    "associationClue": "أدوات الكتابة",
+    "memberCards": [
+      "قلم",
+      "دفتر",
+      "ممحاة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_006",
+    "associationId": "a_006",
+    "associationClue": "أوقات اليوم",
+    "memberCards": [
+      "صباح",
+      "ظهر",
+      "مساء"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_007",
+    "associationId": "a_007",
+    "associationClue": "أطعمة الإفطار",
+    "memberCards": [
+      "خبز",
+      "جبن",
+      "بيض"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_008",
+    "associationId": "a_008",
+    "associationClue": "وسائل النقل",
+    "memberCards": [
+      "سيارة",
+      "قطار",
+      "طائرة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_009",
+    "associationId": "a_009",
+    "associationClue": "أثاث المنزل",
+    "memberCards": [
+      "طاولة",
+      "كرسي",
+      "سرير"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_010",
+    "associationId": "a_010",
+    "associationClue": "ظواهر جوية",
+    "memberCards": [
+      "مطر",
+      "رياح",
+      "ثلج"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_011",
+    "associationId": "a_011",
+    "associationClue": "أرقام",
+    "memberCards": [
+      "واحد",
+      "اثنان",
+      "ثلاثة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_012",
+    "associationId": "a_012",
+    "associationClue": "أيام الأسبوع",
+    "memberCards": [
+      "سبت",
+      "أحد",
+      "اثنين"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_013",
+    "associationId": "a_013",
+    "associationClue": "مشروبات",
+    "memberCards": [
+      "شاي",
+      "قهوة",
+      "عصير"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_014",
+    "associationId": "a_014",
+    "associationClue": "ملابس",
+    "memberCards": [
+      "قميص",
+      "بنطلون",
+      "حذاء"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_015",
+    "associationId": "a_015",
+    "associationClue": "أجزاء البيت",
+    "memberCards": [
+      "باب",
+      "نافذة",
+      "سقف"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_016",
+    "associationId": "a_016",
+    "associationClue": "فواكه شتوية",
+    "memberCards": [
+      "برتقال",
+      "تفاح",
+      "موز"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_017",
+    "associationId": "a_017",
+    "associationClue": "خضروات",
+    "memberCards": [
+      "طماطم",
+      "خيار",
+      "جزر"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_018",
+    "associationId": "a_018",
+    "associationClue": "طيور",
+    "memberCards": [
+      "عصفور",
+      "حمامة",
+      "نسر"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_019",
+    "associationId": "a_019",
+    "associationClue": "حشرات",
+    "memberCards": [
+      "نملة",
+      "نحلة",
+      "فراشة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_020",
+    "associationId": "a_020",
+    "associationClue": "آلات موسيقية",
+    "memberCards": [
+      "عود",
+      "ناي",
+      "دف"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 1,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_021",
+    "associationId": "a_021",
     "associationClue": "كلمات الضوء",
-    "memberCards": ["نور", "ضياء", "بريق", "شعاع"],
+    "memberCards": [
+      "نور",
+      "ضياء",
+      "بريق",
+      "شعاع"
+    ],
     "contentType": "text",
-    "semanticDifficulty": 1,
+    "semanticDifficulty": 2,
     "visualFlag": false,
-    "chapterEligibility": ["ch_cairo", "ch_alexandria", "ch_beirut", "ch_marrakech", "ch_dubai"],
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
     "status": "published",
     "arabicReviewState": "approved",
     "semanticReviewState": "approved",
-    "approvedBy": "system",
+    "approvedBy": "content-pipeline",
     "version": 1
   },
   {
-    "associationVariantId": "av_water_01",
-    "associationId": "a_water",
+    "associationVariantId": "av_022",
+    "associationId": "a_022",
     "associationClue": "كلمات الماء",
-    "memberCards": ["بحر", "نهر", "موج", "قطرة"],
+    "memberCards": [
+      "بحر",
+      "نهر",
+      "موج",
+      "قطرة"
+    ],
     "contentType": "text",
-    "semanticDifficulty": 1,
+    "semanticDifficulty": 2,
     "visualFlag": false,
-    "chapterEligibility": ["ch_cairo", "ch_alexandria", "ch_beirut", "ch_marrakech", "ch_dubai"],
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
     "status": "published",
     "arabicReviewState": "approved",
     "semanticReviewState": "approved",
-    "approvedBy": "system",
+    "approvedBy": "content-pipeline",
     "version": 1
   },
   {
-    "associationVariantId": "av_night_01",
-    "associationId": "a_night",
+    "associationVariantId": "av_023",
+    "associationId": "a_023",
     "associationClue": "كلمات الليل",
-    "memberCards": ["قمر", "نجوم", "ظلام", "حلم"],
+    "memberCards": [
+      "قمر",
+      "نجوم",
+      "ظلام",
+      "سهر"
+    ],
     "contentType": "text",
     "semanticDifficulty": 2,
     "visualFlag": false,
-    "chapterEligibility": ["ch_cairo", "ch_alexandria", "ch_beirut", "ch_marrakech", "ch_dubai"],
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
     "status": "published",
     "arabicReviewState": "approved",
     "semanticReviewState": "approved",
-    "approvedBy": "system",
+    "approvedBy": "content-pipeline",
     "version": 1
   },
   {
-    "associationVariantId": "av_heart_01",
-    "associationId": "a_heart",
+    "associationVariantId": "av_024",
+    "associationId": "a_024",
     "associationClue": "مشاعر القلب",
-    "memberCards": ["حب", "شوق", "أمل", "وفاء"],
+    "memberCards": [
+      "حب",
+      "شوق",
+      "أمل",
+      "وفاء"
+    ],
     "contentType": "text",
     "semanticDifficulty": 2,
     "visualFlag": false,
-    "chapterEligibility": ["ch_cairo", "ch_alexandria", "ch_beirut", "ch_marrakech", "ch_dubai"],
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
     "status": "published",
     "arabicReviewState": "approved",
     "semanticReviewState": "approved",
-    "approvedBy": "system",
+    "approvedBy": "content-pipeline",
     "version": 1
   },
   {
-    "associationVariantId": "av_time_01",
-    "associationId": "a_time",
+    "associationVariantId": "av_025",
+    "associationId": "a_025",
     "associationClue": "كلمات الزمن",
-    "memberCards": ["أمس", "اليوم", "غد", "دهر"],
+    "memberCards": [
+      "أمس",
+      "اليوم",
+      "غد",
+      "دهر"
+    ],
     "contentType": "text",
     "semanticDifficulty": 2,
     "visualFlag": false,
-    "chapterEligibility": ["ch_cairo", "ch_alexandria", "ch_beirut", "ch_marrakech", "ch_dubai"],
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
     "status": "published",
     "arabicReviewState": "approved",
     "semanticReviewState": "approved",
-    "approvedBy": "system",
+    "approvedBy": "content-pipeline",
     "version": 1
   },
   {
-    "associationVariantId": "av_word_01",
-    "associationId": "a_word",
+    "associationVariantId": "av_026",
+    "associationId": "a_026",
+    "associationClue": "أصوات الطبيعة",
+    "memberCards": [
+      "رعد",
+      "همس",
+      "خرير",
+      "هديل"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_027",
+    "associationId": "a_027",
+    "associationClue": "أدوات المطبخ",
+    "memberCards": [
+      "قدر",
+      "مقلاة",
+      "سكين",
+      "ملعقة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_028",
+    "associationId": "a_028",
+    "associationClue": "مهن قديمة",
+    "memberCards": [
+      "نجار",
+      "حداد",
+      "خباز",
+      "صياد"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_029",
+    "associationId": "a_029",
+    "associationClue": "أماكن المدينة",
+    "memberCards": [
+      "سوق",
+      "مسجد",
+      "حديقة",
+      "مكتبة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_030",
+    "associationId": "a_030",
+    "associationClue": "حالات الطقس",
+    "memberCards": [
+      "حار",
+      "بارد",
+      "رطب",
+      "جاف"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_031",
+    "associationId": "a_031",
+    "associationClue": "علاقات القرابة",
+    "memberCards": [
+      "أب",
+      "أم",
+      "أخ",
+      "أخت"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_032",
+    "associationId": "a_032",
+    "associationClue": "حواس الإنسان",
+    "memberCards": [
+      "بصر",
+      "سمع",
+      "شم",
+      "لمس"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_033",
+    "associationId": "a_033",
+    "associationClue": "معادن",
+    "memberCards": [
+      "ذهب",
+      "فضة",
+      "برونز",
+      "حديد"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_034",
+    "associationId": "a_034",
+    "associationClue": "أحجار كريمة",
+    "memberCards": [
+      "ياقوت",
+      "زمرد",
+      "لؤلؤ",
+      "عقيق"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_035",
+    "associationId": "a_035",
+    "associationClue": "أشجار",
+    "memberCards": [
+      "نخلة",
+      "زيتون",
+      "صنوبر",
+      "بلوط"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_036",
+    "associationId": "a_036",
+    "associationClue": "ورود الحديقة",
+    "memberCards": [
+      "فل",
+      "قرنفل",
+      "زنبق",
+      "أقحوان"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_037",
+    "associationId": "a_037",
+    "associationClue": "توابل",
+    "memberCards": [
+      "كمون",
+      "قرفة",
+      "هيل",
+      "زعفران"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_038",
+    "associationId": "a_038",
+    "associationClue": "حلويات",
+    "memberCards": [
+      "كنافة",
+      "بقلاوة",
+      "بسبوسة",
+      "مهلبية"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_039",
+    "associationId": "a_039",
+    "associationClue": "ألعاب شعبية",
+    "memberCards": [
+      "حجلة",
+      "نرد",
+      "شطرنج",
+      "دومينو"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_040",
+    "associationId": "a_040",
+    "associationClue": "كتب مقدسة",
+    "memberCards": [
+      "قرآن",
+      "إنجيل",
+      "توراة",
+      "زبور"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_041",
+    "associationId": "a_041",
     "associationClue": "فنون القول",
-    "memberCards": ["شعر", "قصة", "حرف", "معنى"],
+    "memberCards": [
+      "شعر",
+      "قصة",
+      "حرف",
+      "بلاغة"
+    ],
     "contentType": "text",
-    "semanticDifficulty": 3,
+    "semanticDifficulty": 2,
     "visualFlag": false,
-    "chapterEligibility": ["ch_alexandria", "ch_beirut", "ch_marrakech", "ch_dubai"],
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
     "status": "published",
     "arabicReviewState": "approved",
     "semanticReviewState": "approved",
-    "approvedBy": "system",
+    "approvedBy": "content-pipeline",
     "version": 1
   },
   {
-    "associationVariantId": "av_memory_01",
-    "associationId": "a_memory",
+    "associationVariantId": "av_042",
+    "associationId": "a_042",
     "associationClue": "أثر الذاكرة",
-    "memberCards": ["صورة", "رائحة", "صوت", "طعم"],
+    "memberCards": [
+      "صورة",
+      "رائحة",
+      "صوت",
+      "طعم"
+    ],
     "contentType": "text",
-    "semanticDifficulty": 3,
+    "semanticDifficulty": 2,
     "visualFlag": false,
-    "chapterEligibility": ["ch_beirut", "ch_marrakech", "ch_dubai"],
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
     "status": "published",
     "arabicReviewState": "approved",
     "semanticReviewState": "approved",
-    "approvedBy": "system",
+    "approvedBy": "content-pipeline",
     "version": 1
   },
   {
-    "associationVariantId": "av_city_01",
-    "associationId": "a_city",
+    "associationVariantId": "av_043",
+    "associationId": "a_043",
     "associationClue": "أصوات المدينة",
-    "memberCards": ["زحام", "ضجيج", "أنوار", "عجلة"],
+    "memberCards": [
+      "زحام",
+      "ضجيج",
+      "أنوار",
+      "هرج"
+    ],
     "contentType": "text",
-    "semanticDifficulty": 3,
+    "semanticDifficulty": 2,
     "visualFlag": false,
-    "chapterEligibility": ["ch_cairo", "ch_dubai"],
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
     "status": "published",
     "arabicReviewState": "approved",
     "semanticReviewState": "approved",
-    "approvedBy": "system",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_044",
+    "associationId": "a_044",
+    "associationClue": "بحر الإسكندرية",
+    "memberCards": [
+      "موجة",
+      "مركب",
+      "منارة",
+      "شاطئ"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_045",
+    "associationId": "a_045",
+    "associationClue": "أزقة القاهرة",
+    "memberCards": [
+      "زقاق",
+      "حواري",
+      "قباب",
+      "مآذن"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_046",
+    "associationId": "a_046",
+    "associationClue": "كتب ومخطوطات",
+    "memberCards": [
+      "مخطوطة",
+      "حبر",
+      "رق",
+      "ختم"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_047",
+    "associationId": "a_047",
+    "associationClue": "سوق مراكش",
+    "memberCards": [
+      "بهارات",
+      "سجاد",
+      "فخار",
+      "نحاس"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_048",
+    "associationId": "a_048",
+    "associationClue": "أبراج دبي",
+    "memberCards": [
+      "ناطحات",
+      "زجاج",
+      "أفق",
+      "لمعان"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_049",
+    "associationId": "a_049",
+    "associationClue": "كلمات السفر",
+    "memberCards": [
+      "رحيل",
+      "وصول",
+      "طريق",
+      "محطة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_050",
+    "associationId": "a_050",
+    "associationClue": "كلمات الصداقة",
+    "memberCards": [
+      "صديق",
+      "رفقة",
+      "عهد",
+      "ود"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_051",
+    "associationId": "a_051",
+    "associationClue": "كلمات الحرب",
+    "memberCards": [
+      "سيف",
+      "درع",
+      "حصن",
+      "نصر"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_052",
+    "associationId": "a_052",
+    "associationClue": "كلمات السلام",
+    "memberCards": [
+      "صلح",
+      "هدوء",
+      "أمان",
+      "وئام"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_053",
+    "associationId": "a_053",
+    "associationClue": "فصول السنة",
+    "memberCards": [
+      "ربيع",
+      "صيف",
+      "خريف",
+      "شتاء"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_054",
+    "associationId": "a_054",
+    "associationClue": "اتجاهات",
+    "memberCards": [
+      "شمال",
+      "جنوب",
+      "شرق",
+      "غرب"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_055",
+    "associationId": "a_055",
+    "associationClue": "عناصر الطبيعة",
+    "memberCards": [
+      "تراب",
+      "ماء",
+      "هواء",
+      "نار"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_056",
+    "associationId": "a_056",
+    "associationClue": "حالات النفس",
+    "memberCards": [
+      "فرح",
+      "حزن",
+      "غضب",
+      "سكينة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_057",
+    "associationId": "a_057",
+    "associationClue": "كلمات العلم",
+    "memberCards": [
+      "معرفة",
+      "بحث",
+      "تجربة",
+      "اكتشاف"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_058",
+    "associationId": "a_058",
+    "associationClue": "كلمات الفن",
+    "memberCards": [
+      "لوحة",
+      "لون",
+      "فرشاة",
+      "إطار"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_059",
+    "associationId": "a_059",
+    "associationClue": "كلمات التجارة",
+    "memberCards": [
+      "بيع",
+      "شراء",
+      "ربح",
+      "خسارة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_060",
+    "associationId": "a_060",
+    "associationClue": "كلمات البناء",
+    "memberCards": [
+      "حجر",
+      "طوب",
+      "إسمنت",
+      "عمود"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 2,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_cairo",
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_061",
+    "associationId": "a_061",
+    "associationClue": "رموز الغياب",
+    "memberCards": [
+      "فراغ",
+      "صمت",
+      "ظل",
+      "بقايا",
+      "صدى"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 4,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_062",
+    "associationId": "a_062",
+    "associationClue": "خيوط المعنى",
+    "memberCards": [
+      "رابطة",
+      "صلة",
+      "جسر",
+      "خيط",
+      "عقد"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_063",
+    "associationId": "a_063",
+    "associationClue": "وجوه الذاكرة",
+    "memberCards": [
+      "ذكرى",
+      "نسيان",
+      "حنين",
+      "ماض",
+      "أثر"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_064",
+    "associationId": "a_064",
+    "associationClue": "لغة البحر",
+    "memberCards": [
+      "مد",
+      "انحسار",
+      "مرسى",
+      "سفينة",
+      "مرساة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_065",
+    "associationId": "a_065",
+    "associationClue": "أسرار الكتب",
+    "memberCards": [
+      "سطر",
+      "هامش",
+      "حاشية",
+      "فهرس",
+      "غلاف"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_066",
+    "associationId": "a_066",
+    "associationClue": "متاهة السوق",
+    "memberCards": [
+      "دكان",
+      "بائع",
+      "مساومة",
+      "نداء",
+      "ميزان"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_067",
+    "associationId": "a_067",
+    "associationClue": "مدينة الضوء",
+    "memberCards": [
+      "برج",
+      "نافورة",
+      "كوبري",
+      "صحراء",
+      "خليج"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_068",
+    "associationId": "a_068",
+    "associationClue": "كلمات التشويش",
+    "memberCards": [
+      "قطع",
+      "تشويه",
+      "تزييف",
+      "انفصال",
+      "ضياع"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_069",
+    "associationId": "a_069",
+    "associationClue": "دار الروابط",
+    "memberCards": [
+      "عقدة",
+      "شبكة",
+      "ذاكرة",
+      "معنى",
+      "وصلة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_070",
+    "associationId": "a_070",
+    "associationClue": "صفات الحكمة",
+    "memberCards": [
+      "صبر",
+      "تأمل",
+      "بصيرة",
+      "عدل",
+      "رحمة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_071",
+    "associationId": "a_071",
+    "associationClue": "رموز القوة",
+    "memberCards": [
+      "أسد",
+      "جبل",
+      "شمس",
+      "صقر",
+      "نخل"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_072",
+    "associationId": "a_072",
+    "associationClue": "رموز الضعف",
+    "memberCards": [
+      "ورقة",
+      "زبد",
+      "هباء",
+      "ندى",
+      "قش"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_073",
+    "associationId": "a_073",
+    "associationClue": "كلمات الحلم",
+    "memberCards": [
+      "رؤيا",
+      "سبات",
+      "خيال",
+      "أمنية",
+      "منام"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_074",
+    "associationId": "a_074",
+    "associationClue": "كلمات الحقيقة",
+    "memberCards": [
+      "صدق",
+      "برهان",
+      "دليل",
+      "يقينان",
+      "وضوح"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_075",
+    "associationId": "a_075",
+    "associationClue": "كلمات الخداع",
+    "memberCards": [
+      "وهم",
+      "قناع",
+      "زيف",
+      "ستار",
+      "خديعة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_076",
+    "associationId": "a_076",
+    "associationClue": "أدوات الرحالة",
+    "memberCards": [
+      "خريطة",
+      "بوصلة",
+      "زاد",
+      "حبل",
+      "قنديل"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_077",
+    "associationId": "a_077",
+    "associationClue": "مفردات الخط",
+    "memberCards": [
+      "نسخ",
+      "رقعة",
+      "ثلث",
+      "ديواني",
+      "كوفي"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_078",
+    "associationId": "a_078",
+    "associationClue": "مفردات العطر",
+    "memberCards": [
+      "مسك",
+      "عنبر",
+      "بخور",
+      "ورد",
+      "ياسمين"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_079",
+    "associationId": "a_079",
+    "associationClue": "مفردات القهوة",
+    "memberCards": [
+      "فنجان",
+      "إبريق",
+      "رمل",
+      "دلة",
+      "فحم"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_080",
+    "associationId": "a_080",
+    "associationClue": "مفردات الضيافة",
+    "memberCards": [
+      "ضيافة",
+      "كرم",
+      "مأدبة",
+      "مجلس",
+      "ترحاب"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 5,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_081",
+    "associationId": "a_081",
+    "associationClue": "حيوانات برية",
+    "memberCards": [
+      "غزال",
+      "ذئب",
+      "ثعلب",
+      "فهد"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_082",
+    "associationId": "a_082",
+    "associationClue": "أسماك",
+    "memberCards": [
+      "سلمون",
+      "تونة",
+      "سردين",
+      "قرش"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_083",
+    "associationId": "a_083",
+    "associationClue": "جبال",
+    "memberCards": [
+      "قمة",
+      "سفح",
+      "وادي",
+      "منحدر"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_084",
+    "associationId": "a_084",
+    "associationClue": "أنهار",
+    "memberCards": [
+      "نيل",
+      "دجلة",
+      "فرات",
+      "أردن"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_085",
+    "associationId": "a_085",
+    "associationClue": "مدن عربية",
+    "memberCards": [
+      "دمشق",
+      "بغداد",
+      "تونس",
+      "صنعاء"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_086",
+    "associationId": "a_086",
+    "associationClue": "علوم",
+    "memberCards": [
+      "فيزياء",
+      "كيمياء",
+      "رياضيات",
+      "أحياء"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_087",
+    "associationId": "a_087",
+    "associationClue": "رياضات",
+    "memberCards": [
+      "كرة",
+      "سباحة",
+      "جري",
+      "مبارزة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_088",
+    "associationId": "a_088",
+    "associationClue": "أدوات الطبيب",
+    "memberCards": [
+      "سماعة",
+      "محقن",
+      "ضمادة",
+      "مشرط"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_089",
+    "associationId": "a_089",
+    "associationClue": "أجزاء السيارة",
+    "memberCards": [
+      "مقود",
+      "دولاب",
+      "محرك",
+      "فرامل"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_090",
+    "associationId": "a_090",
+    "associationClue": "أدوات الفلاح",
+    "memberCards": [
+      "محراث",
+      "منجل",
+      "بذور",
+      "سقاية"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_091",
+    "associationId": "a_091",
+    "associationClue": "كلمات المطر",
+    "memberCards": [
+      "غيث",
+      "وابل",
+      "رذاذ",
+      "سيل"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_092",
+    "associationId": "a_092",
+    "associationClue": "كلمات النار",
+    "memberCards": [
+      "لهب",
+      "شرر",
+      "رماد",
+      "دخان"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_093",
+    "associationId": "a_093",
+    "associationClue": "كلمات الريح",
+    "memberCards": [
+      "نسيم",
+      "عاصفة",
+      "إعصار",
+      "هبوب"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_094",
+    "associationId": "a_094",
+    "associationClue": "كلمات التراب",
+    "memberCards": [
+      "طين",
+      "غبار",
+      "صلصال",
+      "حصى"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_095",
+    "associationId": "a_095",
+    "associationClue": "كلمات السماء",
+    "memberCards": [
+      "سحاب",
+      "فضاء",
+      "كوكب",
+      "مجرة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_096",
+    "associationId": "a_096",
+    "associationClue": "كلمات الأرض",
+    "memberCards": [
+      "بر",
+      "يابسة",
+      "قارة",
+      "جزيرة"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_097",
+    "associationId": "a_097",
+    "associationClue": "كلمات الطفل",
+    "memberCards": [
+      "لعبة",
+      "ضحكة",
+      "حليب",
+      "مهد"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_098",
+    "associationId": "a_098",
+    "associationClue": "كلمات الشيخ",
+    "memberCards": [
+      "حكمة",
+      "خبرة",
+      "لحية",
+      "عصا"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_099",
+    "associationId": "a_099",
+    "associationClue": "كلمات الضيف",
+    "memberCards": [
+      "مرحبا",
+      "أهلا",
+      "سهلا",
+      "تفضل"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
+    "version": 1
+  },
+  {
+    "associationVariantId": "av_100",
+    "associationId": "a_100",
+    "associationClue": "كلمات الطريق",
+    "memberCards": [
+      "درب",
+      "سبيل",
+      "مسلك",
+      "مسار"
+    ],
+    "contentType": "text",
+    "semanticDifficulty": 3,
+    "visualFlag": false,
+    "chapterEligibility": [
+      "ch_alexandria",
+      "ch_beirut",
+      "ch_marrakech",
+      "ch_dubai"
+    ],
+    "status": "published",
+    "arabicReviewState": "approved",
+    "semanticReviewState": "approved",
+    "approvedBy": "content-pipeline",
     "version": 1
   }
 ]

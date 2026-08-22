@@ -22,8 +22,9 @@ final class AppConfig {
       environment: environment,
       enableCrashlytics: environment != AppEnvironment.dev,
       enableAnalytics: environment != AppEnvironment.dev,
-      // Becomes true only after real Firebase options are provided locally.
-      firebaseConfigured: false,
+      // DEV uses commit-safe demo options + emulators for end-user play.
+      // TEST/STAGING/PROD stay false until real FlutterFire options exist.
+      firebaseConfigured: environment == AppEnvironment.dev,
       appVersion: '1.0.0',
       buildNumber: '1',
       rulesVersion: gameEngineRulesVersion,

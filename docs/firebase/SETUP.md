@@ -1,13 +1,57 @@
-# Firebase setup (manual)
+# Firebase setup
 
-Sprint 0 prepares structure only. Do **not** commit secrets or download credentials into git.
+## Local end-user play (DEV + emulators)
 
-## Projects
+This is the supported path to experience the game as a player without real cloud credentials.
 
-Create four Firebase projects (or clearly named environments):
+### 1. Start emulators + publish content
+
+```bash
+cd firebase
+npm run emulators
+# other terminal:
+npm run content:publish
+```
+
+Emulator UI: http://127.0.0.1:4000  
+Demo project id: `demo-arabsolitaire`
+
+### 2. Run the DEV app
+
+```bash
+cd apps/mobile
+flutter run --flavor dev -t lib/main_dev.dart
+```
+
+- Windows / iOS Simulator / Chrome: uses `127.0.0.1` for emulators  
+- Android Emulator: uses `10.0.2.2` automatically  
+- Override host: `--dart-define=FIREBASE_EMULATOR_HOST=192.168.x.x` (physical device)
+
+DEV now sets `firebaseConfigured: true` and initializes with commit-safe
+`lib/firebase/default_firebase_options.dart`, then:
+
+1. Connects Auth / Firestore / Storage / Functions emulators  
+2. Signs in anonymously  
+3. Loads bundled content, then checks the remote content pointer  
+
+### 3. Optional dart-defines
+
+| Define | Effect |
+|--------|--------|
+| `USE_FIREBASE_EMULATOR=true` | Force emulator connect |
+| `USE_FIREBASE_EMULATOR=false` | Skip emulators (needs real project) |
+| `FIREBASE_EMULATOR_HOST=…` | Emulator host override |
+
+---
+
+## Real cloud projects (TEST / STAGING / PROD)
+
+Do **not** commit secrets or download credentials into git.
+
+### Projects
 
 | App env | Suggested Firebase project name |
-|---------|----------------------------------|
+|--------|----------------------------------|
 | DEV     | `solitaire-al-arab-dev`         |
 | TEST    | `solitaire-al-arab-test`        |
 | STAGING | `solitaire-al-arab-staging`     |
@@ -15,7 +59,7 @@ Create four Firebase projects (or clearly named environments):
 
 Exact names are an ops decision.
 
-## Register apps
+### Register apps
 
 For each environment:
 
@@ -28,7 +72,7 @@ For each environment:
 3. Download `google-services.json` / `GoogleService-Info.plist` into **local untracked** paths only.
 4. Run FlutterFire configure (or equivalent) to generate `firebase_options.dart` locally — file is gitignored.
 
-## Enable products
+### Enable products
 
 - Authentication (Anonymous first; Google/Apple linking later)
 - Cloud Firestore
@@ -37,16 +81,16 @@ For each environment:
 - Analytics
 - Crashlytics
 
-## Wire the app
+### Wire the app
 
-When options exist:
+When real options exist:
 
-1. Commit-safe code already skips Firebase when `AppConfig.firebaseConfigured` is false.
-2. After local options are generated, set `firebaseConfigured: true` per environment in `AppConfig.forEnvironment` (or load from a non-secret flag).
+1. DEV already works via `DefaultFirebaseOptions` + emulators.
+2. For TEST/STAGING/PROD, set `firebaseConfigured: true` in `AppConfig.forEnvironment` and point `Firebase.initializeApp` at the generated (gitignored) `firebase_options.dart`.
 3. Apply Android Google Services Gradle plugin only once `google-services.json` is present for that flavor.
 4. Deploy rules from `firebase/rules/` (deny-by-default baseline).
 
-## Security
+### Security
 
 - Server secrets belong in Cloud Functions / CI secrets only.
 - Client must never hold privileged service accounts.

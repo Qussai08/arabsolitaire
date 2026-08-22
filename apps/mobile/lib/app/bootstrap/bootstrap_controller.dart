@@ -8,6 +8,7 @@ import 'package:mobile/features/bootstrap/data/auth_skeleton.dart';
 import 'package:mobile/features/bootstrap/data/firebase_bootstrap.dart';
 import 'package:mobile/features/bootstrap/data/firestore_skeleton.dart';
 import 'package:mobile/features/bootstrap/data/storage_skeleton.dart';
+import 'package:mobile/features/content/application/content_providers.dart';
 
 /// High-level bootstrap readiness for the application shell.
 enum BootstrapStatus { initializing, ready, recoverableError, fatalError }
@@ -56,6 +57,16 @@ final class BootstrapController extends AsyncNotifier<BootstrapState> {
       final firebase = ref.read(firebaseBootstrapProvider);
       final firebaseReady = await firebase.initializeSafely();
 
+      if (firebaseReady) {
+        final uid =
+            await ref.read(authSkeletonProvider).ensureAnonymousSession();
+        logger.info(
+          uid == null
+              ? 'Anonymous auth skipped/failed — content sync may be limited'
+              : 'Anonymous session ready ($uid)',
+        );
+      }
+
       final database = await ref.read(appDatabaseProvider.future);
       await database.ensureInitialized();
 
@@ -66,6 +77,21 @@ final class BootstrapController extends AsyncNotifier<BootstrapState> {
       ref.read(authSkeletonProvider);
       ref.read(firestoreSkeletonProvider);
       ref.read(storageSkeletonProvider);
+
+      // Load journey content (bundled + optional remote pointer).
+      final snapshot = await ref.read(contentSnapshotProvider.future);
+      logger.info(
+        'Content loaded: ${snapshot.associations.length} associations, '
+        '${snapshot.levels.length} levels '
+        '(${snapshot.source.name}/${snapshot.bundleVersion})',
+      );
+
+      if (firebaseReady) {
+        // Background remote update — never blocks Home.
+        ref.read(contentManagerProvider).checkForUpdate().then((result) {
+          logger.info('Content update check: ${result.runtimeType}');
+        }).ignore();
+      }
 
       await analytics.logBootstrapCompleted(firebaseReady: firebaseReady);
       logger.info('Bootstrap completed (firebaseReady=$firebaseReady)');

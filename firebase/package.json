@@ -8,10 +8,14 @@
     "emulators:lite": "npm run build && firebase emulators:start --only functions,auth",
     "emulators:export": "firebase emulators:export ./emulator-data",
     "emulators:import": "npm run build && firebase emulators:start --import=./emulator-data",
-    "rules:test": "mocha --timeout 60000 rules/test/firestore_rules_test.js"
+    "rules:test": "mocha --timeout 60000 rules/test/firestore_rules_test.js",
+    "content:generate": "node ../scripts/generate_launch_content.mjs",
+    "content:publish": "node ../scripts/publish_content_bundle.mjs",
+    "content:publish:local": "node ../scripts/publish_content_bundle.mjs --local-only"
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "^4.0.1",
+    "firebase-admin": "^13.10.0",
     "firebase-tools": "^15.28.1",
     "mocha": "^11.7.1"
   }

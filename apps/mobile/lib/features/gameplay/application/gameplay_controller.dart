@@ -4,30 +4,39 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game_engine/game_engine.dart';
 import 'package:game_solver/game_solver.dart';
 import 'package:level_generator/level_generator.dart';
+import 'package:mobile/features/gameplay/application/gameplay_providers.dart';
 import 'package:mobile/features/gameplay/application/gameplay_state.dart';
-import 'package:mobile/features/gameplay/data/active_attempt_providers.dart';
 import 'package:mobile/features/gameplay/data/active_attempt_repository.dart';
+import 'package:mobile/features/journey/domain/journey_models.dart';
 
 /// Manages the full gameplay lifecycle for one attempt.
 class GameplayController extends Notifier<GameplayViewState> {
   GameplayController({
-    required this.config,
-    required this.contentSelector,
-  });
+    LevelConfiguration? config,
+    ContentSelector? contentSelector,
+  })  : _overrideConfig = config,
+        _overrideSelector = contentSelector;
 
-  final LevelConfiguration config;
-  final ContentSelector contentSelector;
+  final LevelConfiguration? _overrideConfig;
+  final ContentSelector? _overrideSelector;
 
   final _engine = const GameEngine();
   int _revision = 0;
   int _hintRevision = -1;
   int _deadEndRevision = -1;
+  late LevelDefinition _level;
+  late LevelConfiguration _config;
+  late ContentSelector _contentSelector;
 
   ActiveAttemptRepository get _repo =>
       ref.read(activeAttemptRepositoryProvider);
 
   @override
   GameplayViewState build() {
+    _level = ref.resolvePlayingLevel();
+    _config = _overrideConfig ?? ref.resolveLevelConfig(_level);
+    _contentSelector =
+        _overrideSelector ?? ref.resolveContentSelector(_level);
     Future.microtask(_initialize);
     return const GameplayLoading();
   }
@@ -37,7 +46,9 @@ class GameplayController extends Notifier<GameplayViewState> {
   Future<void> _initialize() async {
     try {
       final saved = await _repo.load();
-      if (saved != null && saved.isCompatible) {
+      final sameLevel = _overrideConfig != null ||
+          saved?.levelDefinitionId == _level.levelDefinitionId;
+      if (saved != null && saved.isCompatible && sameLevel) {
         if (_engine.validate(saved.gameState)) {
           _revision = saved.revision;
           state = GameplayPlaying(
@@ -60,8 +71,8 @@ class GameplayController extends Notifier<GameplayViewState> {
       final baseSeed = GenerationSeed(
         DateTime.now().millisecondsSinceEpoch & 0x7FFFFFFF,
       );
-      final capturedConfig = config;
-      final capturedSelector = contentSelector;
+      final capturedConfig = _config;
+      final capturedSelector = _contentSelector;
 
       final result = await Isolate.run(() {
         return LevelGenerator().generate(
