@@ -40,6 +40,20 @@ class HomePlaceholderScreen extends ConsumerWidget {
               Text('generator↔engine: ${generator.enginePackageVersion}'),
               Text('generator↔solver: ${generator.solverPackageVersion}'),
               Text('generatorVersion: ${generator.generatorVersion}'),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () =>
+                    Navigator.of(context).pushNamed('/gameplay'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF1A4A7C),
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size.fromHeight(48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text('العب الآن'),
+              ),
             ],
           ),
         ),

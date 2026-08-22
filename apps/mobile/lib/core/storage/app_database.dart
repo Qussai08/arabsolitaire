@@ -2,16 +2,13 @@ import 'package:drift/drift.dart';
 
 part 'app_database.g.dart';
 
-/// Local SQLite database skeleton (Sprint 0).
-///
-/// Full gameplay schema arrives with later sprints / Data Model work.
-@DriftDatabase(tables: [AppMetadata, SchemaMetadata])
+/// Local SQLite database. Schema v2 adds active attempt persistence.
+@DriftDatabase(tables: [AppMetadata, SchemaMetadata, ActiveAttempts])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(super.e);
 
-  /// Explicit schema version — bump only with tested migrations.
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -20,15 +17,13 @@ class AppDatabase extends _$AppDatabase {
       await into(schemaMetadata).insert(
         SchemaMetadataCompanion.insert(
           schemaVersion: schemaVersion,
-          notes: const Value('initial sprint-0 schema'),
+          notes: const Value('initial schema'),
         ),
       );
     },
     onUpgrade: (Migrator m, int from, int to) async {
-      // Production must never wipe data as a migration fallback.
-      // Add explicit step-by-step migrations when schemaVersion increases.
-      if (from < to) {
-        // No upgrades defined for schemaVersion 1.
+      if (from < 2) {
+        await m.createTable(activeAttempts);
       }
     },
   );
@@ -70,4 +65,24 @@ class SchemaMetadata extends Table {
   IntColumn get schemaVersion => integer()();
   TextColumn get notes => text().withDefault(const Constant(''))();
   DateTimeColumn get migratedAt => dateTime().withDefault(currentDateAndTime)();
+}
+
+/// Single-row active attempt. Primary key is always 'active'.
+class ActiveAttempts extends Table {
+  TextColumn get id => text()(); // always 'active'
+  TextColumn get levelDefinitionId => text()();
+  TextColumn get attemptId => text()();
+  IntColumn get seed => integer()();
+  TextColumn get gameStateJson => text()();
+  TextColumn get rulesVersion => text()();
+  IntColumn get saveSchemaVersion => integer()();
+  TextColumn get generatorVersion =>
+      text().withDefault(const Constant(''))();
+  IntColumn get revision =>
+      integer().withDefault(const Constant(0))();
+  DateTimeColumn get savedAt =>
+      dateTime().withDefault(currentDateAndTime)();
+
+  @override
+  Set<Column<Object>> get primaryKey => {id};
 }
