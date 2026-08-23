@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game_engine/game_engine.dart';
 import 'package:mobile/features/gameplay/application/gameplay_controller.dart';
+import 'package:mobile/features/gameplay/application/gameplay_presentation_mode.dart';
+import 'package:mobile/features/gameplay/application/gameplay_presentation_providers.dart';
 import 'package:mobile/features/gameplay/application/gameplay_providers.dart';
 import 'package:mobile/features/gameplay/application/gameplay_state.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/association_slots_view.dart';
@@ -12,6 +14,9 @@ import 'package:mobile/features/gameplay/presentation/widgets/tableau_view.dart'
 import 'package:mobile/features/journey/presentation/screens/level_result_screen.dart';
 
 /// Main gameplay screen — Sprint 4 vertical slice.
+///
+/// Default presentation is Flutter 2D. Unity 3D is feature-flagged and only
+/// used when [effectiveGameplayPresentationModeProvider] resolves to unity3d.
 class GameplayScreen extends ConsumerWidget {
   const GameplayScreen({super.key});
 
@@ -19,6 +24,7 @@ class GameplayScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final viewState = ref.watch(gameplayControllerProvider);
     final controller = ref.read(gameplayControllerProvider.notifier);
+    final presentation = ref.watch(effectiveGameplayPresentationModeProvider);
 
     // Navigate to LevelResultScreen when the player wins.
     ref.listen<GameplayViewState>(gameplayControllerProvider, (prev, next) {
@@ -43,7 +49,7 @@ class GameplayScreen extends ConsumerWidget {
       child: Scaffold(
         backgroundColor: const Color(0xFF0A1628),
         body: SafeArea(
-          child: _buildBody(context, viewState, controller),
+          child: _buildBody(context, viewState, controller, presentation),
         ),
       ),
     );
@@ -53,23 +59,24 @@ class GameplayScreen extends ConsumerWidget {
     BuildContext context,
     GameplayViewState viewState,
     GameplayController controller,
+    GameplayPresentationMode presentation,
   ) {
     return switch (viewState) {
       GameplayLoading() => const _LoadingView(),
       GameplayPlaying() => _buildPlayingScreen(
-          context,
-          viewState,
-          controller,
-        ),
+        context,
+        viewState,
+        controller,
+        presentation,
+      ),
       GameplayWon() ||
       GameplayOutOfMoves() ||
       GameplayConfirmedDeadEnd() ||
-      GameplayError() =>
-        GameplayOverlay(
-          state: viewState,
-          onRestart: controller.restart,
-          onExit: () => Navigator.of(context).pop(),
-        ),
+      GameplayError() => GameplayOverlay(
+        state: viewState,
+        onRestart: controller.restart,
+        onExit: () => Navigator.of(context).pop(),
+      ),
     };
   }
 
@@ -77,7 +84,21 @@ class GameplayScreen extends ConsumerWidget {
     BuildContext context,
     GameplayPlaying state,
     GameplayController controller,
+    GameplayPresentationMode presentation,
   ) {
+    // Phase 1: Unity host is a readiness placeholder; Flutter 2D remains the
+    // playable surface until native embed lands.
+    if (presentation == GameplayPresentationMode.unity3d) {
+      return _UnityHostPlaceholder(
+        revision: state.revision,
+        movesRemaining: state.gameState.movesRemaining,
+        onExit: () => Navigator.of(context).pop(),
+        onFallbackToFlutter2d: () {
+          // Parent listens via provider; placeholder just documents intent.
+        },
+      );
+    }
+
     return Column(
       children: [
         GameplayToolbar(
@@ -239,6 +260,65 @@ class _DeadEndCheckIndicator extends StatelessWidget {
             style: TextStyle(color: Colors.white30, fontSize: 11),
           ),
         ],
+      ),
+    );
+  }
+}
+
+/// Placeholder host shown when unity3d mode is selected and marked ready.
+/// Native Unity-as-a-Library embedding lands in a later phase.
+class _UnityHostPlaceholder extends StatelessWidget {
+  const _UnityHostPlaceholder({
+    required this.revision,
+    required this.movesRemaining,
+    required this.onExit,
+    required this.onFallbackToFlutter2d,
+  });
+
+  final int revision;
+  final int movesRemaining;
+  final VoidCallback onExit;
+  final VoidCallback onFallbackToFlutter2d;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              'Unity 3D',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'وضع العرض التجريبي — المراجعة $revision',
+              style: const TextStyle(color: Colors.white70),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              'الحركات المتبقية: $movesRemaining',
+              style: const TextStyle(color: Colors.white54),
+            ),
+            const SizedBox(height: 24),
+            FilledButton(
+              onPressed: onFallbackToFlutter2d,
+              child: const Text('العودة إلى العرض الثنائي الأبعاد'),
+            ),
+            const SizedBox(height: 12),
+            TextButton(
+              onPressed: onExit,
+              child: const Text('خروج'),
+            ),
+          ],
+        ),
       ),
     );
   }

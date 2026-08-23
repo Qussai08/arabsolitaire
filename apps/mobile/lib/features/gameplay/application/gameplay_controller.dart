@@ -14,8 +14,8 @@ class GameplayController extends Notifier<GameplayViewState> {
   GameplayController({
     LevelConfiguration? config,
     ContentSelector? contentSelector,
-  })  : _overrideConfig = config,
-        _overrideSelector = contentSelector;
+  }) : _overrideConfig = config,
+       _overrideSelector = contentSelector;
 
   final LevelConfiguration? _overrideConfig;
   final ContentSelector? _overrideSelector;
@@ -35,8 +35,7 @@ class GameplayController extends Notifier<GameplayViewState> {
   GameplayViewState build() {
     _level = ref.resolvePlayingLevel();
     _config = _overrideConfig ?? ref.resolveLevelConfig(_level);
-    _contentSelector =
-        _overrideSelector ?? ref.resolveContentSelector(_level);
+    _contentSelector = _overrideSelector ?? ref.resolveContentSelector(_level);
     Future.microtask(_initialize);
     return const GameplayLoading();
   }
@@ -46,7 +45,8 @@ class GameplayController extends Notifier<GameplayViewState> {
   Future<void> _initialize() async {
     try {
       final saved = await _repo.load();
-      final sameLevel = _overrideConfig != null ||
+      final sameLevel =
+          _overrideConfig != null ||
           saved?.levelDefinitionId == _level.levelDefinitionId;
       if (saved != null && saved.isCompatible && sameLevel) {
         if (_engine.validate(saved.gameState)) {
@@ -85,16 +85,18 @@ class GameplayController extends Notifier<GameplayViewState> {
       switch (result) {
         case GenerationSucceeded(:final level):
           _revision = 0;
-          await _repo.save(SavedAttempt(
-            levelDefinitionId: level.levelDefinitionId,
-            attemptId: level.initialGameState.attemptId,
-            seed: level.seed.value,
-            gameState: level.initialGameState,
-            rulesVersion: level.rulesVersion,
-            saveSchemaVersion: level.initialGameState.saveSchemaVersion,
-            generatorVersion: level.generatorVersion,
-            revision: _revision,
-          ));
+          await _repo.save(
+            SavedAttempt(
+              levelDefinitionId: level.levelDefinitionId,
+              attemptId: level.initialGameState.attemptId,
+              seed: level.seed.value,
+              gameState: level.initialGameState,
+              rulesVersion: level.rulesVersion,
+              saveSchemaVersion: level.initialGameState.saveSchemaVersion,
+              generatorVersion: level.generatorVersion,
+              revision: _revision,
+            ),
+          );
           state = GameplayPlaying(
             gameState: level.initialGameState,
             revision: _revision,
@@ -111,9 +113,12 @@ class GameplayController extends Notifier<GameplayViewState> {
 
   // ── Actions ───────────────────────────────────────────────────────────────
 
-  void applyAction(GameAction action) {
+  /// Applies [action] and returns the authoritative [GameTransition].
+  ///
+  /// Existing Flutter UI may ignore the return value. Bridge code observes it.
+  GameTransition? applyAction(GameAction action) {
     final playing = _asPlaying();
-    if (playing == null) return;
+    if (playing == null) return null;
 
     final transition = _engine.applyAction(playing.gameState, action);
     _revision++;
@@ -148,7 +153,14 @@ class GameplayController extends Notifier<GameplayViewState> {
         hint: HintViewState.idle,
       );
     }
+    return transition;
   }
+
+  /// Public view of Riverpod [state] for bridge/coordinator callers.
+  GameplayViewState get viewState => state;
+
+  /// Authoritative revision for bridge stale-intent checks.
+  int get revision => _revision;
 
   Future<void> requestHint() async {
     final playing = _asPlaying();
@@ -212,13 +224,9 @@ class GameplayController extends Notifier<GameplayViewState> {
 
       switch (result) {
         case ConfirmedDeadEnd():
-          state = GameplayConfirmedDeadEnd(
-            gameState: currentPlaying.gameState,
-          );
+          state = GameplayConfirmedDeadEnd(gameState: currentPlaying.gameState);
         case NotDeadEnd():
-          state = currentPlaying.copyWith(
-            deadEnd: DeadEndViewState.notDeadEnd,
-          );
+          state = currentPlaying.copyWith(deadEnd: DeadEndViewState.notDeadEnd);
         case DeadEndInconclusive():
           state = currentPlaying.copyWith(
             deadEnd: DeadEndViewState.inconclusive,
@@ -255,16 +263,18 @@ class GameplayController extends Notifier<GameplayViewState> {
 
   void _persistAsync(GameState gameState) {
     _repo
-        .save(SavedAttempt(
-          levelDefinitionId: gameState.levelDefinitionId,
-          attemptId: gameState.attemptId,
-          seed: 0,
-          gameState: gameState,
-          rulesVersion: gameState.rulesVersion,
-          saveSchemaVersion: gameState.saveSchemaVersion,
-          generatorVersion: '',
-          revision: _revision,
-        ))
+        .save(
+          SavedAttempt(
+            levelDefinitionId: gameState.levelDefinitionId,
+            attemptId: gameState.attemptId,
+            seed: 0,
+            gameState: gameState,
+            rulesVersion: gameState.rulesVersion,
+            saveSchemaVersion: gameState.saveSchemaVersion,
+            generatorVersion: '',
+            revision: _revision,
+          ),
+        )
         .ignore();
   }
 }
