@@ -138,3 +138,12 @@ unity/ArabSolitaireUnity/Assets/TutorialInfo/
 unity/ArabSolitaireUnity/Assets/Scenes/SampleScene.unity
 unity/ArabSolitaireUnity/Assets/Scenes/SampleScene.unity.meta
 unity/ArabSolitaireUnity/Assets/TutorialInfo.meta
+
+# Unity test runner ephemeral scenes
+unity/ArabSolitaireUnity/Assets/InitTestScene*.unity
+unity/ArabSolitaireUnity/Assets/InitTestScene*.unity.meta
+
+# Unity as a Library export (reproducible via Editor menu / batchmode)
+apps/mobile/android/unityLibrary/
+apps/mobile/android/_staging/
+apps/mobile/android/unityLibrary.README.md
