@@ -31,6 +31,16 @@ namespace ArabSolitaire.Vfx
             line.SetPosition(1, to);
         }
 
+        public void SetColor(Color color)
+        {
+            threadColor = color;
+            if (line != null)
+            {
+                line.startColor = color;
+                line.endColor = color;
+            }
+        }
+
         public void Hide() => gameObject.SetActive(false);
     }
 }
