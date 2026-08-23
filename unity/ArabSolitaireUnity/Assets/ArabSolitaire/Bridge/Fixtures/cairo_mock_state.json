@@ -37,7 +37,13 @@
           }
         ],
         "slots": [{ "index": 0, "activeAssociation": null }],
-        "stock": { "undealt": [], "waste": [] },
+        "stock": {
+          "undealt": [
+            { "kind": "member", "id": "أخضر", "associationId": "assoc_b" },
+            { "kind": "member", "id": "أصفر", "associationId": "assoc_b" }
+          ],
+          "waste": []
+        },
         "movesRemaining": 30,
         "status": "inProgress",
         "associationTitle": "ألوان أساسية"
@@ -51,8 +57,8 @@
       "newRevision": 1,
       "rejectionReason": null,
       "events": [
-        { "type": "cardMoved", "fromColumn": 0, "toColumn": 2 },
-        { "type": "associationCompleted" }
+        { "type": "MoveAccepted", "fromColumn": 0, "toColumn": 2 },
+        { "type": "AssociationCompleted", "associationId": "assoc_a" }
       ]
     },
     "reject_move_2_to_0": {
@@ -60,9 +66,35 @@
       "moveCost": 0,
       "newRevision": 2,
       "rejectionReason": "illegalTarget",
-      "events": [
-        { "type": "moveRejected", "reason": "illegalTarget" }
-      ]
+      "events": [{ "type": "MoveRejected", "reason": "illegalTarget" }]
+    },
+    "advance_stock": {
+      "accepted": true,
+      "moveCost": 1,
+      "newRevision": 3,
+      "rejectionReason": null,
+      "events": [{ "type": "StockAdvanced" }]
+    },
+    "restore_stock": {
+      "accepted": true,
+      "moveCost": 0,
+      "newRevision": 4,
+      "rejectionReason": null,
+      "events": [{ "type": "StockRestored" }]
+    },
+    "hint": {
+      "accepted": true,
+      "moveCost": 0,
+      "newRevision": 5,
+      "rejectionReason": null,
+      "events": [{ "type": "hintAvailable", "targetColumn": 2 }]
+    },
+    "win": {
+      "accepted": true,
+      "moveCost": 0,
+      "newRevision": 6,
+      "rejectionReason": null,
+      "events": [{ "type": "GameWon" }]
     }
   }
 }

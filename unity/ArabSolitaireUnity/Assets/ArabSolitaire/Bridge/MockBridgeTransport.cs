@@ -78,7 +78,7 @@ namespace ArabSolitaire.Bridge.Mock
             var nextState = CloneGameState();
             if (mock.Value<bool>("accepted"))
             {
-                ApplyAcceptedDelta(nextState, intent);
+                ApplyAcceptedDelta(nextState, intent, key);
             }
 
             var transition = new TransitionResultPayload
@@ -113,12 +113,70 @@ namespace ArabSolitaire.Bridge.Mock
             return envelope;
         }
 
+        public BridgeEnvelope HandleHintRequest()
+        {
+            var mock = _fixture.mockResponses["hint"] as JObject
+                ?? throw new InvalidOperationException("Missing mock response: hint");
+            var envelope = BuildOutbound(
+                BridgeMessageType.HintResult,
+                new JObject
+                {
+                    ["highlightColumn"] = 2,
+                    ["events"] = mock["events"],
+                },
+                null,
+                AuthoritativeRevision);
+            Emit(envelope);
+            return envelope;
+        }
+
+        public BridgeEnvelope HandleWinDemo() => HandleMockAction("win", "win");
+
+        public BridgeEnvelope HandleStockAdvanceDemo() =>
+            HandleMockAction("advanceStock", $"advance_stock_{++_messageCounter}");
+
+        public BridgeEnvelope HandleStockRestoreDemo() =>
+            HandleMockAction("restoreStock", $"restore_stock_{++_messageCounter}");
+
+        private BridgeEnvelope HandleMockAction(string actionType, string requestId)
+        {
+            var intent = new BridgeEnvelope
+            {
+                schemaVersion = BridgeConstants.SchemaVersion,
+                messageId = $"mock-{requestId}",
+                sessionId = _fixture.sessionId,
+                attemptId = _fixture.attemptId,
+                levelDefinitionId = _fixture.levelDefinitionId,
+                revision = AuthoritativeRevision,
+                type = BridgeMessageType.ActionIntent.ToWireName(),
+                requestId = requestId,
+                payload = new JObject { ["action"] = new JObject { ["type"] = actionType } },
+            };
+            return HandleActionIntent(intent);
+        }
+
         private static string ResolveResponseKey(BridgeEnvelope intent)
         {
             var action = intent.payload["action"] as JObject;
             if (action == null)
             {
                 return "reject_move_2_to_0";
+            }
+
+            var type = action.Value<string>("type");
+            if (type == "advanceStock" || type == "advance_stock")
+            {
+                return "advance_stock";
+            }
+
+            if (type == "restoreStock" || type == "restore_stock")
+            {
+                return "restore_stock";
+            }
+
+            if (type == "win")
+            {
+                return "win";
             }
 
             if (action.Value<string>("type") == "moveTableauToTableau")
@@ -145,9 +203,27 @@ namespace ArabSolitaire.Bridge.Mock
             return gameState != null ? (JObject)gameState.DeepClone() : new JObject();
         }
 
-        private static void ApplyAcceptedDelta(JObject nextState, BridgeEnvelope intent)
+        private static void ApplyAcceptedDelta(JObject nextState, BridgeEnvelope intent, string key)
         {
             var action = intent.payload["action"] as JObject;
+            if (key == "advance_stock")
+            {
+                AdvanceStock(nextState);
+                return;
+            }
+
+            if (key == "restore_stock")
+            {
+                RestoreStock(nextState);
+                return;
+            }
+
+            if (key == "win")
+            {
+                nextState["status"] = "won";
+                return;
+            }
+
             if (action == null || action.Value<string>("type") != "moveTableauToTableau")
             {
                 return;
@@ -176,6 +252,48 @@ namespace ArabSolitaire.Bridge.Mock
             }
         }
 
+        private static void AdvanceStock(JObject nextState)
+        {
+            var stock = nextState["stock"] as JObject;
+            if (stock == null)
+            {
+                return;
+            }
+
+            var undealt = stock["undealt"] as JArray ?? new JArray();
+            var waste = stock["waste"] as JArray ?? new JArray();
+            if (undealt.Count == 0)
+            {
+                return;
+            }
+
+            var card = undealt[0];
+            undealt.RemoveAt(0);
+            waste.Add(card);
+            stock["undealt"] = undealt;
+            stock["waste"] = waste;
+        }
+
+        private static void RestoreStock(JObject nextState)
+        {
+            var stock = nextState["stock"] as JObject;
+            if (stock == null)
+            {
+                return;
+            }
+
+            var undealt = stock["undealt"] as JArray ?? new JArray();
+            var waste = stock["waste"] as JArray ?? new JArray();
+            while (waste.Count > 0)
+            {
+                undealt.Add(waste[waste.Count - 1]);
+                waste.RemoveAt(waste.Count - 1);
+            }
+
+            stock["undealt"] = undealt;
+            stock["waste"] = waste;
+        }
+
         private BridgeEnvelope BuildOutbound(
             BridgeMessageType type,
             JObject payload,
@@ -198,6 +316,15 @@ namespace ArabSolitaire.Bridge.Mock
         }
 
         private void Emit(BridgeEnvelope envelope) => OnOutboundMessage?.Invoke(envelope);
+
+        public void EmitPresentationCompleted(int revision)
+        {
+            Emit(BuildOutbound(
+                BridgeMessageType.PresentationCompleted,
+                new JObject { ["revision"] = revision },
+                null,
+                revision));
+        }
 
         public static MockBridgeTransport CreateRuntime(TextAsset fixture)
         {

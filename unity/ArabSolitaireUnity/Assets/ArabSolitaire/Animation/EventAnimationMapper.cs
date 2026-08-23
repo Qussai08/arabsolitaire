@@ -5,8 +5,11 @@ namespace ArabSolitaire.Animation
     public enum PresentationAnimCommand
     {
         Idle,
+        Notice,
         Point,
+        Warning,
         Celebrate,
+        Concerned,
         RejectShake,
     }
 

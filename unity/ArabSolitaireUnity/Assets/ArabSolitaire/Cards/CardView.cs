@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ArabSolitaire.Gameplay;
 using TMPro;
 using UnityEngine;
 
@@ -8,43 +9,58 @@ namespace ArabSolitaire.Cards
     {
         [SerializeField] private TMP_Text label;
         [SerializeField] private MeshRenderer faceRenderer;
+        [SerializeField] private Collider pickCollider;
 
-        public string CardId { get; private set; } = string.Empty;
+        public CardVisualIdentity Identity { get; private set; } = new();
+        public string CardId => Identity.CardId;
 
-        public void Bind(string cardId, Color tint)
+        public void BindIdentity(CardVisualIdentity identity, Color tint)
         {
-            CardId = cardId;
+            Identity = identity;
             gameObject.SetActive(true);
+            gameObject.name = $"Card_{identity.CardId}";
 
             if (label != null)
             {
-                label.text = cardId;
-                label.isRightToLeftText = ContainsArabic(cardId);
+                label.text = identity.DisplayText;
+                label.isRightToLeftText = ArabicTypography.ContainsArabic(identity.DisplayText);
             }
 
             if (faceRenderer != null)
             {
                 faceRenderer.material.color = tint;
             }
+
+            pickCollider ??= GetComponent<Collider>();
+            if (pickCollider != null)
+            {
+                pickCollider.enabled = identity.Interactable;
+            }
+        }
+
+        public void Bind(string cardId, Color tint) =>
+            BindIdentity(new CardVisualIdentity
+            {
+                CardId = cardId,
+                DisplayText = cardId,
+                Interactable = true,
+            }, tint);
+
+        public void SetHighlighted(bool enabled)
+        {
+            if (faceRenderer == null)
+            {
+                return;
+            }
+
+            var c = faceRenderer.material.color;
+            faceRenderer.material.color = enabled ? c * 1.15f : c;
         }
 
         public void Recycle()
         {
-            CardId = string.Empty;
+            Identity = new CardVisualIdentity();
             gameObject.SetActive(false);
-        }
-
-        private static bool ContainsArabic(string value)
-        {
-            foreach (var c in value)
-            {
-                if (c is >= '\u0600' and <= '\u06FF')
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
 
         public static CardView Create(Transform parent)
@@ -60,10 +76,12 @@ namespace ArabSolitaire.Cards
             var tmp = labelGo.AddComponent<TextMeshPro>();
             tmp.fontSize = 3f;
             tmp.alignment = TextAlignmentOptions.Center;
+            ArabicTypography.ApplyTo(tmp);
 
             var view = go.AddComponent<CardView>();
             view.label = tmp;
             view.faceRenderer = go.GetComponent<MeshRenderer>();
+            view.pickCollider = go.GetComponent<Collider>();
             return view;
         }
     }
@@ -74,6 +92,8 @@ namespace ArabSolitaire.Cards
         private readonly Stack<CardView> _pool = new();
 
         public CardViewPool(Transform root) => _root = root;
+
+        public int PooledCount => _pool.Count;
 
         public CardView Rent() => _pool.Count > 0 ? _pool.Pop() : CardView.Create(_root);
 

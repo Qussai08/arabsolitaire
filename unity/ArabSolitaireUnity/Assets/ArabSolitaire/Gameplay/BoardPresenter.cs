@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using ArabSolitaire.Bridge;
-using ArabSolitaire.Cards;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 
@@ -8,52 +6,35 @@ namespace ArabSolitaire.Gameplay
 {
     public sealed class BoardPresenter : MonoBehaviour
     {
-        [SerializeField] private Transform tableauRoot;
-        [SerializeField] private Color cardTint = new(0.93f, 0.86f, 0.68f);
+        [SerializeField] private TableauPresenter tableau;
+        [SerializeField] private StockPresenter stock;
+        [SerializeField] private AssociationSlotPresenter slots;
 
-        private readonly List<CardView> _active = new();
-        private CardViewPool _pool;
+        private JObject _lastPresentedState;
 
-        public int ActiveCardCount => _active.Count;
+        public int ActiveCardCount =>
+            (tableau?.CardsById.Count ?? 0) + (stock != null ? 1 : 0);
 
-        private void Awake()
+        public TableauPresenter Tableau => tableau;
+        public StockPresenter Stock => stock;
+        public AssociationSlotPresenter Slots => slots;
+
+        public void Configure(TableauPresenter t, StockPresenter s, AssociationSlotPresenter a)
         {
-            if (tableauRoot == null)
-            {
-                var root = new GameObject("TableauRoot");
-                root.transform.SetParent(transform, false);
-                tableauRoot = root.transform;
-            }
-
-            _pool = new CardViewPool(tableauRoot);
+            tableau = t;
+            stock = s;
+            slots = a;
         }
 
         public void PresentSnapshot(BridgeEnvelope snapshot)
         {
-            Clear();
-            var gameState = snapshot.payload["gameState"] as JObject;
-            var tableau = gameState?["tableau"] as JArray;
-            if (tableau == null)
+            var gameState = snapshot.payload?["gameState"] as JObject;
+            if (gameState == null)
             {
                 return;
             }
 
-            for (var column = 0; column < tableau.Count; column++)
-            {
-                var col = tableau[column] as JObject;
-                var exposed = col?["exposedUnit"] as JObject;
-                var card = exposed?["card"] as JObject;
-                var id = card?.Value<string>("id");
-                if (string.IsNullOrEmpty(id))
-                {
-                    continue;
-                }
-
-                var view = _pool.Rent();
-                view.Bind(id, cardTint);
-                view.transform.localPosition = new Vector3((column - 1) * 0.85f, 0f, 0f);
-                _active.Add(view);
-            }
+            PresentGameState(gameState, snapshot.revision);
         }
 
         public void PresentTransition(TransitionResultPayload transition)
@@ -63,32 +44,27 @@ namespace ArabSolitaire.Gameplay
                 return;
             }
 
-            var envelope = new BridgeEnvelope
-            {
-                schemaVersion = BridgeConstants.SchemaVersion,
-                messageId = "local-present",
-                sessionId = "local",
-                attemptId = "local",
-                levelDefinitionId = "local",
-                revision = transition.newRevision,
-                type = BridgeMessageType.StateSnapshot.ToWireName(),
-                payload = new JObject
-                {
-                    ["revision"] = transition.newRevision,
-                    ["gameState"] = transition.nextState,
-                },
-            };
-            PresentSnapshot(envelope);
+            PresentGameState(transition.nextState, transition.newRevision);
         }
 
-        private void Clear()
+        public void ReconcileTo(BridgeEnvelope snapshot)
         {
-            foreach (var card in _active)
+            var authoritative = BoardReconciler.ExtractGameState(snapshot);
+            if (BoardReconciler.NeedsReconcile(authoritative, _lastPresentedState))
             {
-                _pool.Return(card);
+                PresentSnapshot(snapshot);
             }
+        }
 
-            _active.Clear();
+        private void PresentGameState(JObject gameState, int revision)
+        {
+            _lastPresentedState = (JObject)gameState.DeepClone();
+            var tableauStacks = BoardVisualModel.BuildTableau(gameState, revision);
+            var stockStack = BoardVisualModel.BuildStock(gameState, revision);
+            var slotStacks = BoardVisualModel.BuildSlots(gameState, revision);
+            tableau?.Present(tableauStacks, revision);
+            stock?.Present(stockStack, revision);
+            slots?.Present(slotStacks, revision);
         }
     }
 }

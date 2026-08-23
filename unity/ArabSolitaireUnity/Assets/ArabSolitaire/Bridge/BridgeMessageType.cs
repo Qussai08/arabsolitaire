@@ -4,14 +4,23 @@ namespace ArabSolitaire.Bridge
 {
     public enum BridgeMessageType
     {
+        Initialize,
+        LoadLevel,
         StateSnapshot,
         TransitionResult,
-        ActionIntent,
+        HintResult,
+        Pause,
+        Resume,
+        ShowStoryBeat,
+        Shutdown,
+        FatalError,
         UnityReady,
+        ActionIntent,
         RequestHint,
         RequestRestart,
         RequestExit,
-        HintResult,
+        StoryBeatSkipped,
+        PresentationCompleted,
         ClientError,
     }
 
@@ -19,14 +28,23 @@ namespace ArabSolitaire.Bridge
     {
         public static string ToWireName(this BridgeMessageType type) => type switch
         {
+            BridgeMessageType.Initialize => "initialize",
+            BridgeMessageType.LoadLevel => "loadLevel",
             BridgeMessageType.StateSnapshot => "stateSnapshot",
             BridgeMessageType.TransitionResult => "transitionResult",
-            BridgeMessageType.ActionIntent => "actionIntent",
+            BridgeMessageType.HintResult => "hintResult",
+            BridgeMessageType.Pause => "pause",
+            BridgeMessageType.Resume => "resume",
+            BridgeMessageType.ShowStoryBeat => "showStoryBeat",
+            BridgeMessageType.Shutdown => "shutdown",
+            BridgeMessageType.FatalError => "fatalError",
             BridgeMessageType.UnityReady => "unityReady",
+            BridgeMessageType.ActionIntent => "actionIntent",
             BridgeMessageType.RequestHint => "requestHint",
             BridgeMessageType.RequestRestart => "requestRestart",
             BridgeMessageType.RequestExit => "requestExit",
-            BridgeMessageType.HintResult => "hintResult",
+            BridgeMessageType.StoryBeatSkipped => "storyBeatSkipped",
+            BridgeMessageType.PresentationCompleted => "presentationCompleted",
             BridgeMessageType.ClientError => "clientError",
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null),
         };
