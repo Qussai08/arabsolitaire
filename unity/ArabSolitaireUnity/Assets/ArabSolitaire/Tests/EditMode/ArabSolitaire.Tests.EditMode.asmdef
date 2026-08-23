@@ -3,6 +3,7 @@
     "rootNamespace": "ArabSolitaire.Tests.EditMode",
     "references": [
         "ArabSolitaire.Runtime",
+        "Unity.Nuget.Newtonsoft-Json",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
     ],

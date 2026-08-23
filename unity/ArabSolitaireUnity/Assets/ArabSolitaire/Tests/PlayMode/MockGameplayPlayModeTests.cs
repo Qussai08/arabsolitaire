@@ -37,15 +37,31 @@ namespace ArabSolitaire.Tests.PlayMode
             var transport = MockBridgeTransport.CreateRuntime(fixture);
             Assert.AreEqual(0, transport.AuthoritativeRevision);
 
-            var accept = transport.HandleActionIntent(BuildIntent(transport, 0, 2, "req-accept"));
+            var accept = transport.HandleActionIntent(BuildIntent(transport, 0, 2, "req-accept-1"));
             Assert.IsTrue(accept.payload.Value<bool>("accepted"));
             Assert.AreEqual(1, transport.AuthoritativeRevision);
             yield return null;
 
-            var reject = transport.HandleActionIntent(BuildIntent(transport, 2, 0, "req-reject"));
+            var reject = transport.HandleActionIntent(BuildIntent(transport, 2, 0, "req-reject-1"));
             Assert.IsFalse(reject.payload.Value<bool>("accepted"));
             Assert.AreEqual(2, transport.AuthoritativeRevision);
 
+            Object.Destroy(transport.gameObject);
+        }
+
+        [UnityTest]
+        public IEnumerator StockAdvanceAndRestore_UpdatesRevision()
+        {
+            var fixture = LoadFixture();
+            var transport = MockBridgeTransport.CreateRuntime(fixture);
+            var advance = transport.HandleStockAdvanceDemo();
+            Assert.IsTrue(advance.payload.Value<bool>("accepted"));
+            Assert.AreEqual(3, transport.AuthoritativeRevision);
+            yield return null;
+
+            var restore = transport.HandleStockRestoreDemo();
+            Assert.IsTrue(restore.payload.Value<bool>("accepted"));
+            Assert.AreEqual(4, transport.AuthoritativeRevision);
             Object.Destroy(transport.gameObject);
         }
 
@@ -61,6 +77,38 @@ namespace ArabSolitaire.Tests.PlayMode
             transport.SimulateReconnect();
             Assert.IsTrue(transport.IsConnected);
             Assert.IsNotNull(transport.CurrentSnapshot);
+            Object.Destroy(transport.gameObject);
+            yield return null;
+        }
+
+        [UnityTest]
+        public IEnumerator Reconnect_RestoresAuthoritativeSnapshot()
+        {
+            var fixture = LoadFixture();
+            var go = new GameObject("GreyboxBuilder");
+            var builder = go.AddComponent<CairoGreyboxSceneBuilder>();
+            builder.SetFixtureAsset(fixture);
+            builder.Build();
+            yield return null;
+
+            var session = Object.FindFirstObjectByType<GameplaySessionController>();
+            Assert.IsNotNull(session);
+            session.SimulateDisconnect();
+            session.SimulateReconnect();
+            yield return null;
+            Assert.IsNotNull(session.Transport.CurrentSnapshot);
+            Object.Destroy(go);
+        }
+
+        [UnityTest]
+        public IEnumerator WinDemo_SetsWonStatus()
+        {
+            var fixture = LoadFixture();
+            var transport = MockBridgeTransport.CreateRuntime(fixture);
+            var win = transport.HandleWinDemo();
+            Assert.IsTrue(win.payload.Value<bool>("accepted"));
+            var gameState = transport.CurrentSnapshot.payload["gameState"] as JObject;
+            Assert.AreEqual("won", gameState?.Value<string>("status"));
             Object.Destroy(transport.gameObject);
             yield return null;
         }
