@@ -23,10 +23,7 @@ abstract final class BridgePayloads {
     required GameState state,
     required int revision,
   }) {
-    return {
-      'revision': revision,
-      'gameState': GameStateCodec.encode(state),
-    };
+    return {'revision': revision, 'gameState': GameStateCodec.encode(state)};
   }
 
   static Map<String, Object?> transitionResult(TransitionResultPayload result) {
@@ -62,11 +59,7 @@ abstract final class BridgePayloads {
     required String textAr,
     bool skippable = true,
   }) {
-    return {
-      'beatId': beatId,
-      'textAr': textAr,
-      'skippable': skippable,
-    };
+    return {'beatId': beatId, 'textAr': textAr, 'skippable': skippable};
   }
 
   static Map<String, Object?> fatalError({

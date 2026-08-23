@@ -46,7 +46,8 @@ abstract final class TransitionResultCodec {
       'newRevision': result.newRevision,
       if (result.rejectionReason != null)
         'rejectionReason': result.rejectionReason!.name,
-      if (result.streakEffect != null) 'streakEffect': result.streakEffect!.name,
+      if (result.streakEffect != null)
+        'streakEffect': result.streakEffect!.name,
     };
   }
 

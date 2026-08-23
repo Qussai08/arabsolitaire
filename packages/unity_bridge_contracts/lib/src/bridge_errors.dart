@@ -23,9 +23,7 @@ final class MissingRequiredFieldError extends BridgeError {
 
 final class StaleRevisionError extends BridgeError {
   StaleRevisionError({required this.incoming, required this.authoritative})
-    : super(
-        'Stale revision: incoming=$incoming authoritative=$authoritative',
-      );
+    : super('Stale revision: incoming=$incoming authoritative=$authoritative');
 
   final int incoming;
   final int authoritative;

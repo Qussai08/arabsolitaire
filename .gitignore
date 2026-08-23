@@ -130,3 +130,11 @@ unity/**/*.pdb.meta
 unity/**/*.mdb.meta
 unity/**/sysinfo.txt
 unity/**/crashlytics-build.properties
+
+# Unity template leftovers (not part of ArabSolitaire runtime)
+unity/ArabSolitaireUnity/Assets/Readme.asset
+unity/ArabSolitaireUnity/Assets/Readme.asset.meta
+unity/ArabSolitaireUnity/Assets/TutorialInfo/
+unity/ArabSolitaireUnity/Assets/Scenes/SampleScene.unity
+unity/ArabSolitaireUnity/Assets/Scenes/SampleScene.unity.meta
+unity/ArabSolitaireUnity/Assets/Scenes.meta
