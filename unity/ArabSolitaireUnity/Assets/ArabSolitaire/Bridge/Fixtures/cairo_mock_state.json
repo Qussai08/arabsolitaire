@@ -1,0 +1,68 @@
+{
+  "revision": 0,
+  "sessionId": "mock-session-cairo",
+  "attemptId": "محاولة-١",
+  "levelDefinitionId": "cairo_level_1",
+  "initialSnapshot": {
+    "schemaVersion": 1,
+    "messageId": "dart-1",
+    "sessionId": "mock-session-cairo",
+    "attemptId": "محاولة-١",
+    "levelDefinitionId": "cairo_level_1",
+    "revision": 0,
+    "type": "stateSnapshot",
+    "payload": {
+      "revision": 0,
+      "gameState": {
+        "attemptId": "محاولة-١",
+        "levelDefinitionId": "cairo_level_1",
+        "tableau": [
+          {
+            "hiddenCards": [],
+            "exposedUnit": {
+              "kind": "singleMember",
+              "card": { "kind": "member", "id": "أحمر", "associationId": "assoc_a" }
+            }
+          },
+          {
+            "hiddenCards": [],
+            "exposedUnit": {
+              "kind": "singleMember",
+              "card": { "kind": "member", "id": "أزرق", "associationId": "assoc_a" }
+            }
+          },
+          {
+            "hiddenCards": [],
+            "exposedUnit": null
+          }
+        ],
+        "slots": [{ "index": 0, "activeAssociation": null }],
+        "stock": { "undealt": [], "waste": [] },
+        "movesRemaining": 30,
+        "status": "inProgress",
+        "associationTitle": "ألوان أساسية"
+      }
+    }
+  },
+  "mockResponses": {
+    "accept_move_0_to_2": {
+      "accepted": true,
+      "moveCost": 1,
+      "newRevision": 1,
+      "rejectionReason": null,
+      "events": [
+        { "type": "cardMoved", "fromColumn": 0, "toColumn": 2 },
+        { "type": "associationCompleted" }
+      ]
+    },
+    "reject_move_2_to_0": {
+      "accepted": false,
+      "moveCost": 0,
+      "newRevision": 2,
+      "rejectionReason": "illegalTarget",
+      "events": [
+        { "type": "moveRejected", "reason": "illegalTarget" }
+      ]
+    }
+  }
+}

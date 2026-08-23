@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ef1cee3ea315a64b9e8d57427f91bdd, type: 3}
+  m_Name: CairoEnvironment
+  m_EditorClassIdentifier: ArabSolitaire.Runtime::ArabSolitaire.Chapters.ChapterEnvironmentConfig
+  chapterId: chapter_cairo
+  displayNameAr: "\u0627\u0644\u0642\u0627\u0647\u0631\u0629"
+  ambientColor: {r: 0.45, g: 0.38, b: 0.28, a: 1}
+  accentColor: {r: 0.82, g: 0.68, b: 0.35, a: 1}
+  fogColor: {r: 0.35, g: 0.28, b: 0.22, a: 1}
+  environmentMotif: historic library / khan — golden threads
+  notes: Greybox placeholder — painterly cinematic, not chibi.

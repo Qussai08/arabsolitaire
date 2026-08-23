@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ef1cee3ea315a64b9e8d57427f91bdd, type: 3}
+  m_Name: BeirutEnvironment
+  m_EditorClassIdentifier: ArabSolitaire.Runtime::ArabSolitaire.Chapters.ChapterEnvironmentConfig
+  chapterId: chapter_beirut
+  displayNameAr: "\u0628\u064A\u0631\u0648\u062A"
+  ambientColor: {r: 0.4, g: 0.38, b: 0.34, a: 1}
+  accentColor: {r: 0.72, g: 0.62, b: 0.45, a: 1}
+  fogColor: {r: 0.28, g: 0.26, b: 0.24, a: 1}
+  environmentMotif: coastal arcade — cedar and limestone
+  notes: Placeholder config.
