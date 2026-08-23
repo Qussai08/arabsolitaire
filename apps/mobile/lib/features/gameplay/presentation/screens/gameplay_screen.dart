@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game_engine/game_engine.dart';
@@ -6,6 +8,7 @@ import 'package:mobile/features/gameplay/application/gameplay_presentation_mode.
 import 'package:mobile/features/gameplay/application/gameplay_presentation_providers.dart';
 import 'package:mobile/features/gameplay/application/gameplay_providers.dart';
 import 'package:mobile/features/gameplay/application/gameplay_state.dart';
+import 'package:mobile/features/gameplay/bridge/unity_runtime_service.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/association_slots_view.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/gameplay_overlay.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/gameplay_toolbar.dart';
@@ -15,18 +18,76 @@ import 'package:mobile/features/journey/presentation/screens/level_result_screen
 
 /// Main gameplay screen — Sprint 4 vertical slice.
 ///
-/// Default presentation is Flutter 2D. Unity 3D is feature-flagged and only
-/// used when [effectiveGameplayPresentationModeProvider] resolves to unity3d.
-class GameplayScreen extends ConsumerWidget {
+/// Default presentation is Flutter 2D. Unity 3D launches a native Activity when
+/// [gameplayPresentationModeProvider] resolves to unity3d.
+class GameplayScreen extends ConsumerStatefulWidget {
   const GameplayScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GameplayScreen> createState() => _GameplayScreenState();
+}
+
+class _GameplayScreenState extends ConsumerState<GameplayScreen>
+    with WidgetsBindingObserver {
+  var _unityLaunchAttempted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      unawaited(_replaySnapshotOnResume());
+    }
+  }
+
+  Future<void> _replaySnapshotOnResume() async {
+    final service = ref.read(unityRuntimeServiceProvider);
+    if (service == null) {
+      return;
+    }
+    final playing = ref.read(gameplayControllerProvider);
+    if (playing is GameplayPlaying) {
+      // Coordinator resends authoritative state after background/resume.
+      await service.launchIfActive(playing.gameState);
+    }
+  }
+
+  Future<void> _maybeLaunchUnity(GameplayPlaying state) async {
+    final requested = ref.read(gameplayPresentationModeProvider);
+    if (requested != GameplayPresentationMode.unity3d || _unityLaunchAttempted) {
+      return;
+    }
+    _unityLaunchAttempted = true;
+    final service = ref.read(unityRuntimeServiceProvider);
+    if (service == null) {
+      return;
+    }
+    await service.launch();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final viewState = ref.watch(gameplayControllerProvider);
     final controller = ref.read(gameplayControllerProvider.notifier);
-    final presentation = ref.watch(effectiveGameplayPresentationModeProvider);
+    final requestedMode = ref.watch(gameplayPresentationModeProvider);
+    final unityPhase = ref.watch(unityRuntimePhaseProvider);
+    final unityError = ref.watch(unityRuntimeErrorMessageProvider);
 
-    // Navigate to LevelResultScreen when the player wins.
+    if (viewState is GameplayPlaying &&
+        requestedMode == GameplayPresentationMode.unity3d) {
+      unawaited(_maybeLaunchUnity(viewState));
+    }
+
     ref.listen<GameplayViewState>(gameplayControllerProvider, (prev, next) {
       if (next is GameplayWon && prev is! GameplayWon) {
         final level = ref.read(currentPlayingLevelProvider);
@@ -49,7 +110,14 @@ class GameplayScreen extends ConsumerWidget {
       child: Scaffold(
         backgroundColor: const Color(0xFF0A1628),
         body: SafeArea(
-          child: _buildBody(context, viewState, controller, presentation),
+          child: _buildBody(
+            context,
+            viewState,
+            controller,
+            requestedMode,
+            unityPhase,
+            unityError,
+          ),
         ),
       ),
     );
@@ -59,7 +127,9 @@ class GameplayScreen extends ConsumerWidget {
     BuildContext context,
     GameplayViewState viewState,
     GameplayController controller,
-    GameplayPresentationMode presentation,
+    GameplayPresentationMode requestedMode,
+    UnityRuntimePhase unityPhase,
+    String? unityError,
   ) {
     return switch (viewState) {
       GameplayLoading() => const _LoadingView(),
@@ -67,7 +137,9 @@ class GameplayScreen extends ConsumerWidget {
         context,
         viewState,
         controller,
-        presentation,
+        requestedMode,
+        unityPhase,
+        unityError,
       ),
       GameplayWon() ||
       GameplayOutOfMoves() ||
@@ -84,17 +156,45 @@ class GameplayScreen extends ConsumerWidget {
     BuildContext context,
     GameplayPlaying state,
     GameplayController controller,
-    GameplayPresentationMode presentation,
+    GameplayPresentationMode requestedMode,
+    UnityRuntimePhase unityPhase,
+    String? unityError,
   ) {
-    // Phase 1: Unity host is a readiness placeholder; Flutter 2D remains the
-    // playable surface until native embed lands.
-    if (presentation == GameplayPresentationMode.unity3d) {
-      return _UnityHostPlaceholder(
-        revision: state.revision,
-        movesRemaining: state.gameState.movesRemaining,
-        onExit: () => Navigator.of(context).pop(),
-        onFallbackToFlutter2d: () {
-          // Parent listens via provider; placeholder just documents intent.
+    if (requestedMode == GameplayPresentationMode.unity3d) {
+      if (unityPhase == UnityRuntimePhase.unavailable ||
+          unityPhase == UnityRuntimePhase.error) {
+        return _UnityRecoverableErrorView(
+          message: unityError ?? 'تعذر تشغيل Unity.',
+          onRetry: () async {
+            _unityLaunchAttempted = false;
+            ref.read(unityRuntimePhaseProvider.notifier).state =
+                UnityRuntimePhase.idle;
+            await _maybeLaunchUnity(state);
+          },
+          onFallbackToFlutter2d: () {
+            ref.read(gameplayPresentationModeProvider.notifier).state =
+                GameplayPresentationMode.flutter2d;
+            ref.read(unityRuntimePhaseProvider.notifier).state =
+                UnityRuntimePhase.idle;
+          },
+          onExit: () => Navigator.of(context).pop(),
+        );
+      }
+
+      if (unityPhase == UnityRuntimePhase.active) {
+        return _UnityActivePlaceholder(
+          revision: state.revision,
+          onExit: () => Navigator.of(context).pop(),
+        );
+      }
+
+      return _UnityLaunchingView(
+        phase: unityPhase,
+        onCancel: () {
+          ref.read(gameplayPresentationModeProvider.notifier).state =
+              GameplayPresentationMode.flutter2d;
+          ref.read(unityRuntimePhaseProvider.notifier).state =
+              UnityRuntimePhase.idle;
         },
       );
     }
@@ -265,20 +365,81 @@ class _DeadEndCheckIndicator extends StatelessWidget {
   }
 }
 
-/// Placeholder host shown when unity3d mode is selected and marked ready.
-/// Native Unity-as-a-Library embedding lands in a later phase.
-class _UnityHostPlaceholder extends StatelessWidget {
-  const _UnityHostPlaceholder({
+/// Shown while Unity Activity is foreground or reconnecting.
+class _UnityActivePlaceholder extends StatelessWidget {
+  const _UnityActivePlaceholder({
     required this.revision,
-    required this.movesRemaining,
     required this.onExit,
-    required this.onFallbackToFlutter2d,
   });
 
   final int revision;
-  final int movesRemaining;
   final VoidCallback onExit;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(color: Color(0xFF4ECDC4)),
+          const SizedBox(height: 16),
+          Text(
+            'Unity نشط — المراجعة $revision',
+            style: const TextStyle(color: Colors.white70),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 12),
+          TextButton(onPressed: onExit, child: const Text('خروج')),
+        ],
+      ),
+    );
+  }
+}
+
+class _UnityLaunchingView extends StatelessWidget {
+  const _UnityLaunchingView({
+    required this.phase,
+    required this.onCancel,
+  });
+
+  final UnityRuntimePhase phase;
+  final VoidCallback onCancel;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = switch (phase) {
+      UnityRuntimePhase.launching => 'جاري فتح Unity...',
+      UnityRuntimePhase.waitingReady => 'جاري تهيئة اللوحة...',
+      _ => 'جاري التحميل...',
+    };
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const CircularProgressIndicator(color: Color(0xFF4ECDC4)),
+          const SizedBox(height: 16),
+          Text(label, style: const TextStyle(color: Colors.white70)),
+          const SizedBox(height: 12),
+          TextButton(onPressed: onCancel, child: const Text('إلغاء')),
+        ],
+      ),
+    );
+  }
+}
+
+class _UnityRecoverableErrorView extends StatelessWidget {
+  const _UnityRecoverableErrorView({
+    required this.message,
+    required this.onRetry,
+    required this.onFallbackToFlutter2d,
+    required this.onExit,
+  });
+
+  final String message;
+  final VoidCallback onRetry;
   final VoidCallback onFallbackToFlutter2d;
+  final VoidCallback onExit;
 
   @override
   Widget build(BuildContext context) {
@@ -288,35 +449,23 @@ class _UnityHostPlaceholder extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'Unity 3D',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
             Text(
-              'وضع العرض التجريبي — المراجعة $revision',
-              style: const TextStyle(color: Colors.white70),
+              message,
+              style: const TextStyle(color: Colors.white70, fontSize: 16),
               textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'الحركات المتبقية: $movesRemaining',
-              style: const TextStyle(color: Colors.white54),
             ),
             const SizedBox(height: 24),
             FilledButton(
-              onPressed: onFallbackToFlutter2d,
-              child: const Text('العودة إلى العرض الثنائي الأبعاد'),
+              onPressed: onRetry,
+              child: const Text('إعادة المحاولة'),
             ),
             const SizedBox(height: 12),
-            TextButton(
-              onPressed: onExit,
-              child: const Text('خروج'),
+            OutlinedButton(
+              onPressed: onFallbackToFlutter2d,
+              child: const Text('العب بالعرض الثنائي الأبعاد'),
             ),
+            const SizedBox(height: 12),
+            TextButton(onPressed: onExit, child: const Text('خروج')),
           ],
         ),
       ),
