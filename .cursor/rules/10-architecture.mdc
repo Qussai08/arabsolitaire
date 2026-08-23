@@ -5,10 +5,12 @@ alwaysApply: true
 
 # Architecture
 
-- Flutter client.
+- Flutter application shell (bootstrap, Firebase, journey, economy, monetization, non-gameplay UI).
+- Unity optional presentation-only gameplay runtime (3D board/VFX/environments); never a rules engine.
 - Riverpod for application/UI state only.
 - Drift/SQLite for local persistence.
 - Firebase-first/serverless-first MVP.
+- Hybrid bridge contracts: `packages/unity_bridge_contracts` (pure Dart). Default presentation: Flutter 2D until Unity is confirmed ready. See `docs/architecture/FLUTTER_UNITY_HYBRID_ARCHITECTURE_v1.0.md`.
 
 `game_engine` must be pure Dart and must not depend on Flutter UI, Riverpod, Firebase, AdMob, IAP, Drift implementation, HTTP, or analytics SDKs.
 

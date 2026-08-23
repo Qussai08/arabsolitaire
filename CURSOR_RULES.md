@@ -92,6 +92,15 @@ May depend on:
 
 Must not bypass Solver acceptance.
 
+## Flutter + Unity hybrid
+
+- Flutter owns the application shell, Firebase, progression, economy, monetization, and non-gameplay UI.
+- Unity owns presentation only (3D board, animation, VFX, chapter environments, Shiboub presentation).
+- Pure Dart packages remain authoritative for rules (`game_engine`, `game_solver`, `level_generator`).
+- Bridge contracts live in `packages/unity_bridge_contracts` (no Flutter/Firebase/Unity plugin deps).
+- Never implement a second rules engine in C#.
+- Keep Flutter 2D gameplay available behind the default presentation flag until Unity is proven.
+
 ---
 
 # 4. Gameplay Rule Integrity
