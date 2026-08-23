@@ -30,9 +30,7 @@ class _LoadingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Color(0xFF0D1B2A),
-      body: Center(
-        child: CircularProgressIndicator(color: Color(0xFFD4A017)),
-      ),
+      body: Center(child: CircularProgressIndicator(color: Color(0xFFD4A017))),
     );
   }
 }
@@ -46,8 +44,10 @@ class _ErrorView extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF0D1B2A),
       body: Center(
-        child: Text(message,
-            style: const TextStyle(color: Colors.white, fontFamily: 'Cairo')),
+        child: Text(
+          message,
+          style: const TextStyle(color: Colors.white, fontFamily: 'Cairo'),
+        ),
       ),
     );
   }
@@ -197,8 +197,9 @@ class _ChapterCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLocked = chapterState == ChapterState.locked;
-    final completedCount =
-        levels.where((l) => state.levelStatus(l) == LevelStatus.completed).length;
+    final completedCount = levels
+        .where((l) => state.levelStatus(l) == LevelStatus.completed)
+        .length;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -224,11 +225,7 @@ class _ChapterCard extends StatelessWidget {
                 totalCount: levels.length,
               ),
               if (!isLocked)
-                _LevelGrid(
-                  levels: levels,
-                  state: state,
-                  onTap: onLevelTap,
-                ),
+                _LevelGrid(levels: levels, state: state, onTap: onLevelTap),
             ],
           ),
         ),
@@ -317,8 +314,7 @@ class _ProgressRing extends StatelessWidget {
             value: fraction,
             strokeWidth: 4,
             backgroundColor: const Color(0xFFD4A017).withValues(alpha: 0.15),
-            valueColor:
-                const AlwaysStoppedAnimation<Color>(Color(0xFFD4A017)),
+            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFD4A017)),
           ),
           if (locked)
             const Icon(Icons.lock_outline, color: Color(0xFFD4A017), size: 20)
@@ -381,21 +377,18 @@ class _LevelDot extends StatelessWidget {
   Widget build(BuildContext context) {
     final (bg, border) = switch (status) {
       LevelStatus.completed => (
-          const Color(0xFFD4A017),
-          const Color(0xFFD4A017)
-        ),
+        const Color(0xFFD4A017),
+        const Color(0xFFD4A017),
+      ),
       LevelStatus.inProgress => (
-          const Color(0xFF1A4A7C),
-          const Color(0xFF4A9EFF)
-        ),
+        const Color(0xFF1A4A7C),
+        const Color(0xFF4A9EFF),
+      ),
       LevelStatus.unlocked => (
-          const Color(0xFF1C2C42),
-          const Color(0xFFD4A017).withValues(alpha: 0.4)
-        ),
-      LevelStatus.locked => (
-          const Color(0xFF111D2C),
-          const Color(0xFF1C2C42)
-        ),
+        const Color(0xFF1C2C42),
+        const Color(0xFFD4A017).withValues(alpha: 0.4),
+      ),
+      LevelStatus.locked => (const Color(0xFF111D2C), const Color(0xFF1C2C42)),
     };
 
     return GestureDetector(

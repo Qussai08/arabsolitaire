@@ -41,21 +41,19 @@ final class MonetizationReady extends MonetizationViewState {
     List<PurchaseProduct>? products,
     bool? isProcessingAd,
     bool? isProcessingPurchase,
-  }) =>
-      MonetizationReady(
-        context: context ?? this.context,
-        removeAdsEntitlement: removeAdsEntitlement ?? this.removeAdsEntitlement,
-        flags: flags ?? this.flags,
-        products: products ?? this.products,
-        isProcessingAd: isProcessingAd ?? this.isProcessingAd,
-        isProcessingPurchase: isProcessingPurchase ?? this.isProcessingPurchase,
-      );
+  }) => MonetizationReady(
+    context: context ?? this.context,
+    removeAdsEntitlement: removeAdsEntitlement ?? this.removeAdsEntitlement,
+    flags: flags ?? this.flags,
+    products: products ?? this.products,
+    isProcessingAd: isProcessingAd ?? this.isProcessingAd,
+    isProcessingPurchase: isProcessingPurchase ?? this.isProcessingPurchase,
+  );
 }
 
 // ── Controller ────────────────────────────────────────────────────────────────
 
-final class MonetizationController
-    extends Notifier<MonetizationViewState> {
+final class MonetizationController extends Notifier<MonetizationViewState> {
   @override
   MonetizationViewState build() {
     _initialize();
@@ -74,8 +72,10 @@ final class MonetizationController
     await _adService.initialize();
     final ctx = await _stateRepo?.loadContext() ?? const MonetizationContext();
     final entitlement =
-        await _entitlementRepo?.getEntitlement(EntitlementType.removeInterstitialAds) ??
-            Entitlement.noEntitlement;
+        await _entitlementRepo?.getEntitlement(
+          EntitlementType.removeInterstitialAds,
+        ) ??
+        Entitlement.noEntitlement;
     final products = await _purchaseService.loadProducts([
       MonetizationConfig.productRemoveAds,
       MonetizationConfig.productCoins1000,
@@ -84,9 +84,7 @@ final class MonetizationController
       MonetizationConfig.productCoins15000,
     ]);
     state = MonetizationReady(
-      context: ctx.copyWith(
-        hasRemoveAdsEntitlement: entitlement.active,
-      ),
+      context: ctx.copyWith(hasRemoveAdsEntitlement: entitlement.active),
       removeAdsEntitlement: entitlement,
       flags: MonetizationFlags.defaults,
       products: products,
@@ -162,7 +160,9 @@ final class MonetizationController
       await _stateRepo?.saveContext(newCtx);
     }
     unawaited(_adService.loadInterstitial());
-    return shown ? InterstitialDecision.eligible : InterstitialDecision.adUnavailable;
+    return shown
+        ? InterstitialDecision.eligible
+        : InterstitialDecision.adUnavailable;
   }
 
   Future<void> onLevelCompleted() async {
@@ -178,7 +178,10 @@ final class MonetizationController
 
   // ── IAP ─────────────────────────────────────────────────────────────────────
 
-  Future<void> purchaseProduct(String productId, {required String idempotencyKey}) async {
+  Future<void> purchaseProduct(
+    String productId, {
+    required String idempotencyKey,
+  }) async {
     final current = state;
     if (current is! MonetizationReady) return;
     if (current.isProcessingPurchase) return;
@@ -245,13 +248,17 @@ final class MonetizationController
 
   Future<void> _refreshEntitlement() async {
     final entitlement =
-        await _entitlementRepo?.getEntitlement(EntitlementType.removeInterstitialAds) ??
-            Entitlement.noEntitlement;
+        await _entitlementRepo?.getEntitlement(
+          EntitlementType.removeInterstitialAds,
+        ) ??
+        Entitlement.noEntitlement;
     final s = state;
     if (s is MonetizationReady) {
       state = s.copyWith(
         removeAdsEntitlement: entitlement,
-        context: s.context.copyWith(hasRemoveAdsEntitlement: entitlement.active),
+        context: s.context.copyWith(
+          hasRemoveAdsEntitlement: entitlement.active,
+        ),
       );
     }
   }
@@ -272,5 +279,5 @@ void unawaited(Future<dynamic> future) {
 
 final monetizationControllerProvider =
     NotifierProvider<MonetizationController, MonetizationViewState>(
-  MonetizationController.new,
-);
+      MonetizationController.new,
+    );

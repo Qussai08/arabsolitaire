@@ -35,14 +35,13 @@ final class DailyReady extends DailyViewState {
     DailyChallengeDefinition? challengeDefinition,
     bool? isClaimingReward,
     bool? isClaimingChallenge,
-  }) =>
-      DailyReady(
-        snapshot: snapshot ?? this.snapshot,
-        preferences: preferences ?? this.preferences,
-        challengeDefinition: challengeDefinition ?? this.challengeDefinition,
-        isClaimingReward: isClaimingReward ?? this.isClaimingReward,
-        isClaimingChallenge: isClaimingChallenge ?? this.isClaimingChallenge,
-      );
+  }) => DailyReady(
+    snapshot: snapshot ?? this.snapshot,
+    preferences: preferences ?? this.preferences,
+    challengeDefinition: challengeDefinition ?? this.challengeDefinition,
+    isClaimingReward: isClaimingReward ?? this.isClaimingReward,
+    isClaimingChallenge: isClaimingChallenge ?? this.isClaimingChallenge,
+  );
 }
 
 final class DailyOffline extends DailyViewState {
@@ -93,7 +92,8 @@ final class DailyController extends Notifier<DailyViewState> {
       DailyChallengeDefinition? def;
       if (cached.challengeState.currentDayKey.isNotEmpty) {
         def = await _local?.loadChallengeDefinition(
-            cached.challengeState.currentDayKey);
+          cached.challengeState.currentDayKey,
+        );
       }
       state = DailyOffline(cachedSnapshot: cached, preferences: prefs);
       if (def != null) {
@@ -133,7 +133,8 @@ final class DailyController extends Notifier<DailyViewState> {
   }
 
   Future<DailyChallengeDefinition?> _refreshChallengeDef(
-      DailyStateSnapshot snapshot) async {
+    DailyStateSnapshot snapshot,
+  ) async {
     final dayKey = snapshot.dayKey;
     // Try cache.
     final cached = await _local?.loadChallengeDefinition(dayKey);
@@ -186,9 +187,9 @@ final class DailyController extends Notifier<DailyViewState> {
       if (result is DailyClaimSuccess) {
         await refresh();
         // Mark streak activity.
-        unawaited(_remote.markDailyActivity(
-          source: DailyActivitySource.dailyChallenge,
-        ));
+        unawaited(
+          _remote.markDailyActivity(source: DailyActivitySource.dailyChallenge),
+        );
       }
       return result;
     } finally {
@@ -198,7 +199,9 @@ final class DailyController extends Notifier<DailyViewState> {
   }
 
   Future<void> onLevelCompleted() async {
-    await _remote.markDailyActivity(source: DailyActivitySource.levelCompletion);
+    await _remote.markDailyActivity(
+      source: DailyActivitySource.levelCompletion,
+    );
     unawaited(refresh());
   }
 
@@ -219,6 +222,4 @@ void unawaited(Future<dynamic> future) {
 // ── Providers ─────────────────────────────────────────────────────────────────
 
 final dailyControllerProvider =
-    NotifierProvider<DailyController, DailyViewState>(
-  DailyController.new,
-);
+    NotifierProvider<DailyController, DailyViewState>(DailyController.new);

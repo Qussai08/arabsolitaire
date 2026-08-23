@@ -11,9 +11,9 @@ final class DriftEntitlementRepository implements EntitlementRepository {
 
   @override
   Future<Entitlement> getEntitlement(EntitlementType type) async {
-    final row = await (_db.select(_db.entitlementRows)
-          ..where((t) => t.entitlementType.equals(type.name)))
-        .getSingleOrNull();
+    final row = await (_db.select(
+      _db.entitlementRows,
+    )..where((t) => t.entitlementType.equals(type.name))).getSingleOrNull();
     if (row == null) return Entitlement.noEntitlement;
     return _rowToEntitlement(row);
   }
@@ -23,12 +23,17 @@ final class DriftEntitlementRepository implements EntitlementRepository {
     return (_db.select(_db.entitlementRows)
           ..where((t) => t.entitlementType.equals(type.name)))
         .watchSingleOrNull()
-        .map((row) => row == null ? Entitlement.noEntitlement : _rowToEntitlement(row));
+        .map(
+          (row) =>
+              row == null ? Entitlement.noEntitlement : _rowToEntitlement(row),
+        );
   }
 
   @override
   Future<void> saveEntitlement(Entitlement entitlement) async {
-    await _db.into(_db.entitlementRows).insertOnConflictUpdate(
+    await _db
+        .into(_db.entitlementRows)
+        .insertOnConflictUpdate(
           db_lib.EntitlementRowsCompanion(
             entitlementType: Value(entitlement.type.name),
             active: Value(entitlement.active),
@@ -67,9 +72,9 @@ final class DriftMonetizationStateRepository
 
   @override
   Future<MonetizationContext> loadContext() async {
-    final row = await (_db.select(_db.monetizationStateRows)
-          ..where((t) => t.id.equals(_mainId)))
-        .getSingleOrNull();
+    final row = await (_db.select(
+      _db.monetizationStateRows,
+    )..where((t) => t.id.equals(_mainId))).getSingleOrNull();
     if (row == null) return const MonetizationContext();
     return MonetizationContext(
       levelsSinceLastInterstitial: row.levelsSinceLastInterstitial,
@@ -81,11 +86,12 @@ final class DriftMonetizationStateRepository
 
   @override
   Future<void> saveContext(MonetizationContext ctx) async {
-    await _db.into(_db.monetizationStateRows).insertOnConflictUpdate(
+    await _db
+        .into(_db.monetizationStateRows)
+        .insertOnConflictUpdate(
           db_lib.MonetizationStateRowsCompanion(
             id: const Value(_mainId),
-            levelsSinceLastInterstitial:
-                Value(ctx.levelsSinceLastInterstitial),
+            levelsSinceLastInterstitial: Value(ctx.levelsSinceLastInterstitial),
             lastRewardedAdAt: Value(ctx.lastRewardedAdAt),
             lastPurchaseAt: Value(ctx.lastPurchaseAt),
             lastTutorialCompletedAt: Value(ctx.lastTutorialCompletedAt),
@@ -98,8 +104,7 @@ final class DriftMonetizationStateRepository
     final current = await loadContext();
     await saveContext(
       current.copyWith(
-        levelsSinceLastInterstitial:
-            current.levelsSinceLastInterstitial + 1,
+        levelsSinceLastInterstitial: current.levelsSinceLastInterstitial + 1,
       ),
     );
   }
@@ -120,7 +125,9 @@ final class DriftRewardedAdReceiptRepository
 
   @override
   Future<void> saveReceipt(RewardedAdReceipt receipt) async {
-    await _db.into(_db.rewardedAdReceiptRows).insertOnConflictUpdate(
+    await _db
+        .into(_db.rewardedAdReceiptRows)
+        .insertOnConflictUpdate(
           db_lib.RewardedAdReceiptRowsCompanion(
             operationId: Value(receipt.operationId),
             rewardType: Value(receipt.rewardType.name),
@@ -134,42 +141,42 @@ final class DriftRewardedAdReceiptRepository
 
   @override
   Future<List<RewardedAdReceipt>> loadPendingReceipts() async {
-    final rows = await (_db.select(_db.rewardedAdReceiptRows)
-          ..where((t) =>
-              t.backendGranted.equals(false) |
-              t.localEffectApplied.equals(false)))
-        .get();
+    final rows =
+        await (_db.select(_db.rewardedAdReceiptRows)..where(
+              (t) =>
+                  t.backendGranted.equals(false) |
+                  t.localEffectApplied.equals(false),
+            ))
+            .get();
     return rows.map(_rowToReceipt).toList();
   }
 
   @override
   Future<void> markBackendGranted(String operationId) async {
-    await (_db.update(_db.rewardedAdReceiptRows)
-          ..where((t) => t.operationId.equals(operationId)))
-        .write(
-          const db_lib.RewardedAdReceiptRowsCompanion(
-            backendGranted: Value(true),
-          ),
-        );
+    await (_db.update(
+      _db.rewardedAdReceiptRows,
+    )..where((t) => t.operationId.equals(operationId))).write(
+      const db_lib.RewardedAdReceiptRowsCompanion(backendGranted: Value(true)),
+    );
   }
 
   @override
   Future<void> markLocalEffectApplied(String operationId) async {
-    await (_db.update(_db.rewardedAdReceiptRows)
-          ..where((t) => t.operationId.equals(operationId)))
-        .write(
-          const db_lib.RewardedAdReceiptRowsCompanion(
-            localEffectApplied: Value(true),
-          ),
-        );
+    await (_db.update(
+      _db.rewardedAdReceiptRows,
+    )..where((t) => t.operationId.equals(operationId))).write(
+      const db_lib.RewardedAdReceiptRowsCompanion(
+        localEffectApplied: Value(true),
+      ),
+    );
   }
 
   @override
   Future<void> purgeCompleted() async {
-    await (_db.delete(_db.rewardedAdReceiptRows)
-          ..where((t) =>
-              t.backendGranted.equals(true) &
-              t.localEffectApplied.equals(true)))
+    await (_db.delete(_db.rewardedAdReceiptRows)..where(
+          (t) =>
+              t.backendGranted.equals(true) & t.localEffectApplied.equals(true),
+        ))
         .go();
   }
 

@@ -38,7 +38,8 @@ class GameplayToolbar extends StatelessWidget {
           const SizedBox(width: 8),
           // Streak
           Semantics(
-            label: 'السلسلة: ${gs.streak.currentCounter}/${gs.streak.targetTier}',
+            label:
+                'السلسلة: ${gs.streak.currentCounter}/${gs.streak.targetTier}',
             child: _pill(
               icon: Icons.local_fire_department,
               label: '${gs.streak.currentCounter}/${gs.streak.targetTier}',

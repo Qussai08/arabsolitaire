@@ -23,10 +23,10 @@ final economyRepositoryProvider = Provider<EconomyRepository>((ref) {
 
 final economyOperationRepositoryProvider =
     Provider<DriftEconomyOperationRepository?>((ref) {
-  final db = ref.watch(appDatabaseProvider).valueOrNull;
-  if (db == null) return null;
-  return DriftEconomyOperationRepository(db);
-});
+      final db = ref.watch(appDatabaseProvider).valueOrNull;
+      if (db == null) return null;
+      return DriftEconomyOperationRepository(db);
+    });
 
 /// No-op wallet repo for when DB is initializing.
 final class _NoOpWalletRepository implements WalletRepository {

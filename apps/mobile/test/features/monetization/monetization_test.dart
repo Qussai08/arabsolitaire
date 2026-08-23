@@ -31,20 +31,14 @@ void main() {
   group('InterstitialPolicy', () {
     test('eligible after enough levels', () {
       const ctx = MonetizationContext(
-        levelsSinceLastInterstitial:
-            MonetizationConfig.interstitialMinLevels,
+        levelsSinceLastInterstitial: MonetizationConfig.interstitialMinLevels,
         sessionInterstitialCount: 0,
       );
-      expect(
-        InterstitialPolicy.evaluate(ctx),
-        InterstitialDecision.eligible,
-      );
+      expect(InterstitialPolicy.evaluate(ctx), InterstitialDecision.eligible);
     });
 
     test('notEnoughLevels when below threshold', () {
-      const ctx = MonetizationContext(
-        levelsSinceLastInterstitial: 1,
-      );
+      const ctx = MonetizationContext(levelsSinceLastInterstitial: 1);
       expect(
         InterstitialPolicy.evaluate(ctx),
         InterstitialDecision.notEnoughLevels,
@@ -53,10 +47,8 @@ void main() {
 
     test('sessionCapReached when at cap', () {
       const ctx = MonetizationContext(
-        levelsSinceLastInterstitial:
-            MonetizationConfig.interstitialMinLevels,
-        sessionInterstitialCount:
-            MonetizationConfig.interstitialSessionCap,
+        levelsSinceLastInterstitial: MonetizationConfig.interstitialMinLevels,
+        sessionInterstitialCount: MonetizationConfig.interstitialSessionCap,
       );
       expect(
         InterstitialPolicy.evaluate(ctx),
@@ -66,8 +58,7 @@ void main() {
 
     test('removeAdsEntitled blocks interstitial', () {
       const ctx = MonetizationContext(
-        levelsSinceLastInterstitial:
-            MonetizationConfig.interstitialMinLevels,
+        levelsSinceLastInterstitial: MonetizationConfig.interstitialMinLevels,
         hasRemoveAdsEntitlement: true,
       );
       expect(
@@ -78,10 +69,10 @@ void main() {
 
     test('guardrailBlocked during tutorial', () {
       final ctx = MonetizationContext(
-        levelsSinceLastInterstitial:
-            MonetizationConfig.interstitialMinLevels,
-        lastTutorialCompletedAt:
-            DateTime.now().subtract(const Duration(seconds: 1)),
+        levelsSinceLastInterstitial: MonetizationConfig.interstitialMinLevels,
+        lastTutorialCompletedAt: DateTime.now().subtract(
+          const Duration(seconds: 1),
+        ),
       );
       expect(
         InterstitialPolicy.evaluate(ctx),
@@ -91,8 +82,7 @@ void main() {
 
     test('guardrailBlocked after dead-end', () {
       final ctx = MonetizationContext(
-        levelsSinceLastInterstitial:
-            MonetizationConfig.interstitialMinLevels,
+        levelsSinceLastInterstitial: MonetizationConfig.interstitialMinLevels,
         lastDeadEndAt: DateTime.now().subtract(const Duration(seconds: 1)),
       );
       expect(
@@ -103,10 +93,8 @@ void main() {
 
     test('guardrailBlocked after rewarded ad', () {
       final ctx = MonetizationContext(
-        levelsSinceLastInterstitial:
-            MonetizationConfig.interstitialMinLevels,
-        lastRewardedAdAt:
-            DateTime.now().subtract(const Duration(seconds: 1)),
+        levelsSinceLastInterstitial: MonetizationConfig.interstitialMinLevels,
+        lastRewardedAdAt: DateTime.now().subtract(const Duration(seconds: 1)),
       );
       expect(
         InterstitialPolicy.evaluate(ctx),
@@ -116,8 +104,7 @@ void main() {
 
     test('interstitialEnabled=false blocks', () {
       const ctx = MonetizationContext(
-        levelsSinceLastInterstitial:
-            MonetizationConfig.interstitialMinLevels,
+        levelsSinceLastInterstitial: MonetizationConfig.interstitialMinLevels,
         interstitialEnabled: false,
       );
       expect(

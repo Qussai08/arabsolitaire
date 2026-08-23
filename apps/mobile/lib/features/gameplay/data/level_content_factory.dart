@@ -10,9 +10,10 @@ String toContentChapterId(String journeyChapterId) {
     'chapter_beirut' => 'ch_beirut',
     'chapter_marrakech' => 'ch_marrakech',
     'chapter_dubai' => 'ch_dubai',
-    _ => journeyChapterId.startsWith('ch_')
-        ? journeyChapterId
-        : journeyChapterId.replaceFirst('chapter_', 'ch_'),
+    _ =>
+      journeyChapterId.startsWith('ch_')
+          ? journeyChapterId
+          : journeyChapterId.replaceFirst('chapter_', 'ch_'),
   };
 }
 
@@ -23,65 +24,65 @@ LevelConfiguration levelConfigurationFor(LevelDefinition level) {
 
   return switch (normalizedWave) {
     1 => LevelConfiguration(
-        levelDefinitionId: level.levelDefinitionId,
-        chapterId: toContentChapterId(level.chapterId),
-        levelNumber: level.chapterLevelNumber,
-        groupSizeProfile: const [3, 3, 3],
-        tableauColumnSizes: const [3, 3, 3],
-        stockCardCount: 3,
-        associationSlotCount: 2,
-        moveLimit: 55,
-        difficultyTarget: DifficultyTarget.any,
-        maxGenerationAttempts: 40,
-      ),
+      levelDefinitionId: level.levelDefinitionId,
+      chapterId: toContentChapterId(level.chapterId),
+      levelNumber: level.chapterLevelNumber,
+      groupSizeProfile: const [3, 3, 3],
+      tableauColumnSizes: const [3, 3, 3],
+      stockCardCount: 3,
+      associationSlotCount: 2,
+      moveLimit: 55,
+      difficultyTarget: DifficultyTarget.any,
+      maxGenerationAttempts: 40,
+    ),
     2 => LevelConfiguration(
-        levelDefinitionId: level.levelDefinitionId,
-        chapterId: toContentChapterId(level.chapterId),
-        levelNumber: level.chapterLevelNumber,
-        groupSizeProfile: const [3, 3, 3],
-        tableauColumnSizes: const [3, 3, 3],
-        stockCardCount: 3,
-        associationSlotCount: 2,
-        moveLimit: 45,
-        difficultyTarget: DifficultyTarget.any,
-        maxGenerationAttempts: 40,
-      ),
+      levelDefinitionId: level.levelDefinitionId,
+      chapterId: toContentChapterId(level.chapterId),
+      levelNumber: level.chapterLevelNumber,
+      groupSizeProfile: const [3, 3, 3],
+      tableauColumnSizes: const [3, 3, 3],
+      stockCardCount: 3,
+      associationSlotCount: 2,
+      moveLimit: 45,
+      difficultyTarget: DifficultyTarget.any,
+      maxGenerationAttempts: 40,
+    ),
     3 => LevelConfiguration(
-        levelDefinitionId: level.levelDefinitionId,
-        chapterId: toContentChapterId(level.chapterId),
-        levelNumber: level.chapterLevelNumber,
-        groupSizeProfile: const [3, 3, 4],
-        tableauColumnSizes: const [3, 3, 3, 2],
-        stockCardCount: 2,
-        associationSlotCount: 2,
-        moveLimit: 55,
-        difficultyTarget: DifficultyTarget.any,
-        maxGenerationAttempts: 50,
-      ),
+      levelDefinitionId: level.levelDefinitionId,
+      chapterId: toContentChapterId(level.chapterId),
+      levelNumber: level.chapterLevelNumber,
+      groupSizeProfile: const [3, 3, 4],
+      tableauColumnSizes: const [3, 3, 3, 2],
+      stockCardCount: 2,
+      associationSlotCount: 2,
+      moveLimit: 55,
+      difficultyTarget: DifficultyTarget.any,
+      maxGenerationAttempts: 50,
+    ),
     4 => LevelConfiguration(
-        levelDefinitionId: level.levelDefinitionId,
-        chapterId: toContentChapterId(level.chapterId),
-        levelNumber: level.chapterLevelNumber,
-        groupSizeProfile: const [4, 4, 4],
-        tableauColumnSizes: const [4, 4, 3],
-        stockCardCount: 4,
-        associationSlotCount: 2,
-        moveLimit: 60,
-        difficultyTarget: DifficultyTarget.any,
-        maxGenerationAttempts: 50,
-      ),
+      levelDefinitionId: level.levelDefinitionId,
+      chapterId: toContentChapterId(level.chapterId),
+      levelNumber: level.chapterLevelNumber,
+      groupSizeProfile: const [4, 4, 4],
+      tableauColumnSizes: const [4, 4, 3],
+      stockCardCount: 4,
+      associationSlotCount: 2,
+      moveLimit: 60,
+      difficultyTarget: DifficultyTarget.any,
+      maxGenerationAttempts: 50,
+    ),
     _ => LevelConfiguration(
-        levelDefinitionId: level.levelDefinitionId,
-        chapterId: toContentChapterId(level.chapterId),
-        levelNumber: level.chapterLevelNumber,
-        groupSizeProfile: const [4, 4, 5],
-        tableauColumnSizes: const [4, 4, 4],
-        stockCardCount: 4,
-        associationSlotCount: 2,
-        moveLimit: 70,
-        difficultyTarget: DifficultyTarget.any,
-        maxGenerationAttempts: 60,
-      ),
+      levelDefinitionId: level.levelDefinitionId,
+      chapterId: toContentChapterId(level.chapterId),
+      levelNumber: level.chapterLevelNumber,
+      groupSizeProfile: const [4, 4, 5],
+      tableauColumnSizes: const [4, 4, 4],
+      stockCardCount: 4,
+      associationSlotCount: 2,
+      moveLimit: 70,
+      difficultyTarget: DifficultyTarget.any,
+      maxGenerationAttempts: 60,
+    ),
   };
 }
 
@@ -140,14 +141,14 @@ final class ApprovedPoolContentSelector implements ContentSelector {
     final usedClues = <String>{};
 
     for (final size in config.groupSizeProfile) {
-      final candidates = List<AssociationVariantDto>.from(
-        bySize[size] ?? const [],
-      )..removeWhere(
-          (a) =>
-              usedVariantIds.contains(a.associationVariantId) ||
-              usedClues.contains(a.associationClue) ||
-              a.memberCards.any(usedMemberWords.contains),
-        );
+      final candidates =
+          List<AssociationVariantDto>.from(bySize[size] ?? const [])
+            ..removeWhere(
+              (a) =>
+                  usedVariantIds.contains(a.associationVariantId) ||
+                  usedClues.contains(a.associationClue) ||
+                  a.memberCards.any(usedMemberWords.contains),
+            );
 
       if (candidates.isEmpty) {
         // Fall back: any published variant of the right size.

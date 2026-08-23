@@ -36,12 +36,7 @@ abstract final class MonetizationConfig {
 
 // ── Rewarded Ad types ─────────────────────────────────────────────────────────
 
-enum RewardedRewardType {
-  coins,
-  hint,
-  extraMoves,
-  deadEndRescue,
-}
+enum RewardedRewardType { coins, hint, extraMoves, deadEndRescue }
 
 // ── Rewarded Ad placement ─────────────────────────────────────────────────────
 
@@ -64,11 +59,7 @@ enum AdResultStatus {
 }
 
 final class AdResult {
-  const AdResult({
-    required this.status,
-    this.operationId,
-    this.errorMessage,
-  });
+  const AdResult({required this.status, this.operationId, this.errorMessage});
 
   final AdResultStatus status;
   final String? operationId;
@@ -76,8 +67,7 @@ final class AdResult {
 
   bool get isCompleted => status == AdResultStatus.completed;
 
-  static const notAvailable =
-      AdResult(status: AdResultStatus.notAvailable);
+  static const notAvailable = AdResult(status: AdResultStatus.notAvailable);
   static const cancelled = AdResult(status: AdResultStatus.cancelled);
 }
 
@@ -135,26 +125,25 @@ final class MonetizationContext {
     DateTime? lastOutOfMovesDeclineAt,
     bool? hasRemoveAdsEntitlement,
     bool? interstitialEnabled,
-  }) =>
-      MonetizationContext(
-        levelsSinceLastInterstitial:
-            levelsSinceLastInterstitial ?? this.levelsSinceLastInterstitial,
-        sessionInterstitialCount:
-            sessionInterstitialCount ?? this.sessionInterstitialCount,
-        lastMonetizationEventType:
-            lastMonetizationEventType ?? this.lastMonetizationEventType,
-        lastRewardedAdAt: lastRewardedAdAt ?? this.lastRewardedAdAt,
-        lastPurchaseAt: lastPurchaseAt ?? this.lastPurchaseAt,
-        lastTutorialCompletedAt:
-            lastTutorialCompletedAt ?? this.lastTutorialCompletedAt,
-        lastFailureAt: lastFailureAt ?? this.lastFailureAt,
-        lastDeadEndAt: lastDeadEndAt ?? this.lastDeadEndAt,
-        lastOutOfMovesDeclineAt:
-            lastOutOfMovesDeclineAt ?? this.lastOutOfMovesDeclineAt,
-        hasRemoveAdsEntitlement:
-            hasRemoveAdsEntitlement ?? this.hasRemoveAdsEntitlement,
-        interstitialEnabled: interstitialEnabled ?? this.interstitialEnabled,
-      );
+  }) => MonetizationContext(
+    levelsSinceLastInterstitial:
+        levelsSinceLastInterstitial ?? this.levelsSinceLastInterstitial,
+    sessionInterstitialCount:
+        sessionInterstitialCount ?? this.sessionInterstitialCount,
+    lastMonetizationEventType:
+        lastMonetizationEventType ?? this.lastMonetizationEventType,
+    lastRewardedAdAt: lastRewardedAdAt ?? this.lastRewardedAdAt,
+    lastPurchaseAt: lastPurchaseAt ?? this.lastPurchaseAt,
+    lastTutorialCompletedAt:
+        lastTutorialCompletedAt ?? this.lastTutorialCompletedAt,
+    lastFailureAt: lastFailureAt ?? this.lastFailureAt,
+    lastDeadEndAt: lastDeadEndAt ?? this.lastDeadEndAt,
+    lastOutOfMovesDeclineAt:
+        lastOutOfMovesDeclineAt ?? this.lastOutOfMovesDeclineAt,
+    hasRemoveAdsEntitlement:
+        hasRemoveAdsEntitlement ?? this.hasRemoveAdsEntitlement,
+    interstitialEnabled: interstitialEnabled ?? this.interstitialEnabled,
+  );
 }
 
 // ── Entitlement ───────────────────────────────────────────────────────────────
@@ -213,13 +202,7 @@ final class PurchaseProduct {
 
 // ── Purchase state ────────────────────────────────────────────────────────────
 
-enum PurchaseStatus {
-  pending,
-  purchased,
-  restored,
-  error,
-  cancelled,
-}
+enum PurchaseStatus { pending, purchased, restored, error, cancelled }
 
 final class PurchaseState {
   const PurchaseState({
@@ -261,16 +244,15 @@ final class RewardedAdReceipt {
   RewardedAdReceipt copyWith({
     bool? backendGranted,
     bool? localEffectApplied,
-  }) =>
-      RewardedAdReceipt(
-        operationId: operationId,
-        rewardType: rewardType,
-        adCompleted: adCompleted,
-        attemptId: attemptId,
-        backendGranted: backendGranted ?? this.backendGranted,
-        localEffectApplied: localEffectApplied ?? this.localEffectApplied,
-        createdAt: createdAt,
-      );
+  }) => RewardedAdReceipt(
+    operationId: operationId,
+    rewardType: rewardType,
+    adCompleted: adCompleted,
+    attemptId: attemptId,
+    backendGranted: backendGranted ?? this.backendGranted,
+    localEffectApplied: localEffectApplied ?? this.localEffectApplied,
+    createdAt: createdAt,
+  );
 }
 
 // ── Monetization feature flags ────────────────────────────────────────────────

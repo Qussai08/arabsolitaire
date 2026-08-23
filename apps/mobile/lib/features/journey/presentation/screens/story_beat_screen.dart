@@ -62,7 +62,10 @@ class _StoryBeatScreenState extends ConsumerState<StoryBeatScreen> {
                   const SizedBox(height: 32),
                   _ChapterLabel(beat: widget.beat),
                   const Spacer(),
-                  _DialogueCard(speakerKey: line.speakerKey, textAr: line.textAr),
+                  _DialogueCard(
+                    speakerKey: line.speakerKey,
+                    textAr: line.textAr,
+                  ),
                   const SizedBox(height: 32),
                   _ProgressDots(
                     total: widget.beat.dialogue.length,
@@ -136,7 +139,9 @@ class _DialogueCard extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: const Color(0xFF162033),
-          border: Border.all(color: const Color(0xFFD4A017).withValues(alpha: 0.3)),
+          border: Border.all(
+            color: const Color(0xFFD4A017).withValues(alpha: 0.3),
+          ),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(

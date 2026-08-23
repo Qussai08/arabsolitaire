@@ -109,9 +109,7 @@ abstract final class SyntheticContent {
     return AssociationVariant(
       associationId: id,
       associationCardId: '${id}_card',
-      memberCardIds: [
-        for (var i = 1; i <= memberCount; i++) '${id}_m$i',
-      ],
+      memberCardIds: [for (var i = 1; i <= memberCount; i++) '${id}_m$i'],
       contentType: contentType,
       variantId: '${id}_v1',
     );

@@ -297,10 +297,8 @@ final class FirebaseAnalyticsService implements AnalyticsService {
 
   final FirebaseAnalytics _analytics;
 
-  Future<void> _log(
-    String name, [
-    Map<String, Object>? params,
-  ]) => _analytics.logEvent(name: name, parameters: params);
+  Future<void> _log(String name, [Map<String, Object>? params]) =>
+      _analytics.logEvent(name: name, parameters: params);
 
   @override
   Future<void> logAppStarted() => _log('app_started');
@@ -392,10 +390,10 @@ final class FirebaseAnalyticsService implements AnalyticsService {
   });
 
   @override
-  Future<void> logRestartRequested({required int movesRemaining}) =>
-      _log(AnalyticsEvents.restartRequested, {
-        'moves_remaining': movesRemaining,
-      });
+  Future<void> logRestartRequested({required int movesRemaining}) => _log(
+    AnalyticsEvents.restartRequested,
+    {'moves_remaining': movesRemaining},
+  );
 
   @override
   Future<void> logLevelStarted({
@@ -485,9 +483,7 @@ final class FirebaseAnalyticsService implements AnalyticsService {
 
   @override
   Future<void> logDeadEndRescuePurchased({required int coinsSpent}) =>
-      _log(AnalyticsEvents.deadEndRescuePurchased, {
-        'coins_spent': coinsSpent,
-      });
+      _log(AnalyticsEvents.deadEndRescuePurchased, {'coins_spent': coinsSpent});
 
   @override
   Future<void> logRewardedAdCompleted({
@@ -521,10 +517,10 @@ final class FirebaseAnalyticsService implements AnalyticsService {
   });
 
   @override
-  Future<void> logRestoreCompleted({required int entitlementsCount}) =>
-      _log(AnalyticsEvents.restoreCompleted, {
-        'entitlements_count': entitlementsCount,
-      });
+  Future<void> logRestoreCompleted({required int entitlementsCount}) => _log(
+    AnalyticsEvents.restoreCompleted,
+    {'entitlements_count': entitlementsCount},
+  );
 
   @override
   Future<void> logDailyRewardClaimed({

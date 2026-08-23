@@ -16,35 +16,41 @@ import 'package:test/test.dart';
 
 void main() {
   group('Generator idempotency (crash-recovery invariant)', () {
-    test('same seed always produces same accepted board after interruption', () {
-      // Simulates: app killed between generation calls — next launch
-      // regenerates with the same seed and must get the same board.
-      const seed = GenerationSeed(42);
-      final config = LevelTemplates.early3x1(includeSolutionActions: true);
-      final contentSelector = FixedContentSelector(
-        SyntheticContent.forProfile(config.groupSizeProfile),
-      );
+    test(
+      'same seed always produces same accepted board after interruption',
+      () {
+        // Simulates: app killed between generation calls — next launch
+        // regenerates with the same seed and must get the same board.
+        const seed = GenerationSeed(42);
+        final config = LevelTemplates.early3x1(includeSolutionActions: true);
+        final contentSelector = FixedContentSelector(
+          SyntheticContent.forProfile(config.groupSizeProfile),
+        );
 
-      final first = LevelGenerator().generate(
-        config: config,
-        contentSelector: contentSelector,
-        baseSeed: seed,
-      );
-      final second = LevelGenerator().generate(
-        config: config,
-        contentSelector: contentSelector,
-        baseSeed: seed,
-      );
+        final first = LevelGenerator().generate(
+          config: config,
+          contentSelector: contentSelector,
+          baseSeed: seed,
+        );
+        final second = LevelGenerator().generate(
+          config: config,
+          contentSelector: contentSelector,
+          baseSeed: seed,
+        );
 
-      expect(first, isA<GenerationSucceeded>());
-      expect(second, isA<GenerationSucceeded>());
-      final a = (first as GenerationSucceeded).level;
-      final b = (second as GenerationSucceeded).level;
-      expect(a.initialGameState, b.initialGameState,
-          reason: 'Same seed must produce identical board on retry');
-      expect(a.seed, b.seed);
-      expect(a.generationAttempts, b.generationAttempts);
-    });
+        expect(first, isA<GenerationSucceeded>());
+        expect(second, isA<GenerationSucceeded>());
+        final a = (first as GenerationSucceeded).level;
+        final b = (second as GenerationSucceeded).level;
+        expect(
+          a.initialGameState,
+          b.initialGameState,
+          reason: 'Same seed must produce identical board on retry',
+        );
+        expect(a.seed, b.seed);
+        expect(a.generationAttempts, b.generationAttempts);
+      },
+    );
 
     test('replay idempotency: same solution replays to Win every time', () {
       // Simulates: solution was persisted before crash; must replay safely.

@@ -87,8 +87,12 @@ void main(List<String> args) {
     'averageSolutionLength': _avg(solutionLengths.map((e) => e.toDouble())),
     'averageNodesExpanded': _avg(nodes.map((e) => e.toDouble())),
     'difficultyScoreDistribution': {
-      'min': difficultyScores.isEmpty ? null : difficultyScores.reduce(math.min),
-      'max': difficultyScores.isEmpty ? null : difficultyScores.reduce(math.max),
+      'min': difficultyScores.isEmpty
+          ? null
+          : difficultyScores.reduce(math.min),
+      'max': difficultyScores.isEmpty
+          ? null
+          : difficultyScores.reduce(math.max),
       'avg': _avg(difficultyScores),
     },
     'stockRestoreDistribution': {

@@ -110,8 +110,8 @@ class HomeScreen extends ConsumerWidget {
                   _NavButton(
                     label: 'أرشيف الحكاية',
                     icon: Icons.menu_book_outlined,
-                    onTap: () => Navigator.of(context)
-                        .pushNamed(AppRoutes.storyArchive),
+                    onTap: () =>
+                        Navigator.of(context).pushNamed(AppRoutes.storyArchive),
                   ),
                   const SizedBox(height: 8),
                   // Settings
@@ -139,9 +139,9 @@ class _ProgressSummary extends StatelessWidget {
   String _chapterTitle(JourneyReady s) {
     final level = s.progress.highestUnlockedLevel;
     final chapter = s.chapters.cast<ChapterDefinition?>().firstWhere(
-          (c) => c != null && c.levelStart <= level && c.levelEnd >= level,
-          orElse: () => s.chapters.isNotEmpty ? s.chapters.last : null,
-        );
+      (c) => c != null && c.levelStart <= level && c.levelEnd >= level,
+      orElse: () => s.chapters.isNotEmpty ? s.chapters.last : null,
+    );
     return chapter?.titleAr ?? '';
   }
 
@@ -154,7 +154,8 @@ class _ProgressSummary extends StatelessWidget {
         color: const Color(0xFF162033),
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
-            color: const Color(0xFFD4A017).withValues(alpha: 0.2)),
+          color: const Color(0xFFD4A017).withValues(alpha: 0.2),
+        ),
       ),
       child: Row(
         children: [
@@ -184,8 +185,11 @@ class _ProgressSummary extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16),
-          const Icon(Icons.auto_stories_outlined,
-              color: Color(0xFFD4A017), size: 28),
+          const Icon(
+            Icons.auto_stories_outlined,
+            color: Color(0xFFD4A017),
+            size: 28,
+          ),
         ],
       ),
     );
@@ -198,7 +202,9 @@ class _ContinueButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ready = journeyState is JourneyReady ? journeyState as JourneyReady : null;
+    final ready = journeyState is JourneyReady
+        ? journeyState as JourneyReady
+        : null;
     if (ready == null) return const SizedBox.shrink();
 
     return SizedBox(
@@ -257,7 +263,8 @@ class _NavButton extends StatelessWidget {
           color: const Color(0xFF162033),
           borderRadius: BorderRadius.circular(14),
           border: Border.all(
-              color: const Color(0xFFD4A017).withValues(alpha: 0.15)),
+            color: const Color(0xFFD4A017).withValues(alpha: 0.15),
+          ),
         ),
         child: Row(
           children: [

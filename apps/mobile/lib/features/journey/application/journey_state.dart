@@ -39,7 +39,9 @@ final class JourneyReady extends JourneyViewState {
       return LevelStatus.completed;
     }
     if (progress.isLevelUnlocked(
-        level.levelDefinitionId, level.globalLevelNumber)) {
+      level.levelDefinitionId,
+      level.globalLevelNumber,
+    )) {
       if (progress.currentLevelId == level.levelDefinitionId) {
         return LevelStatus.inProgress;
       }
@@ -51,9 +53,11 @@ final class JourneyReady extends JourneyViewState {
   /// Story beats triggered at [globalLevelNumber] that have not yet been seen.
   List<StoryBeat> pendingBeatsFor(int globalLevelNumber) {
     return JourneyContent.storyBeats
-        .where((b) =>
-            b.triggerLevelNumber == globalLevelNumber &&
-            !flags.viewedStoryBeatIds.contains(b.storyBeatId))
+        .where(
+          (b) =>
+              b.triggerLevelNumber == globalLevelNumber &&
+              !flags.viewedStoryBeatIds.contains(b.storyBeatId),
+        )
         .toList();
   }
 }

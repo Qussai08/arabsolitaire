@@ -103,9 +103,10 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
       vsync: this,
       duration: const Duration(milliseconds: 900),
     )..repeat(reverse: true);
-    _pulse = Tween<double>(begin: 0.6, end: 1.0).animate(
-      CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut),
-    );
+    _pulse = Tween<double>(
+      begin: 0.6,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut));
   }
 
   @override
@@ -138,14 +139,14 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
     if (_navigating) return;
     _navigating = true;
     unawaited(
-      ref.read(journeyControllerProvider.notifier).completeTutorial().then(
-        (_) async {
-          if (!mounted) return;
-          await Future<void>.delayed(const Duration(milliseconds: 1200));
-          if (!mounted) return;
-          unawaited(Navigator.of(context).pushReplacementNamed(AppRoutes.home));
-        },
-      ),
+      ref.read(journeyControllerProvider.notifier).completeTutorial().then((
+        _,
+      ) async {
+        if (!mounted) return;
+        await Future<void>.delayed(const Duration(milliseconds: 1200));
+        if (!mounted) return;
+        unawaited(Navigator.of(context).pushReplacementNamed(AppRoutes.home));
+      }),
     );
   }
 
@@ -191,9 +192,7 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
               const Spacer(),
               _buildBoard(),
               const Spacer(),
-              won
-                  ? _buildWonBanner()
-                  : _buildHintPanel(_steps[_step]),
+              won ? _buildWonBanner() : _buildHintPanel(_steps[_step]),
               const SizedBox(height: 32),
             ],
           ),
@@ -249,8 +248,8 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
             color: done
                 ? const Color(0xFFD4A017)
                 : active
-                    ? const Color(0xFFD4A017)
-                    : const Color(0xFFD4A017).withValues(alpha: 0.25),
+                ? const Color(0xFFD4A017)
+                : const Color(0xFFD4A017).withValues(alpha: 0.25),
             borderRadius: BorderRadius.circular(4),
           ),
         );

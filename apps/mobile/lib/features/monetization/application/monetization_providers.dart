@@ -25,8 +25,7 @@ final purchaseRepositoryProvider = Provider<PurchaseRepository>((ref) {
   }
 });
 
-final entitlementRepositoryProvider =
-    Provider<EntitlementRepository?>((ref) {
+final entitlementRepositoryProvider = Provider<EntitlementRepository?>((ref) {
   final db = ref.watch(appDatabaseProvider).valueOrNull;
   if (db == null) return null;
   return DriftEntitlementRepository(db);
@@ -34,14 +33,14 @@ final entitlementRepositoryProvider =
 
 final monetizationStateRepositoryProvider =
     Provider<MonetizationStateRepository?>((ref) {
-  final db = ref.watch(appDatabaseProvider).valueOrNull;
-  if (db == null) return null;
-  return DriftMonetizationStateRepository(db);
-});
+      final db = ref.watch(appDatabaseProvider).valueOrNull;
+      if (db == null) return null;
+      return DriftMonetizationStateRepository(db);
+    });
 
 final rewardedAdReceiptRepositoryProvider =
     Provider<RewardedAdReceiptRepository?>((ref) {
-  final db = ref.watch(appDatabaseProvider).valueOrNull;
-  if (db == null) return null;
-  return DriftRewardedAdReceiptRepository(db);
-});
+      final db = ref.watch(appDatabaseProvider).valueOrNull;
+      if (db == null) return null;
+      return DriftRewardedAdReceiptRepository(db);
+    });

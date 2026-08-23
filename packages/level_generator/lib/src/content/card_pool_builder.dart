@@ -34,7 +34,9 @@ abstract final class CardPoolBuilder {
 
     for (final variant in variants) {
       if (!seenAssocIds.add(variant.associationId)) {
-        throw ArgumentError('duplicate associationId: ${variant.associationId}');
+        throw ArgumentError(
+          'duplicate associationId: ${variant.associationId}',
+        );
       }
       associations[variant.associationId] = variant.toDefinition();
       for (final card in variant.toCards()) {

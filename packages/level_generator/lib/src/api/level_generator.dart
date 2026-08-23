@@ -12,10 +12,8 @@ import 'package:level_generator/src/version/package_version.dart';
 
 /// Production Level Generator: config → content → pool → deal → Solver → difficulty.
 final class LevelGenerator {
-  LevelGenerator({
-    GameSolver? solver,
-    this.engine = const GameEngine(),
-  }) : solver = solver ?? GameSolver();
+  LevelGenerator({GameSolver? solver, this.engine = const GameEngine()})
+    : solver = solver ?? GameSolver();
 
   final GameSolver solver;
   final GameEngine engine;

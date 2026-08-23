@@ -9,12 +9,10 @@ final class FirebaseEconomyRepository implements EconomyRepository {
   FirebaseEconomyRepository(this._functions);
   final FirebaseFunctions _functions;
 
-  HttpsCallable _fn(String name) =>
-      _functions.httpsCallable(name);
+  HttpsCallable _fn(String name) => _functions.httpsCallable(name);
 
   @override
-  Future<EconomyResult> initializeWallet() =>
-      _call('initializeWallet', {});
+  Future<EconomyResult> initializeWallet() => _call('initializeWallet', {});
 
   @override
   Future<EconomyResult> claimLevelReward({
@@ -22,13 +20,12 @@ final class FirebaseEconomyRepository implements EconomyRepository {
     required String completionId,
     required int remainingMoves,
     required int streakCoins,
-  }) =>
-      _call('grantLevelReward', {
-        'levelId': levelId,
-        'completionId': completionId,
-        'remainingMoves': remainingMoves,
-        'streakCoins': streakCoins,
-      });
+  }) => _call('grantLevelReward', {
+    'levelId': levelId,
+    'completionId': completionId,
+    'remainingMoves': remainingMoves,
+    'streakCoins': streakCoins,
+  });
 
   @override
   Future<EconomyResult> claimChapterReward({required String chapterId}) =>
@@ -46,11 +43,10 @@ final class FirebaseEconomyRepository implements EconomyRepository {
   Future<EconomyResult> purchaseExtraMoves({
     required String attemptId,
     required int rescueIndex,
-  }) =>
-      _call('purchaseExtraMoves', {
-        'attemptId': attemptId,
-        'rescueIndex': rescueIndex,
-      });
+  }) => _call('purchaseExtraMoves', {
+    'attemptId': attemptId,
+    'rescueIndex': rescueIndex,
+  });
 
   @override
   Future<EconomyResult> purchaseDeadEndRescue({required String attemptId}) =>
@@ -59,9 +55,11 @@ final class FirebaseEconomyRepository implements EconomyRepository {
   @override
   Future<WalletSnapshot?> fetchServerSnapshot() async {
     try {
-      final result = await _fn('getWalletSnapshot').call<dynamic>(<String, dynamic>{});
-      final data =
-          (result.data as Map<Object?, Object?>).cast<String, dynamic>();
+      final result = await _fn(
+        'getWalletSnapshot',
+      ).call<dynamic>(<String, dynamic>{});
+      final data = (result.data as Map<Object?, Object?>)
+          .cast<String, dynamic>();
       if (data['exists'] != true) return null;
       return WalletSnapshot(
         coinBalance: (data['coinBalance'] as num?)?.toInt() ?? 0,
@@ -81,19 +79,18 @@ final class FirebaseEconomyRepository implements EconomyRepository {
   ) async {
     try {
       final result = await _fn(functionName).call<dynamic>(payload);
-      final data =
-          (result.data as Map<Object?, Object?>).cast<String, dynamic>();
+      final data = (result.data as Map<Object?, Object?>)
+          .cast<String, dynamic>();
       final success = data['success'] == true;
       if (success) {
         return EconomySuccess(
           operationId: data['operationId'] as String? ?? '',
-          transactionId: (data['transactionIds'] as List?)?.firstOrNull
-              as String?,
+          transactionId:
+              (data['transactionIds'] as List?)?.firstOrNull as String?,
           walletSnapshot: WalletSnapshot(
             coinBalance: (data['coinBalanceAfter'] as num?)?.toInt() ?? 0,
             hintBalance: (data['hintBalanceAfter'] as num?)?.toInt() ?? 0,
-            walletRevision:
-                (data['walletRevision'] as num?)?.toInt() ?? 0,
+            walletRevision: (data['walletRevision'] as num?)?.toInt() ?? 0,
             lastReconciledAt: DateTime.now().toUtc(),
             isStale: false,
           ),
@@ -145,11 +142,11 @@ final class OfflineEconomyRepository implements EconomyRepository {
   const OfflineEconomyRepository();
 
   static EconomyResult get _offlineResult => const EconomyFailure(
-        error: EconomyError(
-          code: EconomyErrorCode.offlineQueued,
-          message: 'Operation queued for sync',
-        ),
-      );
+    error: EconomyError(
+      code: EconomyErrorCode.offlineQueued,
+      message: 'Operation queued for sync',
+    ),
+  );
 
   @override
   Future<EconomyResult> initializeWallet() async => _offlineResult;
@@ -159,8 +156,7 @@ final class OfflineEconomyRepository implements EconomyRepository {
     required String completionId,
     required int remainingMoves,
     required int streakCoins,
-  }) async =>
-      _offlineResult;
+  }) async => _offlineResult;
   @override
   Future<EconomyResult> claimChapterReward({required String chapterId}) async =>
       _offlineResult;
@@ -174,12 +170,11 @@ final class OfflineEconomyRepository implements EconomyRepository {
   Future<EconomyResult> purchaseExtraMoves({
     required String attemptId,
     required int rescueIndex,
-  }) async =>
-      _offlineResult;
+  }) async => _offlineResult;
   @override
-  Future<EconomyResult> purchaseDeadEndRescue(
-          {required String attemptId}) async =>
-      _offlineResult;
+  Future<EconomyResult> purchaseDeadEndRescue({
+    required String attemptId,
+  }) async => _offlineResult;
   @override
   Future<WalletSnapshot?> fetchServerSnapshot() async => null;
 }

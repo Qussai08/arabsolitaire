@@ -30,16 +30,16 @@ final class GenerationMetrics {
   GenerationSeed? acceptedSeed;
 
   Map<String, Object?> toJson() => {
-        'generationAttempts': generationAttempts,
-        'unsolvableRejects': unsolvableRejects,
-        'tooEasyRejects': tooEasyRejects,
-        'tooHardRejects': tooHardRejects,
-        'solverInconclusiveCount': solverInconclusiveCount,
-        'engineInvariantRejects': engineInvariantRejects,
-        'solutionOverLimitRejects': solutionOverLimitRejects,
-        'elapsedMs': elapsed.inMilliseconds,
-        'acceptedSeed': acceptedSeed?.value,
-      };
+    'generationAttempts': generationAttempts,
+    'unsolvableRejects': unsolvableRejects,
+    'tooEasyRejects': tooEasyRejects,
+    'tooHardRejects': tooHardRejects,
+    'solverInconclusiveCount': solverInconclusiveCount,
+    'engineInvariantRejects': engineInvariantRejects,
+    'solutionOverLimitRejects': solutionOverLimitRejects,
+    'elapsedMs': elapsed.inMilliseconds,
+    'acceptedSeed': acceptedSeed?.value,
+  };
 }
 
 final class GeneratedLevel {
@@ -76,26 +76,26 @@ final class GeneratedLevel {
   final List<GameAction>? solutionActions;
 
   Map<String, Object?> toJson({bool includeState = false}) => {
-        'levelDefinitionId': levelDefinitionId,
-        'seed': seed.value,
-        'selectedAssociationVariantIds': selectedAssociationVariantIds,
-        'solutionLength': solutionLength,
-        'solverMetrics': {
-          'nodesExpanded': solverMetrics.nodesExpanded,
-          'nodesGenerated': solverMetrics.nodesGenerated,
-          'maxDepthReached': solverMetrics.maxDepthReached,
-          'elapsedMs': solverMetrics.elapsed.inMilliseconds,
-        },
-        'difficultyMetrics': difficultyMetrics.toJson(),
-        'difficultyScore': difficultyScore.toJson(),
-        'generationAttempts': generationAttempts,
-        'rulesVersion': rulesVersion,
-        'solverVersion': solverVersion,
-        'generatorVersion': generatorVersion,
-        'difficultyModelVersion': difficultyModelVersion,
-        if (includeState)
-          'initialGameState': GameStateCodec.encode(initialGameState),
-      };
+    'levelDefinitionId': levelDefinitionId,
+    'seed': seed.value,
+    'selectedAssociationVariantIds': selectedAssociationVariantIds,
+    'solutionLength': solutionLength,
+    'solverMetrics': {
+      'nodesExpanded': solverMetrics.nodesExpanded,
+      'nodesGenerated': solverMetrics.nodesGenerated,
+      'maxDepthReached': solverMetrics.maxDepthReached,
+      'elapsedMs': solverMetrics.elapsed.inMilliseconds,
+    },
+    'difficultyMetrics': difficultyMetrics.toJson(),
+    'difficultyScore': difficultyScore.toJson(),
+    'generationAttempts': generationAttempts,
+    'rulesVersion': rulesVersion,
+    'solverVersion': solverVersion,
+    'generatorVersion': generatorVersion,
+    'difficultyModelVersion': difficultyModelVersion,
+    if (includeState)
+      'initialGameState': GameStateCodec.encode(initialGameState),
+  };
 }
 
 sealed class GenerationResult {
@@ -105,10 +105,7 @@ sealed class GenerationResult {
 }
 
 final class GenerationSucceeded extends GenerationResult {
-  const GenerationSucceeded({
-    required this.level,
-    required super.metrics,
-  });
+  const GenerationSucceeded({required this.level, required super.metrics});
 
   final GeneratedLevel level;
 }

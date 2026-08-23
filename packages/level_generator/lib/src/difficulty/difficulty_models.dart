@@ -1,11 +1,5 @@
 /// Broad Board Difficulty bands (calibration TBD).
-enum DifficultyBand {
-  veryEasy,
-  easy,
-  medium,
-  hard,
-  veryHard,
-}
+enum DifficultyBand { veryEasy, easy, medium, hard, veryHard }
 
 /// Configurable acceptance window for Board Difficulty score.
 final class DifficultyTarget {
@@ -58,19 +52,19 @@ final class DifficultyMetrics {
       totalCardCount <= 0 ? 0 : hiddenCardCount / totalCardCount;
 
   Map<String, Object?> toJson() => {
-        'solutionLength': solutionLength,
-        'moveLimit': moveLimit,
-        'solutionLengthRatio': solutionLengthRatio,
-        'nodesExpanded': nodesExpanded,
-        'maxDepthReached': maxDepthReached,
-        'stockAdvancesInSolution': stockAdvancesInSolution,
-        'stockRestoresInSolution': stockRestoresInSolution,
-        'stockPlaysInSolution': stockPlaysInSolution,
-        'hiddenCardCount': hiddenCardCount,
-        'totalCardCount': totalCardCount,
-        'hiddenRatio': hiddenRatio,
-        'transpositionHits': transpositionHits,
-      };
+    'solutionLength': solutionLength,
+    'moveLimit': moveLimit,
+    'solutionLengthRatio': solutionLengthRatio,
+    'nodesExpanded': nodesExpanded,
+    'maxDepthReached': maxDepthReached,
+    'stockAdvancesInSolution': stockAdvancesInSolution,
+    'stockRestoresInSolution': stockRestoresInSolution,
+    'stockPlaysInSolution': stockPlaysInSolution,
+    'hiddenCardCount': hiddenCardCount,
+    'totalCardCount': totalCardCount,
+    'hiddenRatio': hiddenRatio,
+    'transpositionHits': transpositionHits,
+  };
 }
 
 final class DifficultyScore {
@@ -85,17 +79,13 @@ final class DifficultyScore {
   final String modelVersion;
 
   Map<String, Object?> toJson() => {
-        'value': value,
-        'band': band.name,
-        'modelVersion': modelVersion,
-      };
+    'value': value,
+    'band': band.name,
+    'modelVersion': modelVersion,
+  };
 }
 
-enum DifficultyVerdict {
-  accepted,
-  tooEasy,
-  tooHard,
-}
+enum DifficultyVerdict { accepted, tooEasy, tooHard }
 
 final class DifficultyEvaluation {
   const DifficultyEvaluation({

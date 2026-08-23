@@ -22,10 +22,7 @@ class DiagnosticsScreen extends ConsumerWidget {
           children: [
             _DiagnosticsTile(label: 'الإصدار', value: config.appVersion),
             _DiagnosticsTile(label: 'رقم البناء', value: config.buildNumber),
-            _DiagnosticsTile(
-              label: 'البيئة',
-              value: config.environment.label,
-            ),
+            _DiagnosticsTile(label: 'البيئة', value: config.environment.label),
             _DiagnosticsTile(
               label: 'إصدار قواعد اللعبة',
               value: config.rulesVersion.toString(),
@@ -60,14 +57,11 @@ class _DiagnosticsTile extends StatelessWidget {
         children: [
           Text(
             label,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
-          SelectableText(
-            value,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
+          SelectableText(value, style: Theme.of(context).textTheme.bodyMedium),
         ],
       ),
     );

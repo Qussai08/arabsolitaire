@@ -75,16 +75,15 @@ final class WalletSnapshot {
     int? walletRevision,
     DateTime? lastReconciledAt,
     bool? isStale,
-  }) =>
-      WalletSnapshot(
-        coinBalance: coinBalance ?? this.coinBalance,
-        hintBalance: hintBalance ?? this.hintBalance,
-        pendingCoinDelta: pendingCoinDelta ?? this.pendingCoinDelta,
-        pendingHintDelta: pendingHintDelta ?? this.pendingHintDelta,
-        walletRevision: walletRevision ?? this.walletRevision,
-        lastReconciledAt: lastReconciledAt ?? this.lastReconciledAt,
-        isStale: isStale ?? this.isStale,
-      );
+  }) => WalletSnapshot(
+    coinBalance: coinBalance ?? this.coinBalance,
+    hintBalance: hintBalance ?? this.hintBalance,
+    pendingCoinDelta: pendingCoinDelta ?? this.pendingCoinDelta,
+    pendingHintDelta: pendingHintDelta ?? this.pendingHintDelta,
+    walletRevision: walletRevision ?? this.walletRevision,
+    lastReconciledAt: lastReconciledAt ?? this.lastReconciledAt,
+    isStale: isStale ?? this.isStale,
+  );
 
   static const empty = WalletSnapshot(isStale: true);
 }
@@ -197,13 +196,7 @@ final class EconomyOperation {
   final String? serverTransactionId;
 }
 
-enum EconomyOperationStatus {
-  pending,
-  inFlight,
-  completed,
-  failed,
-  retryable,
-}
+enum EconomyOperationStatus { pending, inFlight, completed, failed, retryable }
 
 // ── Economy Receipt ───────────────────────────────────────────────────────────
 
@@ -285,12 +278,11 @@ final class AttemptEconomyMetadata {
     int? extraMovesPurchasesUsed,
     bool? deadEndRescueUsed,
     Set<String>? appliedEconomyOperationIds,
-  }) =>
-      AttemptEconomyMetadata(
-        extraMovesPurchasesUsed:
-            extraMovesPurchasesUsed ?? this.extraMovesPurchasesUsed,
-        deadEndRescueUsed: deadEndRescueUsed ?? this.deadEndRescueUsed,
-        appliedEconomyOperationIds:
-            appliedEconomyOperationIds ?? this.appliedEconomyOperationIds,
-      );
+  }) => AttemptEconomyMetadata(
+    extraMovesPurchasesUsed:
+        extraMovesPurchasesUsed ?? this.extraMovesPurchasesUsed,
+    deadEndRescueUsed: deadEndRescueUsed ?? this.deadEndRescueUsed,
+    appliedEconomyOperationIds:
+        appliedEconomyOperationIds ?? this.appliedEconomyOperationIds,
+  );
 }

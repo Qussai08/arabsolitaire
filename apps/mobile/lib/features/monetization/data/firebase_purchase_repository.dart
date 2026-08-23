@@ -70,9 +70,13 @@ final class FirebasePurchaseRepository implements PurchaseRepository {
   Future<List<Entitlement>> restoreEntitlements() async {
     try {
       final callable = _functions.httpsCallable('restoreEntitlements');
-      final result = await callable.call<Map<Object?, Object?>>(<String, dynamic>{});
+      final result = await callable.call<Map<Object?, Object?>>(
+        <String, dynamic>{},
+      );
       final data = (result.data).cast<String, dynamic>();
-      final list = (data['entitlements'] as List?)?.cast<Map<Object?, Object?>>() ?? <Map<Object?, Object?>>[];
+      final list =
+          (data['entitlements'] as List?)?.cast<Map<Object?, Object?>>() ??
+          <Map<Object?, Object?>>[];
       return list.map((e) {
         final map = e.cast<String, Object?>();
         return Entitlement(
@@ -103,8 +107,7 @@ final class OfflinePurchaseRepository implements PurchaseRepository {
     required String purchaseToken,
     required String platform,
     required String idempotencyKey,
-  }) async =>
-      const PurchaseValidationFailed('Offline');
+  }) async => const PurchaseValidationFailed('Offline');
 
   @override
   Future<List<Entitlement>> restoreEntitlements() async => [];

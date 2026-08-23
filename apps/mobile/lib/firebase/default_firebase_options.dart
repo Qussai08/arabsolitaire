@@ -22,8 +22,9 @@ abstract final class DefaultFirebaseOptions {
       TargetPlatform.macOS => macos,
       TargetPlatform.windows => windows,
       TargetPlatform.linux => linux,
-      TargetPlatform.fuchsia =>
-        throw UnsupportedError('Fuchsia is not a supported Firebase target.'),
+      TargetPlatform.fuchsia => throw UnsupportedError(
+        'Fuchsia is not a supported Firebase target.',
+      ),
     };
   }
 

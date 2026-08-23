@@ -62,25 +62,33 @@ abstract final class JourneyContent {
         final wavePos = ((i - 1) % 10) + 1;
         final tier = _tierForWave(wave);
         final storyMilestone = _storyMilestoneFor(chapter.chapterId, i);
-        defs.add(LevelDefinition(
-          levelDefinitionId:
-              '${chapter.chapterId}_level_${i.toString().padLeft(2, '0')}',
-          globalLevelNumber: globalNum,
-          chapterId: chapter.chapterId,
-          chapterLevelNumber: i,
-          waveIndex: wave,
-          wavePosition: wavePos,
-          semanticDifficultyTier: tier,
-          storyMilestone: storyMilestone,
-          enabled: true,
-        ));
+        defs.add(
+          LevelDefinition(
+            levelDefinitionId:
+                '${chapter.chapterId}_level_${i.toString().padLeft(2, '0')}',
+            globalLevelNumber: globalNum,
+            chapterId: chapter.chapterId,
+            chapterLevelNumber: i,
+            waveIndex: wave,
+            wavePosition: wavePos,
+            semanticDifficultyTier: tier,
+            storyMilestone: storyMilestone,
+            enabled: true,
+          ),
+        );
       }
     }
     return defs;
   }
 
   static int _tierForWave(int wave) {
-    return switch (wave) { 1 => 1, 2 => 2, 3 => 3, 4 => 4, _ => 5 };
+    return switch (wave) {
+      1 => 1,
+      2 => 2,
+      3 => 3,
+      4 => 4,
+      _ => 5,
+    };
   }
 
   static String? _storyMilestoneFor(String chapterId, int chapterLevel) {
@@ -102,18 +110,15 @@ abstract final class JourneyContent {
       dialogue: [
         DialogueLine(
           speakerKey: 'shiboub',
-          textAr:
-              'مرحباً يا صديقي! أنا شيبوب، حارس دار الروابط.',
+          textAr: 'مرحباً يا صديقي! أنا شيبوب، حارس دار الروابط.',
         ),
         DialogueLine(
           speakerKey: 'shiboub',
-          textAr:
-              'الروابط بين الكلمات تكسّرت. ساعدني على إصلاحها!',
+          textAr: 'الروابط بين الكلمات تكسّرت. ساعدني على إصلاحها!',
         ),
         DialogueLine(
           speakerKey: 'narrator',
-          textAr:
-              'بصيرة المعنى تلمع في عتمة القاهرة. الرحلة تبدأ.',
+          textAr: 'بصيرة المعنى تلمع في عتمة القاهرة. الرحلة تبدأ.',
         ),
       ],
     ),
@@ -143,7 +148,8 @@ abstract final class JourneyContent {
       dialogue: [
         DialogueLine(
           speakerKey: 'shiboub',
-          textAr: 'القاهرة أُعيد ترميمها! لكن الطريق إلى الإسكندرية لا يزال مكسوراً...',
+          textAr:
+              'القاهرة أُعيد ترميمها! لكن الطريق إلى الإسكندرية لا يزال مكسوراً...',
         ),
         DialogueLine(
           speakerKey: 'narrator',
@@ -271,8 +277,7 @@ abstract final class JourneyContent {
       dialogue: [
         DialogueLine(
           speakerKey: 'shiboub',
-          textAr:
-              'أنا المسؤول... فتحت الباب الذي دخل منه المُبدِّد. أنا آسف.',
+          textAr: 'أنا المسؤول... فتحت الباب الذي دخل منه المُبدِّد. أنا آسف.',
         ),
       ],
     ),
@@ -299,8 +304,7 @@ abstract final class JourneyContent {
       dialogue: [
         DialogueLine(
           speakerKey: 'narrator',
-          textAr:
-              'أول مواجهة مباشرة مع عدو العرب — المُبدِّد — يظهر في الظل.',
+          textAr: 'أول مواجهة مباشرة مع عدو العرب — المُبدِّد — يظهر في الظل.',
         ),
       ],
     ),

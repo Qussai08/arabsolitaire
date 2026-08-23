@@ -44,7 +44,9 @@ class TableauColumnView extends StatelessWidget {
               for (final _ in column.hiddenCards)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 2),
-                  child: FaceDownCardView(isSmall: column.hiddenCards.length > 3),
+                  child: FaceDownCardView(
+                    isSmall: column.hiddenCards.length > 3,
+                  ),
                 ),
               // Exposed unit — draggable
               if (column.exposedUnit != null)

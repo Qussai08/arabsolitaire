@@ -33,27 +33,49 @@ BundleManifest _manifest({
   int rulesVersion = 1,
   String source = 'remote',
   List<BundleFileEntry>? files,
-}) =>
-    BundleManifest(
-      bundleId: 'arabsolitaire-content',
-      bundleVersion: bundleVersion,
-      schemaVersion: schemaVersion,
-      rulesVersion: rulesVersion,
-      createdAt: '2026-08-22T00:00:00Z',
-      publishedAt: '2026-08-22T00:00:00Z',
-      contentHash: 'abc123',
-      files: files ??
-          [
-            const BundleFileEntry(path: 'chapters.json', sha256: 'trusted', size: 0),
-            const BundleFileEntry(path: 'levels.json', sha256: 'trusted', size: 0),
-            const BundleFileEntry(path: 'associations.json', sha256: 'trusted', size: 0),
-            const BundleFileEntry(path: 'story_beats.json', sha256: 'trusted', size: 0),
-            const BundleFileEntry(path: 'localization/ar.json', sha256: 'trusted', size: 0),
-          ],
-      contentTypes: ['chapters', 'levels', 'associations', 'storyBeats', 'localization'],
-      status: 'published',
-      source: source,
-    );
+}) => BundleManifest(
+  bundleId: 'arabsolitaire-content',
+  bundleVersion: bundleVersion,
+  schemaVersion: schemaVersion,
+  rulesVersion: rulesVersion,
+  createdAt: '2026-08-22T00:00:00Z',
+  publishedAt: '2026-08-22T00:00:00Z',
+  contentHash: 'abc123',
+  files:
+      files ??
+      [
+        const BundleFileEntry(
+          path: 'chapters.json',
+          sha256: 'trusted',
+          size: 0,
+        ),
+        const BundleFileEntry(path: 'levels.json', sha256: 'trusted', size: 0),
+        const BundleFileEntry(
+          path: 'associations.json',
+          sha256: 'trusted',
+          size: 0,
+        ),
+        const BundleFileEntry(
+          path: 'story_beats.json',
+          sha256: 'trusted',
+          size: 0,
+        ),
+        const BundleFileEntry(
+          path: 'localization/ar.json',
+          sha256: 'trusted',
+          size: 0,
+        ),
+      ],
+  contentTypes: [
+    'chapters',
+    'levels',
+    'associations',
+    'storyBeats',
+    'localization',
+  ],
+  status: 'published',
+  source: source,
+);
 
 ContentSnapshot _minimalSnapshot({
   BundleManifest? manifest,
@@ -61,61 +83,60 @@ ContentSnapshot _minimalSnapshot({
   List<LevelDto>? levels,
   List<AssociationVariantDto>? associations,
   List<StoryBeatDto>? storyBeats,
-}) =>
-    ContentSnapshot(
-      manifest: manifest ?? _manifest(),
-      chapters: chapters ?? _defaultChapters(),
-      levels: levels ?? _defaultLevels(),
-      associations: associations ?? _defaultAssociations(),
-      storyBeats: storyBeats ?? [],
-      localization: const {},
-      source: ContentSource.localRemote,
-    );
+}) => ContentSnapshot(
+  manifest: manifest ?? _manifest(),
+  chapters: chapters ?? _defaultChapters(),
+  levels: levels ?? _defaultLevels(),
+  associations: associations ?? _defaultAssociations(),
+  storyBeats: storyBeats ?? [],
+  localization: const {},
+  source: ContentSource.localRemote,
+);
 
 List<ChapterDto> _defaultChapters() => [
-      const ChapterDto(
-        chapterId: 'ch_cairo',
-        order: 1,
-        nameAr: 'القاهرة',
-        nameEn: 'Cairo',
-        cityAr: 'القاهرة',
-        cityEn: 'Cairo',
-        levelCount: 50,
-        unlockLevel: 1,
-      ),
-    ];
+  const ChapterDto(
+    chapterId: 'ch_cairo',
+    order: 1,
+    nameAr: 'القاهرة',
+    nameEn: 'Cairo',
+    cityAr: 'القاهرة',
+    cityEn: 'Cairo',
+    levelCount: 50,
+    unlockLevel: 1,
+  ),
+];
 
 List<LevelDto> _defaultLevels() => List.generate(
-      5,
-      (i) => LevelDto(
-        levelDefinitionId: 'l${(i + 1).toString().padLeft(3, '0')}',
-        chapterId: 'ch_cairo',
-        globalLevelNumber: i + 1,
-        chapterLevelNumber: i + 1,
-        waveIndex: 0,
-        wavePosition: i,
-        levelConfigurationRef: 'easy_2x2',
-        boardDifficultyTarget: 0.2,
-        semanticDifficultyTier: 1,
-        contentSelectionMode: 'synthetic',
-      ),
-    );
+  5,
+  (i) => LevelDto(
+    levelDefinitionId: 'l${(i + 1).toString().padLeft(3, '0')}',
+    chapterId: 'ch_cairo',
+    globalLevelNumber: i + 1,
+    chapterLevelNumber: i + 1,
+    waveIndex: 0,
+    wavePosition: i,
+    levelConfigurationRef: 'easy_2x2',
+    boardDifficultyTarget: 0.2,
+    semanticDifficultyTier: 1,
+    contentSelectionMode: 'synthetic',
+  ),
+);
 
 List<AssociationVariantDto> _defaultAssociations() => [
-      const AssociationVariantDto(
-        associationVariantId: 'av_001',
-        associationId: 'a_light',
-        associationClue: 'كلمات الضوء',
-        memberCards: ['نور', 'ضياء', 'بريق'],
-        contentType: 'text',
-        semanticDifficulty: 1,
-        visualFlag: false,
-        chapterEligibility: ['ch_cairo'],
-        status: 'published',
-        arabicReviewState: 'approved',
-        semanticReviewState: 'approved',
-      ),
-    ];
+  const AssociationVariantDto(
+    associationVariantId: 'av_001',
+    associationId: 'a_light',
+    associationClue: 'كلمات الضوء',
+    memberCards: ['نور', 'ضياء', 'بريق'],
+    contentType: 'text',
+    semanticDifficulty: 1,
+    visualFlag: false,
+    chapterEligibility: ['ch_cairo'],
+    status: 'published',
+    arabicReviewState: 'approved',
+    semanticReviewState: 'approved',
+  ),
+];
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
@@ -168,7 +189,8 @@ void main() {
         files: [
           const BundleFileEntry(
             path: 'chapters.json',
-            sha256: 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            sha256:
+                'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
             size: 100,
           ),
         ],
@@ -182,15 +204,16 @@ void main() {
       );
 
       expect(report.isValid, isFalse);
-      expect(
-        report.errors.any((e) => e.code == 'HASH_MISMATCH'),
-        isTrue,
-      );
+      expect(report.errors.any((e) => e.code == 'HASH_MISMATCH'), isTrue);
     });
 
     test('trusted hash skips validation', () {
       final file = Uint8List.fromList(utf8.encode('any content'));
-      const entry = BundleFileEntry(path: 'test.json', sha256: 'trusted', size: 0);
+      const entry = BundleFileEntry(
+        path: 'test.json',
+        sha256: 'trusted',
+        size: 0,
+      );
       final error = validator.validateFileHash(file, entry);
       expect(error, isNull);
     });
@@ -202,7 +225,11 @@ void main() {
     test('missing file entry produces blocking error', () async {
       final manifest = _manifest(
         files: [
-          const BundleFileEntry(path: 'chapters.json', sha256: 'abc123', size: 10),
+          const BundleFileEntry(
+            path: 'chapters.json',
+            sha256: 'abc123',
+            size: 10,
+          ),
         ],
       );
       final snapshot = _minimalSnapshot(manifest: manifest);
@@ -214,10 +241,7 @@ void main() {
       );
 
       expect(report.isValid, isFalse);
-      expect(
-        report.errors.any((e) => e.code == 'MISSING_FILE'),
-        isTrue,
-      );
+      expect(report.errors.any((e) => e.code == 'MISSING_FILE'), isTrue);
     });
   });
 
@@ -258,10 +282,7 @@ void main() {
         ],
       );
       final issues = validator.validateContentSnapshot(snapshot);
-      expect(
-        issues.any((i) => i.code == 'DUPLICATE_CHAPTER_ID'),
-        isTrue,
-      );
+      expect(issues.any((i) => i.code == 'DUPLICATE_CHAPTER_ID'), isTrue);
     });
 
     test('duplicate level ID produces error', () {
@@ -269,7 +290,11 @@ void main() {
       final snapshot = _minimalSnapshot(levels: [level, level]);
       final issues = validator.validateContentSnapshot(snapshot);
       expect(
-        issues.any((i) => i.code == 'DUPLICATE_LEVEL_ID' || i.code == 'DUPLICATE_GLOBAL_LEVEL'),
+        issues.any(
+          (i) =>
+              i.code == 'DUPLICATE_LEVEL_ID' ||
+              i.code == 'DUPLICATE_GLOBAL_LEVEL',
+        ),
         isTrue,
       );
     });
@@ -289,20 +314,14 @@ void main() {
       );
       final snapshot = _minimalSnapshot(levels: [badLevel]);
       final issues = validator.validateContentSnapshot(snapshot);
-      expect(
-        issues.any((i) => i.code == 'INVALID_CHAPTER_REF'),
-        isTrue,
-      );
+      expect(issues.any((i) => i.code == 'INVALID_CHAPTER_REF'), isTrue);
     });
 
     test('duplicate association variant ID produces error', () {
       final av = _defaultAssociations().first;
       final snapshot = _minimalSnapshot(associations: [av, av]);
       final issues = validator.validateContentSnapshot(snapshot);
-      expect(
-        issues.any((i) => i.code == 'DUPLICATE_VARIANT_ID'),
-        isTrue,
-      );
+      expect(issues.any((i) => i.code == 'DUPLICATE_VARIANT_ID'), isTrue);
     });
 
     test('association with fewer than 2 members produces error', () {
@@ -321,10 +340,7 @@ void main() {
       );
       final snapshot = _minimalSnapshot(associations: [badAssoc]);
       final issues = validator.validateContentSnapshot(snapshot);
-      expect(
-        issues.any((i) => i.code == 'INVALID_GROUP_SIZE'),
-        isTrue,
-      );
+      expect(issues.any((i) => i.code == 'INVALID_GROUP_SIZE'), isTrue);
     });
 
     test('duplicate story beat ID produces error', () {
@@ -340,10 +356,7 @@ void main() {
       );
       final snapshot = _minimalSnapshot(storyBeats: const [beat, beat]);
       final issues = validator.validateContentSnapshot(snapshot);
-      expect(
-        issues.any((i) => i.code == 'DUPLICATE_BEAT_ID'),
-        isTrue,
-      );
+      expect(issues.any((i) => i.code == 'DUPLICATE_BEAT_ID'), isTrue);
     });
   });
 
@@ -492,10 +505,7 @@ void main() {
       );
       final snapshot = _minimalSnapshot(associations: [badAssoc]);
       final issues = validator.validateContentSnapshot(snapshot);
-      expect(
-        issues.any((i) => i.code == 'INVALID_CONTENT_TYPE'),
-        isTrue,
-      );
+      expect(issues.any((i) => i.code == 'INVALID_CONTENT_TYPE'), isTrue);
     });
 
     test('association with empty memberCards produces error', () {
@@ -515,9 +525,11 @@ void main() {
       final snapshot = _minimalSnapshot(associations: [badAssoc]);
       final issues = validator.validateContentSnapshot(snapshot);
       expect(
-        issues.any((i) =>
-            i.code == 'MISSING_MEMBER_CARDS' ||
-            i.code == 'INVALID_GROUP_SIZE'),
+        issues.any(
+          (i) =>
+              i.code == 'MISSING_MEMBER_CARDS' ||
+              i.code == 'INVALID_GROUP_SIZE',
+        ),
         isTrue,
       );
     });
@@ -595,7 +607,11 @@ void main() {
     });
 
     test('BundleFileEntry isTrusted works', () {
-      const trusted = BundleFileEntry(path: 'f.json', sha256: 'trusted', size: 0);
+      const trusted = BundleFileEntry(
+        path: 'f.json',
+        sha256: 'trusted',
+        size: 0,
+      );
       const real = BundleFileEntry(path: 'f.json', sha256: 'abc123', size: 100);
       expect(trusted.isTrusted, isTrue);
       expect(real.isTrusted, isFalse);

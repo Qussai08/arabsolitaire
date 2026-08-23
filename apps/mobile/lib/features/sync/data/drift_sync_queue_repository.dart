@@ -10,7 +10,9 @@ final class DriftSyncQueueRepository {
   final db_lib.AppDatabase _db;
 
   Future<void> enqueue(SyncOperation op) async {
-    await _db.into(_db.syncOperationRows).insertOnConflictUpdate(
+    await _db
+        .into(_db.syncOperationRows)
+        .insertOnConflictUpdate(
           db_lib.SyncOperationRowsCompanion(
             operationId: Value(op.operationId),
             operationType: Value(op.operationType.name),
@@ -25,29 +27,32 @@ final class DriftSyncQueueRepository {
   }
 
   Future<List<SyncOperation>> loadPending() async {
-    final rows = await (_db.select(_db.syncOperationRows)
-          ..where(
-            (t) =>
-                t.status.isIn([
-                  SyncOperationStatus.pending.name,
-                  SyncOperationStatus.retryable.name,
-                ]) &
-                (t.nextRetryAt.isNull() |
-                    t.nextRetryAt.isSmallerThanValue(DateTime.now().toUtc())),
-          )
-          ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
-        .get();
+    final rows =
+        await (_db.select(_db.syncOperationRows)
+              ..where(
+                (t) =>
+                    t.status.isIn([
+                      SyncOperationStatus.pending.name,
+                      SyncOperationStatus.retryable.name,
+                    ]) &
+                    (t.nextRetryAt.isNull() |
+                        t.nextRetryAt.isSmallerThanValue(
+                          DateTime.now().toUtc(),
+                        )),
+              )
+              ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+            .get();
     return rows.map(_rowToOp).toList();
   }
 
   Future<void> markCompleted(String operationId) async {
-    await (_db.update(_db.syncOperationRows)
-          ..where((t) => t.operationId.equals(operationId)))
-        .write(
-          db_lib.SyncOperationRowsCompanion(
-            status: Value(SyncOperationStatus.completed.name),
-          ),
-        );
+    await (_db.update(
+      _db.syncOperationRows,
+    )..where((t) => t.operationId.equals(operationId))).write(
+      db_lib.SyncOperationRowsCompanion(
+        status: Value(SyncOperationStatus.completed.name),
+      ),
+    );
   }
 
   Future<void> markFailed(
@@ -55,40 +60,36 @@ final class DriftSyncQueueRepository {
     required bool retryable,
     Duration backoff = const Duration(minutes: 5),
   }) async {
-    final row = await (_db.select(_db.syncOperationRows)
-          ..where((t) => t.operationId.equals(operationId)))
-        .getSingleOrNull();
+    final row = await (_db.select(
+      _db.syncOperationRows,
+    )..where((t) => t.operationId.equals(operationId))).getSingleOrNull();
     if (row == null) return;
-    final nextRetry = retryable
-        ? DateTime.now().toUtc().add(backoff)
-        : null;
-    await (_db.update(_db.syncOperationRows)
-          ..where((t) => t.operationId.equals(operationId)))
-        .write(
-          db_lib.SyncOperationRowsCompanion(
-            status: Value(
-                retryable
-                    ? SyncOperationStatus.retryable.name
-                    : SyncOperationStatus.failed.name),
-            attemptCount: Value(row.attemptCount + 1),
-            nextRetryAt: Value(nextRetry),
-          ),
-        );
+    final nextRetry = retryable ? DateTime.now().toUtc().add(backoff) : null;
+    await (_db.update(
+      _db.syncOperationRows,
+    )..where((t) => t.operationId.equals(operationId))).write(
+      db_lib.SyncOperationRowsCompanion(
+        status: Value(
+          retryable
+              ? SyncOperationStatus.retryable.name
+              : SyncOperationStatus.failed.name,
+        ),
+        attemptCount: Value(row.attemptCount + 1),
+        nextRetryAt: Value(nextRetry),
+      ),
+    );
   }
 
   Future<void> purgeCompleted() async {
-    await (_db.delete(_db.syncOperationRows)
-          ..where(
-            (t) => t.status.equals(SyncOperationStatus.completed.name),
-          ))
-        .go();
+    await (_db.delete(
+      _db.syncOperationRows,
+    )..where((t) => t.status.equals(SyncOperationStatus.completed.name))).go();
   }
 
   static SyncOperation _rowToOp(db_lib.SyncOperationRow row) {
     return SyncOperation(
       operationId: row.operationId,
-      operationType:
-          SyncOperationType.values.byName(row.operationType),
+      operationType: SyncOperationType.values.byName(row.operationType),
       payload: jsonDecode(row.payloadJson) as Map<String, dynamic>,
       idempotencyKey: row.idempotencyKey,
       createdAt: row.createdAt,

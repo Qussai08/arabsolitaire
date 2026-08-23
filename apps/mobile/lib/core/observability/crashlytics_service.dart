@@ -23,18 +23,9 @@ final class CrashlyticsService {
       final crashlytics = FirebaseCrashlytics.instance;
       await crashlytics.setCustomKey('app_version', _config.appVersion);
       await crashlytics.setCustomKey('build_number', _config.buildNumber);
-      await crashlytics.setCustomKey(
-        'environment',
-        _config.environment.label,
-      );
-      await crashlytics.setCustomKey(
-        'rules_version',
-        _config.rulesVersion,
-      );
-      await crashlytics.setCustomKey(
-        'solver_version',
-        _config.solverVersion,
-      );
+      await crashlytics.setCustomKey('environment', _config.environment.label);
+      await crashlytics.setCustomKey('rules_version', _config.rulesVersion);
+      await crashlytics.setCustomKey('solver_version', _config.solverVersion);
       await crashlytics.setCustomKey(
         'generator_version',
         _config.generatorVersion,
@@ -62,10 +53,7 @@ final class CrashlyticsService {
         activeBundleVersion,
       );
       await crashlytics.setCustomKey('content_hash', contentHash);
-      await crashlytics.setCustomKey(
-        'level_definition_id',
-        levelDefinitionId,
-      );
+      await crashlytics.setCustomKey('level_definition_id', levelDefinitionId);
       if (boardFingerprint != null) {
         await crashlytics.setCustomKey('board_fingerprint', boardFingerprint);
       }

@@ -24,7 +24,9 @@ final class FirebaseDailyRemoteRepository implements DailyRemoteRepository {
   Future<DailyStateSnapshot?> getDailyState() async {
     try {
       final callable = _functions.httpsCallable('getDailyState');
-      final result = await callable.call<Map<Object?, Object?>>(<String, dynamic>{});
+      final result = await callable.call<Map<Object?, Object?>>(
+        <String, dynamic>{},
+      );
       final data = (result.data).cast<String, dynamic>();
       return _parseSnapshot(data);
     } catch (_) {
@@ -36,7 +38,9 @@ final class FirebaseDailyRemoteRepository implements DailyRemoteRepository {
   Future<DailyClaimResult> claimDailyReward() async {
     try {
       final callable = _functions.httpsCallable('claimDailyReward');
-      final result = await callable.call<Map<Object?, Object?>>(<String, dynamic>{});
+      final result = await callable.call<Map<Object?, Object?>>(
+        <String, dynamic>{},
+      );
       final data = (result.data).cast<String, dynamic>();
       return DailyClaimSuccess(
         coinGrant: (data['coinGrant'] as int?) ?? 0,
@@ -86,7 +90,9 @@ final class FirebaseDailyRemoteRepository implements DailyRemoteRepository {
   Future<DailyChallengeDefinition?> getDailyChallenge() async {
     try {
       final callable = _functions.httpsCallable('getDailyChallenge');
-      final result = await callable.call<Map<Object?, Object?>>(<String, dynamic>{});
+      final result = await callable.call<Map<Object?, Object?>>(
+        <String, dynamic>{},
+      );
       final data = (result.data).cast<String, dynamic>();
       return _parseChallengeDef(data);
     } catch (_) {
@@ -110,10 +116,12 @@ final class FirebaseDailyRemoteRepository implements DailyRemoteRepository {
 
   @override
   Future<void> updateNotificationPreferences(
-      NotificationPreferences prefs) async {
+    NotificationPreferences prefs,
+  ) async {
     try {
-      final callable =
-          _functions.httpsCallable('updateNotificationPreferences');
+      final callable = _functions.httpsCallable(
+        'updateNotificationPreferences',
+      );
       await callable.call<Map<Object?, Object?>>({
         'dailyChallengeNotificationsEnabled': prefs.dailyChallengeEnabled,
         'streakRiskNotificationsEnabled': prefs.streakRiskEnabled,
@@ -136,27 +144,33 @@ final class FirebaseDailyRemoteRepository implements DailyRemoteRepository {
 
   static DailyStateSnapshot? _parseSnapshot(Map<String, dynamic> data) {
     try {
-      final reward = (data['dailyRewardState'] as Map?)?.cast<String, dynamic>() ?? {};
-      final streak = (data['streakState'] as Map?)?.cast<String, dynamic>() ?? {};
-      final challenge = (data['dailyChallengeState'] as Map?)?.cast<String, dynamic>() ?? {};
+      final reward =
+          (data['dailyRewardState'] as Map?)?.cast<String, dynamic>() ?? {};
+      final streak =
+          (data['streakState'] as Map?)?.cast<String, dynamic>() ?? {};
+      final challenge =
+          (data['dailyChallengeState'] as Map?)?.cast<String, dynamic>() ?? {};
 
       return DailyStateSnapshot(
         dayKey: data['dayKey'] as String? ?? '',
-        serverNow: DateTime.tryParse(data['serverNow'] as String? ?? '') ??
+        serverNow:
+            DateTime.tryParse(data['serverNow'] as String? ?? '') ??
             DateTime.now(),
         timezoneId: data['timezoneId'] as String? ?? 'UTC',
         rewardState: DailyRewardState(
           calendarDayIndex: (reward['calendarDayIndex'] as int?) ?? 1,
           lastClaimedDayKey: reward['lastClaimedDayKey'] as String?,
-          lastClaimedAt:
-              DateTime.tryParse(reward['lastClaimedAt'] as String? ?? ''),
+          lastClaimedAt: DateTime.tryParse(
+            reward['lastClaimedAt'] as String? ?? '',
+          ),
           revision: (reward['revision'] as int?) ?? 0,
         ),
         streakState: StreakState(
           currentStreakDays: (streak['currentStreakDays'] as int?) ?? 0,
           lastQualifiedDayKey: streak['lastQualifiedDayKey'] as String?,
           longestStreakDays: (streak['longestStreakDays'] as int?) ?? 0,
-          claimedMilestones: ((streak['claimedMilestones'] as List?) ?? []).cast<int>(),
+          claimedMilestones: ((streak['claimedMilestones'] as List?) ?? [])
+              .cast<int>(),
           streakCycleId: streak['streakCycleId'] as String? ?? 'init',
           revision: (streak['revision'] as int?) ?? 0,
         ),
@@ -165,8 +179,9 @@ final class FirebaseDailyRemoteRepository implements DailyRemoteRepository {
           challengeId: challenge['challengeId'] as String? ?? '',
           completed: (challenge['completed'] as bool?) ?? false,
           rewardGranted: (challenge['rewardGranted'] as bool?) ?? false,
-          completedAt:
-              DateTime.tryParse(challenge['completedAt'] as String? ?? ''),
+          completedAt: DateTime.tryParse(
+            challenge['completedAt'] as String? ?? '',
+          ),
           attemptCount: (challenge['attemptCount'] as int?) ?? 0,
           revision: (challenge['revision'] as int?) ?? 0,
         ),
@@ -178,21 +193,25 @@ final class FirebaseDailyRemoteRepository implements DailyRemoteRepository {
   }
 
   static DailyChallengeDefinition? _parseChallengeDef(
-      Map<String, dynamic> data) {
+    Map<String, dynamic> data,
+  ) {
     try {
       return DailyChallengeDefinition(
         challengeId: data['challengeId'] as String,
         dayKey: data['dayKey'] as String,
         cohortKey: data['cohortKey'] as String? ?? DailyConfig.cohortDefault,
         seed: data['seed'] as int,
-        rewardAmount: (data['rewardAmount'] as int?) ?? DailyConfig.challengeReward,
+        rewardAmount:
+            (data['rewardAmount'] as int?) ?? DailyConfig.challengeReward,
         activeFrom: DateTime.parse(data['activeFrom'] as String),
         activeUntil: DateTime.parse(data['activeUntil'] as String),
-        rulesVersion: (data['rulesVersion'] as int?) ??
-            DailyConfig.challengeRulesVersion,
-        generatorVersion: (data['generatorVersion'] as int?) ??
+        rulesVersion:
+            (data['rulesVersion'] as int?) ?? DailyConfig.challengeRulesVersion,
+        generatorVersion:
+            (data['generatorVersion'] as int?) ??
             DailyConfig.challengeGeneratorVersion,
-        solverVersion: (data['solverVersion'] as int?) ??
+        solverVersion:
+            (data['solverVersion'] as int?) ??
             DailyConfig.challengeSolverVersion,
         contentBundleVersion: data['contentBundleVersion'] as String?,
         boardFingerprint: data['boardFingerprint'] as String?,
@@ -216,8 +235,7 @@ final class OfflineDailyRemoteRepository implements DailyRemoteRepository {
   Future<DailyClaimResult> claimDailyChallengeReward({
     required String challengeId,
     required String dayKey,
-  }) async =>
-      const DailyClaimFailed('offline');
+  }) async => const DailyClaimFailed('offline');
   @override
   Future<void> markDailyActivity({required DailyActivitySource source}) async {}
   @override
@@ -226,7 +244,8 @@ final class OfflineDailyRemoteRepository implements DailyRemoteRepository {
   Future<void> registerDevice(DeviceRegistrationInfo info) async {}
   @override
   Future<void> updateNotificationPreferences(
-      NotificationPreferences prefs) async {}
+    NotificationPreferences prefs,
+  ) async {}
   @override
   Future<void> updateTimezone(PlayerTimezone timezone) async {}
 }

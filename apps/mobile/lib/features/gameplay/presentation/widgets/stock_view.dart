@@ -48,10 +48,7 @@ class StockView extends StatelessWidget {
             height: 58,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
-              border: Border.all(
-                color: const Color(0xFFFFD700),
-                width: 1.5,
-              ),
+              border: Border.all(color: const Color(0xFFFFD700), width: 1.5),
               color: const Color(0xFF1A3060),
             ),
             child: const Center(
@@ -73,10 +70,7 @@ class StockView extends StatelessWidget {
             height: 58,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(6),
-              border: Border.all(
-                color: const Color(0xFF3A5A8C),
-                width: 1.5,
-              ),
+              border: Border.all(color: const Color(0xFF3A5A8C), width: 1.5),
               color: const Color(0xFF1A3060),
             ),
             child: const Center(

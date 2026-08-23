@@ -74,10 +74,7 @@ class JourneyController extends Notifier<JourneyViewState> {
     if (r == null) return;
     if (r.flags.unlockedStoryBeatIds.contains(storyBeatId)) return;
     final newFlags = r.flags.copyWith(
-      unlockedStoryBeatIds: {
-        ...r.flags.unlockedStoryBeatIds,
-        storyBeatId,
-      },
+      unlockedStoryBeatIds: {...r.flags.unlockedStoryBeatIds, storyBeatId},
     );
     await _repo.saveFlags(newFlags);
     state = JourneyReady(
@@ -93,10 +90,7 @@ class JourneyController extends Notifier<JourneyViewState> {
     if (r == null) return;
     if (r.flags.viewedStoryBeatIds.contains(storyBeatId)) return;
     final newFlags = r.flags.copyWith(
-      viewedStoryBeatIds: {
-        ...r.flags.viewedStoryBeatIds,
-        storyBeatId,
-      },
+      viewedStoryBeatIds: {...r.flags.viewedStoryBeatIds, storyBeatId},
     );
     await _repo.saveFlags(newFlags);
     state = JourneyReady(
@@ -118,8 +112,9 @@ class JourneyController extends Notifier<JourneyViewState> {
     if (r == null) return;
 
     final levels = r.levels;
-    final currentIndex =
-        levels.indexWhere((l) => l.levelDefinitionId == levelId);
+    final currentIndex = levels.indexWhere(
+      (l) => l.levelDefinitionId == levelId,
+    );
     final nextLevelId = currentIndex >= 0 && currentIndex + 1 < levels.length
         ? levels[currentIndex + 1].levelDefinitionId
         : null;
@@ -131,8 +126,13 @@ class JourneyController extends Notifier<JourneyViewState> {
     );
 
     // Check if that completed an entire chapter
-    final chapter = JourneyContent.chapters.cast<ChapterDefinition?>().firstWhere(
-          (c) => c != null && c.levelStart <= globalNumber && c.levelEnd >= globalNumber,
+    final chapter = JourneyContent.chapters
+        .cast<ChapterDefinition?>()
+        .firstWhere(
+          (c) =>
+              c != null &&
+              c.levelStart <= globalNumber &&
+              c.levelEnd >= globalNumber,
           orElse: () => null,
         );
     if (chapter != null && !newProgress.isChapterCompleted(chapter.chapterId)) {
@@ -148,17 +148,16 @@ class JourneyController extends Notifier<JourneyViewState> {
     // Unlock story beats that fire at this level
     var flags = r.flags;
     final beatsToUnlock = JourneyContent.storyBeats
-        .where((b) =>
-            b.triggerLevelNumber == globalNumber &&
-            !flags.unlockedStoryBeatIds.contains(b.storyBeatId))
+        .where(
+          (b) =>
+              b.triggerLevelNumber == globalNumber &&
+              !flags.unlockedStoryBeatIds.contains(b.storyBeatId),
+        )
         .map((b) => b.storyBeatId)
         .toSet();
     if (beatsToUnlock.isNotEmpty) {
       flags = flags.copyWith(
-        unlockedStoryBeatIds: {
-          ...flags.unlockedStoryBeatIds,
-          ...beatsToUnlock,
-        },
+        unlockedStoryBeatIds: {...flags.unlockedStoryBeatIds, ...beatsToUnlock},
       );
     }
 

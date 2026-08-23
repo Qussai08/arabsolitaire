@@ -7,5 +7,5 @@ export 'journey_state.dart';
 
 final journeyControllerProvider =
     NotifierProvider<JourneyController, JourneyViewState>(
-  JourneyController.new,
-);
+      JourneyController.new,
+    );

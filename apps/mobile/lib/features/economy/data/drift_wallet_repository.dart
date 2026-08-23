@@ -13,24 +13,25 @@ final class DriftWalletRepository implements WalletRepository {
 
   @override
   Future<WalletSnapshot> getSnapshot() async {
-    final row = await (_db.select(_db.walletCacheRows)
-          ..where((t) => t.id.equals(_mainId)))
-        .getSingleOrNull();
+    final row = await (_db.select(
+      _db.walletCacheRows,
+    )..where((t) => t.id.equals(_mainId))).getSingleOrNull();
     if (row == null) return WalletSnapshot.empty;
     return _rowToSnapshot(row);
   }
 
   @override
   Stream<WalletSnapshot> watchSnapshot() {
-    return (_db.select(_db.walletCacheRows)
-          ..where((t) => t.id.equals(_mainId)))
+    return (_db.select(_db.walletCacheRows)..where((t) => t.id.equals(_mainId)))
         .watchSingleOrNull()
         .map((row) => row == null ? WalletSnapshot.empty : _rowToSnapshot(row));
   }
 
   @override
   Future<void> saveSnapshot(WalletSnapshot snapshot) async {
-    await _db.into(_db.walletCacheRows).insertOnConflictUpdate(
+    await _db
+        .into(_db.walletCacheRows)
+        .insertOnConflictUpdate(
           db_lib.WalletCacheRowsCompanion(
             id: const Value(_mainId),
             coinBalance: Value(snapshot.coinBalance),
@@ -60,14 +61,14 @@ final class DriftWalletRepository implements WalletRepository {
 
   @override
   Future<void> clearPendingDeltas() async {
-    await (_db.update(_db.walletCacheRows)
-          ..where((t) => t.id.equals(_mainId)))
-        .write(
-          const db_lib.WalletCacheRowsCompanion(
-            pendingCoinDelta: Value(0),
-            pendingHintDelta: Value(0),
-          ),
-        );
+    await (_db.update(
+      _db.walletCacheRows,
+    )..where((t) => t.id.equals(_mainId))).write(
+      const db_lib.WalletCacheRowsCompanion(
+        pendingCoinDelta: Value(0),
+        pendingHintDelta: Value(0),
+      ),
+    );
   }
 
   static WalletSnapshot _rowToSnapshot(db_lib.WalletCacheRow row) {
@@ -89,7 +90,9 @@ final class DriftEconomyOperationRepository {
   final db_lib.AppDatabase _db;
 
   Future<void> enqueue(EconomyOperation op) async {
-    await _db.into(_db.economyOperationRows).insertOnConflictUpdate(
+    await _db
+        .into(_db.economyOperationRows)
+        .insertOnConflictUpdate(
           db_lib.EconomyOperationRowsCompanion(
             operationId: Value(op.operationId),
             operationType: Value(op.type.name),
@@ -107,19 +110,21 @@ final class DriftEconomyOperationRepository {
   }
 
   Future<List<EconomyOperation>> loadPending() async {
-    final rows = await (_db.select(_db.economyOperationRows)
-          ..where(
-            (t) =>
-                t.status.isIn([
-                  EconomyOperationStatus.pending.name,
-                  EconomyOperationStatus.retryable.name,
-                ]) &
-                (t.nextRetryAt.isNull() |
-                    t.nextRetryAt.isSmallerThanValue(
-                        DateTime.now().toUtc())),
-          )
-          ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
-        .get();
+    final rows =
+        await (_db.select(_db.economyOperationRows)
+              ..where(
+                (t) =>
+                    t.status.isIn([
+                      EconomyOperationStatus.pending.name,
+                      EconomyOperationStatus.retryable.name,
+                    ]) &
+                    (t.nextRetryAt.isNull() |
+                        t.nextRetryAt.isSmallerThanValue(
+                          DateTime.now().toUtc(),
+                        )),
+              )
+              ..orderBy([(t) => OrderingTerm.asc(t.createdAt)]))
+            .get();
     return rows.map(_rowToOp).toList();
   }
 
@@ -127,14 +132,14 @@ final class DriftEconomyOperationRepository {
     String operationId, {
     required String serverTransactionId,
   }) async {
-    await (_db.update(_db.economyOperationRows)
-          ..where((t) => t.operationId.equals(operationId)))
-        .write(
-          db_lib.EconomyOperationRowsCompanion(
-            status: Value(EconomyOperationStatus.completed.name),
-            serverTransactionId: Value(serverTransactionId),
-          ),
-        );
+    await (_db.update(
+      _db.economyOperationRows,
+    )..where((t) => t.operationId.equals(operationId))).write(
+      db_lib.EconomyOperationRowsCompanion(
+        status: Value(EconomyOperationStatus.completed.name),
+        serverTransactionId: Value(serverTransactionId),
+      ),
+    );
   }
 
   Future<void> markFailed(
@@ -142,30 +147,30 @@ final class DriftEconomyOperationRepository {
     required bool retryable,
     Duration backoff = const Duration(minutes: 2),
   }) async {
-    final row = await (_db.select(_db.economyOperationRows)
-          ..where((t) => t.operationId.equals(operationId)))
-        .getSingleOrNull();
+    final row = await (_db.select(
+      _db.economyOperationRows,
+    )..where((t) => t.operationId.equals(operationId))).getSingleOrNull();
     if (row == null) return;
-    final nextRetry =
-        retryable ? DateTime.now().toUtc().add(backoff) : null;
-    await (_db.update(_db.economyOperationRows)
-          ..where((t) => t.operationId.equals(operationId)))
-        .write(
-          db_lib.EconomyOperationRowsCompanion(
-            status: Value(retryable
-                ? EconomyOperationStatus.retryable.name
-                : EconomyOperationStatus.failed.name),
-            attemptCount: Value(row.attemptCount + 1),
-            nextRetryAt: Value(nextRetry),
-          ),
-        );
+    final nextRetry = retryable ? DateTime.now().toUtc().add(backoff) : null;
+    await (_db.update(
+      _db.economyOperationRows,
+    )..where((t) => t.operationId.equals(operationId))).write(
+      db_lib.EconomyOperationRowsCompanion(
+        status: Value(
+          retryable
+              ? EconomyOperationStatus.retryable.name
+              : EconomyOperationStatus.failed.name,
+        ),
+        attemptCount: Value(row.attemptCount + 1),
+        nextRetryAt: Value(nextRetry),
+      ),
+    );
   }
 
   Future<void> purgeCompleted() async {
-    await (_db.delete(_db.economyOperationRows)
-          ..where(
-            (t) => t.status.equals(EconomyOperationStatus.completed.name),
-          ))
+    await (_db.delete(
+          _db.economyOperationRows,
+        )..where((t) => t.status.equals(EconomyOperationStatus.completed.name)))
         .go();
   }
 

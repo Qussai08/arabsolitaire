@@ -18,21 +18,21 @@ final class DragPayload {
   GameAction? toTableauAction(int targetColumn) {
     return switch (sourceType) {
       DragSourceType.tableau => MoveTableauToTableau(
-          fromColumn: sourceIndex,
-          toColumn: targetColumn,
-        ),
-      DragSourceType.stock =>
-        MoveStockToTableau(toColumn: targetColumn),
+        fromColumn: sourceIndex,
+        toColumn: targetColumn,
+      ),
+      DragSourceType.stock => MoveStockToTableau(toColumn: targetColumn),
     };
   }
 
   /// Build the appropriate action for an Association Slot drop target.
   GameAction? toSlotAction(int slotIndex) {
     return switch (sourceType) {
-      DragSourceType.tableau =>
-        MoveTableauToSlot(fromColumn: sourceIndex, slotIndex: slotIndex),
-      DragSourceType.stock =>
-        MoveStockToSlot(slotIndex: slotIndex),
+      DragSourceType.tableau => MoveTableauToSlot(
+        fromColumn: sourceIndex,
+        slotIndex: slotIndex,
+      ),
+      DragSourceType.stock => MoveStockToSlot(slotIndex: slotIndex),
     };
   }
 }

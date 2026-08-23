@@ -28,12 +28,14 @@ class StoryArchiveScreen extends ConsumerWidget {
       ),
       body: switch (journeyState) {
         JourneyLoading() => const Center(
-            child: CircularProgressIndicator(color: Color(0xFFD4A017)),
-          ),
+          child: CircularProgressIndicator(color: Color(0xFFD4A017)),
+        ),
         JourneyError(:final message) => Center(
-            child: Text(message,
-                style: const TextStyle(color: Colors.white, fontFamily: 'Cairo')),
+          child: Text(
+            message,
+            style: const TextStyle(color: Colors.white, fontFamily: 'Cairo'),
           ),
+        ),
         JourneyReady(:final flags) => _ArchiveBody(flags: flags),
       },
     );
@@ -54,10 +56,10 @@ class _ArchiveBody extends StatelessWidget {
       itemCount: chapters.length,
       itemBuilder: (ctx, i) {
         final chapter = chapters[i];
-        final chapterBeats = beats
-            .where((b) => b.chapterId == chapter.chapterId)
-            .toList()
-          ..sort((a, b) => a.triggerLevelNumber.compareTo(b.triggerLevelNumber));
+        final chapterBeats =
+            beats.where((b) => b.chapterId == chapter.chapterId).toList()..sort(
+              (a, b) => a.triggerLevelNumber.compareTo(b.triggerLevelNumber),
+            );
 
         return _ChapterBeatSection(
           chapter: chapter,
@@ -99,10 +101,12 @@ class _ChapterBeatSection extends StatelessWidget {
               ),
             ),
           ),
-          ...beats.map((b) => _BeatTile(
-                beat: b,
-                isUnlocked: unlockedIds.contains(b.storyBeatId),
-              )),
+          ...beats.map(
+            (b) => _BeatTile(
+              beat: b,
+              isUnlocked: unlockedIds.contains(b.storyBeatId),
+            ),
+          ),
         ],
       ),
     );
@@ -115,10 +119,10 @@ class _BeatTile extends ConsumerWidget {
   final bool isUnlocked;
 
   String _typeLabel(StoryBeatType t) => switch (t) {
-        StoryBeatType.start => 'البداية',
-        StoryBeatType.midpoint => 'المنتصف',
-        StoryBeatType.ending => 'الخاتمة',
-      };
+    StoryBeatType.start => 'البداية',
+    StoryBeatType.midpoint => 'المنتصف',
+    StoryBeatType.ending => 'الخاتمة',
+  };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -127,13 +131,13 @@ class _BeatTile extends ConsumerWidget {
       child: InkWell(
         onTap: isUnlocked
             ? () => Navigator.of(context).push<void>(
-                  MaterialPageRoute(
-                    builder: (_) => StoryBeatScreen(
-                      beat: beat,
-                      onDismiss: () => Navigator.of(context).pop(),
-                    ),
+                MaterialPageRoute(
+                  builder: (_) => StoryBeatScreen(
+                    beat: beat,
+                    onDismiss: () => Navigator.of(context).pop(),
                   ),
-                )
+                ),
+              )
             : null,
         borderRadius: BorderRadius.circular(12),
         child: Container(
@@ -161,9 +165,7 @@ class _BeatTile extends ConsumerWidget {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  isUnlocked
-                      ? _typeLabel(beat.type)
-                      : '???',
+                  isUnlocked ? _typeLabel(beat.type) : '???',
                   textDirection: TextDirection.rtl,
                   style: TextStyle(
                     color: isUnlocked

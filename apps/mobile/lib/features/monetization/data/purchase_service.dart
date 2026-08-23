@@ -20,17 +20,15 @@ final class NoOpPurchaseService implements PurchaseService {
   const NoOpPurchaseService();
 
   @override
-  Future<List<PurchaseProduct>> loadProducts(
-          List<String> productIds) async =>
+  Future<List<PurchaseProduct>> loadProducts(List<String> productIds) async =>
       [];
 
   @override
-  Future<PurchaseState> purchase(String productId) async =>
-      PurchaseState(
-        productId: productId,
-        status: PurchaseStatus.error,
-        error: 'Store not available',
-      );
+  Future<PurchaseState> purchase(String productId) async => PurchaseState(
+    productId: productId,
+    status: PurchaseStatus.error,
+    error: 'Store not available',
+  );
 
   @override
   Future<List<PurchaseState>> restorePurchases() async => [];
@@ -47,8 +45,7 @@ final class StorePurchaseService implements PurchaseService {
   const StorePurchaseService();
 
   @override
-  Future<List<PurchaseProduct>> loadProducts(
-      List<String> productIds) async {
+  Future<List<PurchaseProduct>> loadProducts(List<String> productIds) async {
     // TODO: final ProductDetailsResponse resp =
     //     await InAppPurchase.instance.queryProductDetails(productIds.toSet());
     // Map resp.productDetails -> PurchaseProduct.

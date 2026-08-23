@@ -30,7 +30,8 @@ class ContentValidator {
       return ValidationIssue(
         severity: ValidationSeverity.error,
         code: 'UNSUPPORTED_SCHEMA_VERSION',
-        message: 'Bundle schema version ${manifest.schemaVersion} is not '
+        message:
+            'Bundle schema version ${manifest.schemaVersion} is not '
             'supported (client supports $kSupportedSchemaVersion).',
       );
     }
@@ -44,7 +45,8 @@ class ContentValidator {
       return ValidationIssue(
         severity: ValidationSeverity.error,
         code: 'UNSUPPORTED_RULES_VERSION',
-        message: 'Bundle rules version ${manifest.rulesVersion} is not '
+        message:
+            'Bundle rules version ${manifest.rulesVersion} is not '
             'supported (client supports $kSupportedRulesVersion). '
             'App update may be required.',
       );
@@ -58,32 +60,44 @@ class ContentValidator {
     final issues = <ValidationIssue>[];
 
     if (manifest.bundleId.isEmpty) {
-      issues.add(const ValidationIssue(
+      issues.add(
+        const ValidationIssue(
           severity: ValidationSeverity.error,
           code: 'MISSING_BUNDLE_ID',
-          message: 'bundleId is required.'));
+          message: 'bundleId is required.',
+        ),
+      );
     }
     if (manifest.bundleVersion.isEmpty) {
-      issues.add(const ValidationIssue(
+      issues.add(
+        const ValidationIssue(
           severity: ValidationSeverity.error,
           code: 'MISSING_BUNDLE_VERSION',
-          message: 'bundleVersion is required.'));
+          message: 'bundleVersion is required.',
+        ),
+      );
     }
     if (manifest.files.isEmpty) {
-      issues.add(const ValidationIssue(
+      issues.add(
+        const ValidationIssue(
           severity: ValidationSeverity.error,
           code: 'MISSING_FILES',
-          message: 'Manifest must list at least one file.'));
+          message: 'Manifest must list at least one file.',
+        ),
+      );
     }
 
     // Check file path uniqueness
     final paths = manifest.files.map((f) => f.path).toList();
     final uniquePaths = paths.toSet();
     if (uniquePaths.length != paths.length) {
-      issues.add(const ValidationIssue(
+      issues.add(
+        const ValidationIssue(
           severity: ValidationSeverity.error,
           code: 'DUPLICATE_FILE_PATHS',
-          message: 'Manifest contains duplicate file paths.'));
+          message: 'Manifest contains duplicate file paths.',
+        ),
+      );
     }
 
     return issues;
@@ -98,10 +112,10 @@ class ContentValidator {
     issues.addAll(_validateChapters(snapshot.chapters));
     issues.addAll(_validateLevels(snapshot.levels, snapshot.chapters));
     issues.addAll(_validateAssociations(snapshot.associations));
+    issues.addAll(_validateStoryBeats(snapshot.storyBeats, snapshot.levels));
     issues.addAll(
-        _validateStoryBeats(snapshot.storyBeats, snapshot.levels));
-    issues.addAll(_validateContentRules(
-        snapshot.levels, snapshot.associations));
+      _validateContentRules(snapshot.levels, snapshot.associations),
+    );
 
     sw.stop();
     return issues;
@@ -113,27 +127,33 @@ class ContentValidator {
 
     for (final ch in chapters) {
       if (!ids.add(ch.chapterId)) {
-        issues.add(ValidationIssue(
-          severity: ValidationSeverity.error,
-          code: 'DUPLICATE_CHAPTER_ID',
-          message: 'Duplicate chapterId: ${ch.chapterId}',
-          affectedId: ch.chapterId,
-        ));
+        issues.add(
+          ValidationIssue(
+            severity: ValidationSeverity.error,
+            code: 'DUPLICATE_CHAPTER_ID',
+            message: 'Duplicate chapterId: ${ch.chapterId}',
+            affectedId: ch.chapterId,
+          ),
+        );
       }
       if (ch.levelCount <= 0) {
-        issues.add(ValidationIssue(
-          severity: ValidationSeverity.error,
-          code: 'INVALID_LEVEL_COUNT',
-          message: 'Chapter ${ch.chapterId} has invalid levelCount.',
-          affectedId: ch.chapterId,
-        ));
+        issues.add(
+          ValidationIssue(
+            severity: ValidationSeverity.error,
+            code: 'INVALID_LEVEL_COUNT',
+            message: 'Chapter ${ch.chapterId} has invalid levelCount.',
+            affectedId: ch.chapterId,
+          ),
+        );
       }
     }
     return issues;
   }
 
   List<ValidationIssue> _validateLevels(
-      List<LevelDto> levels, List<ChapterDto> chapters) {
+    List<LevelDto> levels,
+    List<ChapterDto> chapters,
+  ) {
     final issues = <ValidationIssue>[];
     final chapterIds = chapters.map((c) => c.chapterId).toSet();
     final ids = <String>{};
@@ -141,37 +161,43 @@ class ContentValidator {
 
     for (final l in levels) {
       if (!ids.add(l.levelDefinitionId)) {
-        issues.add(ValidationIssue(
-          severity: ValidationSeverity.error,
-          code: 'DUPLICATE_LEVEL_ID',
-          message: 'Duplicate levelDefinitionId: ${l.levelDefinitionId}',
-          affectedId: l.levelDefinitionId,
-        ));
+        issues.add(
+          ValidationIssue(
+            severity: ValidationSeverity.error,
+            code: 'DUPLICATE_LEVEL_ID',
+            message: 'Duplicate levelDefinitionId: ${l.levelDefinitionId}',
+            affectedId: l.levelDefinitionId,
+          ),
+        );
       }
       if (!globalNums.add(l.globalLevelNumber)) {
-        issues.add(ValidationIssue(
-          severity: ValidationSeverity.error,
-          code: 'DUPLICATE_GLOBAL_LEVEL',
-          message:
-              'Duplicate globalLevelNumber: ${l.globalLevelNumber}',
-          affectedId: l.levelDefinitionId,
-        ));
+        issues.add(
+          ValidationIssue(
+            severity: ValidationSeverity.error,
+            code: 'DUPLICATE_GLOBAL_LEVEL',
+            message: 'Duplicate globalLevelNumber: ${l.globalLevelNumber}',
+            affectedId: l.levelDefinitionId,
+          ),
+        );
       }
       if (!chapterIds.contains(l.chapterId)) {
-        issues.add(ValidationIssue(
-          severity: ValidationSeverity.error,
-          code: 'INVALID_CHAPTER_REF',
-          message:
-              'Level ${l.levelDefinitionId} references unknown chapterId: ${l.chapterId}',
-          affectedId: l.levelDefinitionId,
-        ));
+        issues.add(
+          ValidationIssue(
+            severity: ValidationSeverity.error,
+            code: 'INVALID_CHAPTER_REF',
+            message:
+                'Level ${l.levelDefinitionId} references unknown chapterId: ${l.chapterId}',
+            affectedId: l.levelDefinitionId,
+          ),
+        );
       }
     }
     return issues;
   }
 
   List<ValidationIssue> _validateAssociations(
-      List<AssociationVariantDto> associations) {
+    List<AssociationVariantDto> associations,
+  ) {
     final issues = <ValidationIssue>[];
     final variantIds = <String>{};
 
@@ -179,70 +205,83 @@ class ContentValidator {
     // (full cooldown check belongs in the CMS/publishing validator, not client)
     for (final a in associations) {
       if (!variantIds.add(a.associationVariantId)) {
-        issues.add(ValidationIssue(
-          severity: ValidationSeverity.error,
-          code: 'DUPLICATE_VARIANT_ID',
-          message:
-              'Duplicate associationVariantId: ${a.associationVariantId}',
-          affectedId: a.associationVariantId,
-        ));
+        issues.add(
+          ValidationIssue(
+            severity: ValidationSeverity.error,
+            code: 'DUPLICATE_VARIANT_ID',
+            message:
+                'Duplicate associationVariantId: ${a.associationVariantId}',
+            affectedId: a.associationVariantId,
+          ),
+        );
       }
       // Member cards must be homogeneous content type (all text or all image)
       if (a.contentType != 'text' && a.contentType != 'image') {
-        issues.add(ValidationIssue(
-          severity: ValidationSeverity.error,
-          code: 'INVALID_CONTENT_TYPE',
-          message:
-              'AssociationVariant ${a.associationVariantId} has unknown contentType: ${a.contentType}',
-          affectedId: a.associationVariantId,
-        ));
+        issues.add(
+          ValidationIssue(
+            severity: ValidationSeverity.error,
+            code: 'INVALID_CONTENT_TYPE',
+            message:
+                'AssociationVariant ${a.associationVariantId} has unknown contentType: ${a.contentType}',
+            affectedId: a.associationVariantId,
+          ),
+        );
       }
       if (a.memberCards.isEmpty) {
-        issues.add(ValidationIssue(
-          severity: ValidationSeverity.error,
-          code: 'MISSING_MEMBER_CARDS',
-          message:
-              'AssociationVariant ${a.associationVariantId} has no member cards.',
-          affectedId: a.associationVariantId,
-        ));
+        issues.add(
+          ValidationIssue(
+            severity: ValidationSeverity.error,
+            code: 'MISSING_MEMBER_CARDS',
+            message:
+                'AssociationVariant ${a.associationVariantId} has no member cards.',
+            affectedId: a.associationVariantId,
+          ),
+        );
       }
       if (a.memberCards.length < 2) {
-        issues.add(ValidationIssue(
-          severity: ValidationSeverity.error,
-          code: 'INVALID_GROUP_SIZE',
-          message:
-              'AssociationVariant ${a.associationVariantId} must have at least 2 member cards.',
-          affectedId: a.associationVariantId,
-        ));
+        issues.add(
+          ValidationIssue(
+            severity: ValidationSeverity.error,
+            code: 'INVALID_GROUP_SIZE',
+            message:
+                'AssociationVariant ${a.associationVariantId} must have at least 2 member cards.',
+            affectedId: a.associationVariantId,
+          ),
+        );
       }
     }
     return issues;
   }
 
   List<ValidationIssue> _validateStoryBeats(
-      List<StoryBeatDto> beats, List<LevelDto> levels) {
+    List<StoryBeatDto> beats,
+    List<LevelDto> levels,
+  ) {
     final issues = <ValidationIssue>[];
     final beatIds = <String>{};
     final triggerLevels = levels.map((l) => l.globalLevelNumber).toSet();
 
     for (final beat in beats) {
       if (!beatIds.add(beat.storyBeatId)) {
-        issues.add(ValidationIssue(
-          severity: ValidationSeverity.error,
-          code: 'DUPLICATE_BEAT_ID',
-          message: 'Duplicate storyBeatId: ${beat.storyBeatId}',
-          affectedId: beat.storyBeatId,
-        ));
+        issues.add(
+          ValidationIssue(
+            severity: ValidationSeverity.error,
+            code: 'DUPLICATE_BEAT_ID',
+            message: 'Duplicate storyBeatId: ${beat.storyBeatId}',
+            affectedId: beat.storyBeatId,
+          ),
+        );
       }
-      if (levels.isNotEmpty &&
-          !triggerLevels.contains(beat.triggerLevel)) {
-        issues.add(ValidationIssue(
-          severity: ValidationSeverity.warning,
-          code: 'INVALID_TRIGGER_LEVEL',
-          message:
-              'StoryBeat ${beat.storyBeatId} triggers at level ${beat.triggerLevel} which is not in this bundle.',
-          affectedId: beat.storyBeatId,
-        ));
+      if (levels.isNotEmpty && !triggerLevels.contains(beat.triggerLevel)) {
+        issues.add(
+          ValidationIssue(
+            severity: ValidationSeverity.warning,
+            code: 'INVALID_TRIGGER_LEVEL',
+            message:
+                'StoryBeat ${beat.storyBeatId} triggers at level ${beat.triggerLevel} which is not in this bundle.',
+            affectedId: beat.storyBeatId,
+          ),
+        );
       }
     }
     return issues;
@@ -250,7 +289,9 @@ class ContentValidator {
 
   /// Content rules validation (sprint 10 content-rule requirements).
   List<ValidationIssue> _validateContentRules(
-      List<LevelDto> levels, List<AssociationVariantDto> associations) {
+    List<LevelDto> levels,
+    List<AssociationVariantDto> associations,
+  ) {
     final issues = <ValidationIssue>[];
 
     // ── Visual Association restriction (max 1 per early/mid level) ──────────
@@ -258,13 +299,15 @@ class ContentValidator {
     // (Full assignment is done at generation time; validate pool constraint)
     final visualVariants = associations.where((a) => a.visualFlag).length;
     if (visualVariants > 0) {
-      issues.add(ValidationIssue(
-        severity: ValidationSeverity.info,
-        code: 'VISUAL_ASSOCIATIONS_PRESENT',
-        message:
-            '$visualVariants visual association variant(s) present. '
-            'Generator must enforce max-one-visual for early/mid levels.',
-      ));
+      issues.add(
+        ValidationIssue(
+          severity: ValidationSeverity.info,
+          code: 'VISUAL_ASSOCIATIONS_PRESENT',
+          message:
+              '$visualVariants visual association variant(s) present. '
+              'Generator must enforce max-one-visual for early/mid levels.',
+        ),
+      );
     }
 
     // ── Clue reuse cooldown (≥20 levels): tracked per publishing pipeline,
@@ -299,22 +342,26 @@ class ContentValidator {
       if (entry.isTrusted) continue; // bundled/trusted — no download needed
       final bytes = fileBytes[entry.path];
       if (bytes == null) {
-        issues.add(ValidationIssue(
-          severity: ValidationSeverity.error,
-          code: 'MISSING_FILE',
-          message: 'Required file not downloaded: ${entry.path}',
-          affectedId: entry.path,
-        ));
+        issues.add(
+          ValidationIssue(
+            severity: ValidationSeverity.error,
+            code: 'MISSING_FILE',
+            message: 'Required file not downloaded: ${entry.path}',
+            affectedId: entry.path,
+          ),
+        );
         continue;
       }
       final hashError = validateFileHash(bytes, entry);
       if (hashError != null) {
-        issues.add(ValidationIssue(
-          severity: ValidationSeverity.error,
-          code: 'HASH_MISMATCH',
-          message: hashError,
-          affectedId: entry.path,
-        ));
+        issues.add(
+          ValidationIssue(
+            severity: ValidationSeverity.error,
+            code: 'HASH_MISMATCH',
+            message: hashError,
+            affectedId: entry.path,
+          ),
+        );
       }
     }
 
@@ -355,7 +402,9 @@ class ContentValidator {
     required Map<String, Uint8List> fileBytes,
   }) {
     List<T> parseList<T>(
-        String path, T Function(Map<String, dynamic>) fromJson) {
+      String path,
+      T Function(Map<String, dynamic>) fromJson,
+    ) {
       final bytes = fileBytes[path];
       if (bytes == null) return [];
       final raw = utf8.decode(bytes);
@@ -377,7 +426,9 @@ class ContentValidator {
       chapters: parseList('chapters.json', ChapterDto.fromJson),
       levels: parseList('levels.json', LevelDto.fromJson),
       associations: parseList(
-          'associations.json', AssociationVariantDto.fromJson),
+        'associations.json',
+        AssociationVariantDto.fromJson,
+      ),
       storyBeats: parseList('story_beats.json', StoryBeatDto.fromJson),
       localization: parseLocalization('localization/ar.json'),
       source: ContentSource.localRemote,

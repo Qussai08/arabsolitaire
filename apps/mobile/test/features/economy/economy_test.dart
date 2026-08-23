@@ -19,16 +19,40 @@ void main() {
     test('starting coins', () => expect(EconomyConfig.startingCoins, 300));
     test('starting hints', () => expect(EconomyConfig.startingHints, 3));
     test('hint cost', () => expect(EconomyConfig.hintCostCoins, 75));
-    test('extra moves first cost', () => expect(EconomyConfig.extraMovesCostFirst, 150));
-    test('extra moves second cost', () => expect(EconomyConfig.extraMovesCostSecond, 250));
+    test(
+      'extra moves first cost',
+      () => expect(EconomyConfig.extraMovesCostFirst, 150),
+    );
+    test(
+      'extra moves second cost',
+      () => expect(EconomyConfig.extraMovesCostSecond, 250),
+    );
     test('extra moves grant', () => expect(EconomyConfig.extraMovesGrant, 5));
-    test('extra moves max per attempt', () => expect(EconomyConfig.extraMovesMaxPerAttempt, 2));
-    test('dead end rescue cost', () => expect(EconomyConfig.deadEndRescueCostCoins, 200));
-    test('dead end rescue max per attempt', () => expect(EconomyConfig.deadEndRescueMaxPerAttempt, 1));
-    test('chapter reward coins', () => expect(EconomyConfig.chapterRewardCoins, 500));
-    test('chapter reward hints', () => expect(EconomyConfig.chapterRewardHints, 2));
+    test(
+      'extra moves max per attempt',
+      () => expect(EconomyConfig.extraMovesMaxPerAttempt, 2),
+    );
+    test(
+      'dead end rescue cost',
+      () => expect(EconomyConfig.deadEndRescueCostCoins, 200),
+    );
+    test(
+      'dead end rescue max per attempt',
+      () => expect(EconomyConfig.deadEndRescueMaxPerAttempt, 1),
+    );
+    test(
+      'chapter reward coins',
+      () => expect(EconomyConfig.chapterRewardCoins, 500),
+    );
+    test(
+      'chapter reward hints',
+      () => expect(EconomyConfig.chapterRewardHints, 2),
+    );
     test('level reward base', () => expect(EconomyConfig.levelRewardBase, 50));
-    test('level reward per move', () => expect(EconomyConfig.levelRewardPerRemainingMove, 2));
+    test(
+      'level reward per move',
+      () => expect(EconomyConfig.levelRewardPerRemainingMove, 2),
+    );
   });
 
   group('WalletSnapshot effective balances', () {
@@ -158,11 +182,13 @@ void main() {
     });
 
     test('clearPendingDeltas resets to zero', () async {
-      await repo.saveSnapshot(const WalletSnapshot(
-        coinBalance: 300,
-        pendingCoinDelta: -75,
-        pendingHintDelta: 1,
-      ));
+      await repo.saveSnapshot(
+        const WalletSnapshot(
+          coinBalance: 300,
+          pendingCoinDelta: -75,
+          pendingHintDelta: 1,
+        ),
+      );
       await repo.clearPendingDeltas();
       final snap = await repo.getSnapshot();
       expect(snap.pendingCoinDelta, 0);
@@ -183,7 +209,12 @@ void main() {
         operationId: 'eco_001',
         type: EconomyOperationType.levelReward,
         idempotencyKey: 'idem_001',
-        payload: {'levelId': 'l1', 'completionId': 'c1', 'remainingMoves': 4, 'streakCoins': 7},
+        payload: {
+          'levelId': 'l1',
+          'completionId': 'c1',
+          'remainingMoves': 4,
+          'streakCoins': 7,
+        },
         createdAt: DateTime.now().toUtc(),
         coinDelta: 65,
       );

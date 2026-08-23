@@ -50,8 +50,8 @@ final class LevelDefinition {
   final int globalLevelNumber;
   final String chapterId;
   final int chapterLevelNumber; // 1-50 within chapter
-  final int waveIndex;          // 1-5 within chapter
-  final int wavePosition;       // 1-10 within wave
+  final int waveIndex; // 1-5 within chapter
+  final int wavePosition; // 1-10 within wave
   final int semanticDifficultyTier; // 1-5
   final String? storyMilestone; // storyBeatId if applicable
   final bool enabled;
@@ -106,13 +106,13 @@ final class JourneyProgress {
   }
 
   JourneyProgress afterChapterCompleted(String chapterId) => JourneyProgress(
-        highestUnlockedLevel: highestUnlockedLevel,
-        highestCompletedLevel: highestCompletedLevel,
-        currentLevelId: currentLevelId,
-        completedLevelIds: completedLevelIds,
-        completedChapterIds: {...completedChapterIds, chapterId},
-        progressionSchemaVersion: progressionSchemaVersion,
-      );
+    highestUnlockedLevel: highestUnlockedLevel,
+    highestCompletedLevel: highestCompletedLevel,
+    currentLevelId: currentLevelId,
+    completedLevelIds: completedLevelIds,
+    completedChapterIds: {...completedChapterIds, chapterId},
+    progressionSchemaVersion: progressionSchemaVersion,
+  );
 }
 
 // ── Player Flags ──────────────────────────────────────────────────────────
@@ -138,14 +138,13 @@ final class PlayerLocalFlags {
     bool? tutorialCompleted,
     Set<String>? unlockedStoryBeatIds,
     Set<String>? viewedStoryBeatIds,
-  }) =>
-      PlayerLocalFlags(
-        isFirstLaunch: isFirstLaunch ?? this.isFirstLaunch,
-        onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
-        tutorialCompleted: tutorialCompleted ?? this.tutorialCompleted,
-        unlockedStoryBeatIds: unlockedStoryBeatIds ?? this.unlockedStoryBeatIds,
-        viewedStoryBeatIds: viewedStoryBeatIds ?? this.viewedStoryBeatIds,
-      );
+  }) => PlayerLocalFlags(
+    isFirstLaunch: isFirstLaunch ?? this.isFirstLaunch,
+    onboardingCompleted: onboardingCompleted ?? this.onboardingCompleted,
+    tutorialCompleted: tutorialCompleted ?? this.tutorialCompleted,
+    unlockedStoryBeatIds: unlockedStoryBeatIds ?? this.unlockedStoryBeatIds,
+    viewedStoryBeatIds: viewedStoryBeatIds ?? this.viewedStoryBeatIds,
+  );
 }
 
 // ── Story Beat ────────────────────────────────────────────────────────────

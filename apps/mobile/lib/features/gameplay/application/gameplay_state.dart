@@ -19,10 +19,7 @@ final class WinRewardPreview {
 enum HintPhase { idle, loading, available, noResult, inconclusive }
 
 final class HintViewState {
-  const HintViewState({
-    this.phase = HintPhase.idle,
-    this.suggestedAction,
-  });
+  const HintViewState({this.phase = HintPhase.idle, this.suggestedAction});
 
   final HintPhase phase;
   final GameAction? suggestedAction;
@@ -43,12 +40,11 @@ final class DeadEndViewState {
 
   static const idle = DeadEndViewState();
   static const checking = DeadEndViewState(phase: DeadEndPhase.checking);
-  static const notDeadEnd =
-      DeadEndViewState(phase: DeadEndPhase.notDeadEnd);
-  static const confirmed =
-      DeadEndViewState(phase: DeadEndPhase.confirmed);
-  static const inconclusive =
-      DeadEndViewState(phase: DeadEndPhase.inconclusive);
+  static const notDeadEnd = DeadEndViewState(phase: DeadEndPhase.notDeadEnd);
+  static const confirmed = DeadEndViewState(phase: DeadEndPhase.confirmed);
+  static const inconclusive = DeadEndViewState(
+    phase: DeadEndPhase.inconclusive,
+  );
 
   final DeadEndPhase phase;
 }

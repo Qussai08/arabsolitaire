@@ -36,7 +36,8 @@ class LocalBundleStore {
     try {
       final raw = await file.readAsString();
       return LocalContentMetadata.fromJson(
-          json.decode(raw) as Map<String, dynamic>);
+        json.decode(raw) as Map<String, dynamic>,
+      );
     } catch (_) {
       return const LocalContentMetadata();
     }
@@ -78,8 +79,7 @@ class LocalBundleStore {
 
   /// Moves staged → active, current active → previous.
   /// Returns false if staged is empty/incomplete.
-  Future<bool> atomicActivate(String bundleVersion,
-      String contentHash) async {
+  Future<bool> atomicActivate(String bundleVersion, String contentHash) async {
     final staged = await _dir('staged');
     final manifestFile = File(p.join(staged.path, 'manifest.json'));
     if (!await manifestFile.exists()) return false;
@@ -153,15 +153,13 @@ class LocalBundleStore {
     if (!await file.exists()) return null;
     try {
       final raw = await file.readAsString();
-      return BundleManifest.fromJson(
-          json.decode(raw) as Map<String, dynamic>);
+      return BundleManifest.fromJson(json.decode(raw) as Map<String, dynamic>);
     } catch (_) {
       return null;
     }
   }
 
-  Future<Map<String, Uint8List>> loadActiveFiles(
-      List<String> paths) async {
+  Future<Map<String, Uint8List>> loadActiveFiles(List<String> paths) async {
     final active = await _dir('active');
     final result = <String, Uint8List>{};
     for (final path in paths) {
@@ -181,8 +179,7 @@ class LocalBundleStore {
     if (!await file.exists()) return null;
     try {
       final raw = await file.readAsString();
-      return DisableMetadata.fromJson(
-          json.decode(raw) as Map<String, dynamic>);
+      return DisableMetadata.fromJson(json.decode(raw) as Map<String, dynamic>);
     } catch (_) {
       return null;
     }
@@ -199,15 +196,18 @@ class LocalBundleStore {
   Future<void> addQuarantinedVersion(String version) async {
     final meta = await loadMetadata();
     if (meta.quarantinedVersions.contains(version)) return;
-    await _saveMetadata(meta.copyWith(
-      quarantinedVersions: [...meta.quarantinedVersions, version],
-    ));
+    await _saveMetadata(
+      meta.copyWith(
+        quarantinedVersions: [...meta.quarantinedVersions, version],
+      ),
+    );
   }
 
   Future<void> recordUpdateCheck() async {
     final meta = await loadMetadata();
     await _saveMetadata(
-        meta.copyWith(lastUpdateCheckAt: DateTime.now().toUtc()));
+      meta.copyWith(lastUpdateCheckAt: DateTime.now().toUtc()),
+    );
   }
 
   // ── Helpers ───────────────────────────────────────────────────────────────
@@ -222,8 +222,7 @@ class LocalBundleStore {
   Future<void> _copyDir(Directory src, Directory dest) async {
     await dest.create(recursive: true);
     await for (final entity in src.list(recursive: false)) {
-      final relative =
-          p.relative(entity.path, from: src.path);
+      final relative = p.relative(entity.path, from: src.path);
       if (entity is File) {
         final destFile = File(p.join(dest.path, relative));
         await destFile.parent.create(recursive: true);

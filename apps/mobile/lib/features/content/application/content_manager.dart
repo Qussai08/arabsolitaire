@@ -37,11 +37,11 @@ class ContentManager {
     required RemoteContentRepository remoteRepo,
     required LocalBundleStore store,
     ContentValidator? validator,
-  // ignore: prefer_initializing_formals
-  })  : _validator = validator ?? const ContentValidator(),
-        _bundledRepo = bundledRepo, // ignore: prefer_initializing_formals
-        _remoteRepo = remoteRepo, // ignore: prefer_initializing_formals
-        _store = store; // ignore: prefer_initializing_formals
+    // ignore: prefer_initializing_formals
+  }) : _validator = validator ?? const ContentValidator(),
+       _bundledRepo = bundledRepo, // ignore: prefer_initializing_formals
+       _remoteRepo = remoteRepo, // ignore: prefer_initializing_formals
+       _store = store; // ignore: prefer_initializing_formals
 
   final BundledContentRepository _bundledRepo;
   final RemoteContentRepository _remoteRepo;
@@ -60,6 +60,7 @@ class ContentManager {
     if (c == null) throw StateError('ContentManager not initialised');
     return c;
   }
+
   DisableMetadata get disableMetadata => _disableMetadata;
   ContentManagerState get state => _state;
 
@@ -94,13 +95,14 @@ class ContentManager {
       if (rulesIssue != null && rulesIssue.isBlocking) return;
 
       final meta = await _store.loadMetadata();
-      if (meta.quarantinedVersions
-          .contains(manifest.bundleVersion)) {
+      if (meta.quarantinedVersions.contains(manifest.bundleVersion)) {
         return; // quarantined — do not use
       }
 
       final snapshot = ContentValidator.parseBundle(
-          manifest: manifest, fileBytes: fileBytes);
+        manifest: manifest,
+        fileBytes: fileBytes,
+      );
       _current = snapshot;
       _state = ContentManagerState.usingLocalRemoteBundle;
     } catch (_) {
@@ -119,15 +121,16 @@ class ContentManager {
       if (pointer == null) {
         _state = ContentManagerState.updateFailed;
         return ContentUpdateFailed(
-            ContentUpdateFailureReason.manifestUnavailable);
+          ContentUpdateFailureReason.manifestUnavailable,
+        );
       }
 
       // Check if bundle is disabled
-      if (pointer.disabledBundleVersions
-          .contains(pointer.activeBundleVersion)) {
+      if (pointer.disabledBundleVersions.contains(
+        pointer.activeBundleVersion,
+      )) {
         _state = ContentManagerState.updateFailed;
-        return ContentUpdateFailed(
-            ContentUpdateFailureReason.bundleDisabled);
+        return ContentUpdateFailed(ContentUpdateFailureReason.bundleDisabled);
       }
 
       // Already running latest?
@@ -140,24 +143,22 @@ class ContentManager {
 
       // Check quarantine
       final meta = await _store.loadMetadata();
-      if (meta.quarantinedVersions
-          .contains(pointer.activeBundleVersion)) {
+      if (meta.quarantinedVersions.contains(pointer.activeBundleVersion)) {
         _state = ContentManagerState.updateFailed;
-        return ContentUpdateFailed(
-            ContentUpdateFailureReason.bundleDisabled);
+        return ContentUpdateFailed(ContentUpdateFailureReason.bundleDisabled);
       }
 
       return await _downloadAndStage(pointer.activeBundleVersion);
     } catch (e) {
       _state = ContentManagerState.updateFailed;
       return ContentUpdateFailed(
-          ContentUpdateFailureReason.downloadFailed,
-          error: e);
+        ContentUpdateFailureReason.downloadFailed,
+        error: e,
+      );
     }
   }
 
-  Future<ContentUpdateResult> _downloadAndStage(
-      String bundleVersion) async {
+  Future<ContentUpdateResult> _downloadAndStage(String bundleVersion) async {
     _state = ContentManagerState.downloading;
 
     // Fetch manifest
@@ -165,12 +166,15 @@ class ContentManager {
     if (manifest == null) {
       _state = ContentManagerState.updateFailed;
       return ContentUpdateFailed(
-          ContentUpdateFailureReason.manifestUnavailable);
+        ContentUpdateFailureReason.manifestUnavailable,
+      );
     }
 
     // Download files
     final fileBytes = await _remoteRepo.downloadBundleFiles(
-        bundleVersion, manifest.files);
+      bundleVersion,
+      manifest.files,
+    );
 
     _state = ContentManagerState.validating;
 
@@ -178,13 +182,16 @@ class ContentManager {
     late ContentSnapshot candidate;
     try {
       candidate = ContentValidator.parseBundle(
-          manifest: manifest, fileBytes: fileBytes);
+        manifest: manifest,
+        fileBytes: fileBytes,
+      );
     } catch (e) {
       _state = ContentManagerState.updateFailed;
       await _store.addQuarantinedVersion(bundleVersion);
       return ContentUpdateFailed(
-          ContentUpdateFailureReason.schemaInvalid,
-          error: e);
+        ContentUpdateFailureReason.schemaInvalid,
+        error: e,
+      );
     }
 
     // Full validation
@@ -233,8 +240,7 @@ class ContentManager {
 
       if (!success) {
         _state = ContentManagerState.updateFailed;
-        return ContentUpdateFailed(
-            ContentUpdateFailureReason.activationFailed);
+        return ContentUpdateFailed(ContentUpdateFailureReason.activationFailed);
       }
 
       // Reload from new active
@@ -247,8 +253,9 @@ class ContentManager {
     } catch (e) {
       _state = ContentManagerState.updateFailed;
       return ContentUpdateFailed(
-          ContentUpdateFailureReason.activationFailed,
-          error: e);
+        ContentUpdateFailureReason.activationFailed,
+        error: e,
+      );
     }
   }
 
@@ -257,8 +264,7 @@ class ContentManager {
   Future<ContentUpdateResult> rollback() async {
     final success = await _store.rollbackToPrevious();
     if (!success) {
-      return ContentUpdateFailed(
-          ContentUpdateFailureReason.activationFailed);
+      return ContentUpdateFailed(ContentUpdateFailureReason.activationFailed);
     }
     await _tryLoadLocalRemoteBundle();
     final version = _current?.bundleVersion ?? 'unknown';

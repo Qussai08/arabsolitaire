@@ -24,36 +24,40 @@ void main() {
     expect(pool.every((a) => a.isApproved), isTrue);
   });
 
-  test('ApprovedPoolContentSelector generates early Cairo board', () {
-    final level = JourneyContent.buildLevels().first;
-    final config = levelConfigurationFor(level);
-    final selector = ApprovedPoolContentSelector(
-      pool: pool,
-      chapterId: level.chapterId,
-      semanticTier: level.semanticDifficultyTier,
-    );
+  test(
+    'ApprovedPoolContentSelector generates early Cairo board',
+    () {
+      final level = JourneyContent.buildLevels().first;
+      final config = levelConfigurationFor(level);
+      final selector = ApprovedPoolContentSelector(
+        pool: pool,
+        chapterId: level.chapterId,
+        semanticTier: level.semanticDifficultyTier,
+      );
 
-    final result = LevelGenerator().generate(
-      config: config,
-      contentSelector: selector,
-      baseSeed: const GenerationSeed(42),
-    );
+      final result = LevelGenerator().generate(
+        config: config,
+        contentSelector: selector,
+        baseSeed: const GenerationSeed(42),
+      );
 
-    expect(result, isA<GenerationSucceeded>());
-    final generated = (result as GenerationSucceeded).level;
-    expect(generated.initialGameState.associations.length, 3);
+      expect(result, isA<GenerationSucceeded>());
+      final generated = (result as GenerationSucceeded).level;
+      expect(generated.initialGameState.associations.length, 3);
 
-    final assocCards = generated.initialGameState.allCardsOnBoard
-        .whereType<AssociationCard>()
-        .toList();
+      final assocCards = generated.initialGameState.allCardsOnBoard
+          .whereType<AssociationCard>()
+          .toList();
 
-    expect(assocCards, isNotEmpty);
-    expect(
-      assocCards.any((c) => RegExp(r'[\u0600-\u06FF]').hasMatch(c.id)),
-      isTrue,
-      reason: 'Association cards should display Arabic clues',
-    );
-  }, timeout: const Timeout(Duration(minutes: 2)));
+      expect(assocCards, isNotEmpty);
+      expect(
+        assocCards.any((c) => RegExp(r'[\u0600-\u06FF]').hasMatch(c.id)),
+        isTrue,
+        reason: 'Association cards should display Arabic clues',
+      );
+    },
+    timeout: const Timeout(Duration(minutes: 2)),
+  );
 
   test('level configs cover all 5 chapter waves', () {
     final levels = JourneyContent.buildLevels();

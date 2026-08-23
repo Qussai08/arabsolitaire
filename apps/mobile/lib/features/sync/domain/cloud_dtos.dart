@@ -38,12 +38,12 @@ final class CloudProgressionDto {
   }
 
   Map<String, dynamic> toMap() => {
-        'schemaVersion': schemaVersion,
-        'contentVersion': contentVersion,
-        'highestCompletedLevel': highestCompletedLevel,
-        'revision': revision,
-        if (currentLevelId != null) 'currentLevelId': currentLevelId,
-      };
+    'schemaVersion': schemaVersion,
+    'contentVersion': contentVersion,
+    'highestCompletedLevel': highestCompletedLevel,
+    'revision': revision,
+    if (currentLevelId != null) 'currentLevelId': currentLevelId,
+  };
 
   bool get isSupported => schemaVersion <= currentSchema;
 }
@@ -80,11 +80,11 @@ final class CloudStoryDto {
   }
 
   Map<String, dynamic> toMap() => {
-        'schemaVersion': schemaVersion,
-        'unlockedStoryBeatIds': unlockedStoryBeatIds,
-        'viewedStoryBeatIds': viewedStoryBeatIds,
-        'revision': revision,
-      };
+    'schemaVersion': schemaVersion,
+    'unlockedStoryBeatIds': unlockedStoryBeatIds,
+    'viewedStoryBeatIds': viewedStoryBeatIds,
+    'revision': revision,
+  };
 
   bool get isSupported => schemaVersion <= currentSchema;
 }
@@ -125,13 +125,13 @@ final class CloudSettingsDto {
   }
 
   Map<String, dynamic> toMap() => {
-        'schemaVersion': schemaVersion,
-        'soundEnabled': soundEnabled,
-        'musicEnabled': musicEnabled,
-        'hapticsEnabled': hapticsEnabled,
-        'language': language,
-        'revision': revision,
-      };
+    'schemaVersion': schemaVersion,
+    'soundEnabled': soundEnabled,
+    'musicEnabled': musicEnabled,
+    'hapticsEnabled': hapticsEnabled,
+    'language': language,
+    'revision': revision,
+  };
 
   bool get isSupported => schemaVersion <= currentSchema;
 }

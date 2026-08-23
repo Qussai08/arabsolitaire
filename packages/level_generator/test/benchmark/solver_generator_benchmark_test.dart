@@ -74,8 +74,9 @@ void _solverBenchmark({
     () {
       final generator = LevelGenerator();
       final solver = GameSolver();
-      final contentSelector =
-          FixedContentSelector(SyntheticContent.forProfile(profile));
+      final contentSelector = FixedContentSelector(
+        SyntheticContent.forProfile(profile),
+      );
 
       // First generate boards, then benchmark the solver separately.
       final boards = <GameState>[];
@@ -104,7 +105,11 @@ void _solverBenchmark({
 
       timingsMs.sort();
       final p50 = timingsMs[timingsMs.length ~/ 2];
-      final p95 = timingsMs[(timingsMs.length * 0.95).ceil().clamp(0, timingsMs.length - 1)];
+      final p95 =
+          timingsMs[(timingsMs.length * 0.95).ceil().clamp(
+            0,
+            timingsMs.length - 1,
+          )];
       final max = timingsMs.last;
 
       // ignore: avoid_print
@@ -136,8 +141,9 @@ void _generatorBenchmark({
     '$name — bounded per-seed generation time',
     () {
       final generator = LevelGenerator();
-      final contentSelector =
-          FixedContentSelector(SyntheticContent.forProfile(profile));
+      final contentSelector = FixedContentSelector(
+        SyntheticContent.forProfile(profile),
+      );
 
       final perSeedMs = <int>[];
       var accepted = 0;
@@ -159,7 +165,11 @@ void _generatorBenchmark({
 
       perSeedMs.sort();
       final p50 = perSeedMs[perSeedMs.length ~/ 2];
-      final p95 = perSeedMs[(perSeedMs.length * 0.95).ceil().clamp(0, perSeedMs.length - 1)];
+      final p95 =
+          perSeedMs[(perSeedMs.length * 0.95).ceil().clamp(
+            0,
+            perSeedMs.length - 1,
+          )];
       final max = perSeedMs.last;
 
       // ignore: avoid_print

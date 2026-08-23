@@ -42,8 +42,7 @@ class HomePlaceholderScreen extends ConsumerWidget {
               Text('generatorVersion: ${generator.generatorVersion}'),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () =>
-                    Navigator.of(context).pushNamed('/gameplay'),
+                onPressed: () => Navigator.of(context).pushNamed('/gameplay'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF1A4A7C),
                   foregroundColor: Colors.white,

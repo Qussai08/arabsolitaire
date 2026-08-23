@@ -23,9 +23,9 @@ final class DriftDailyLocalRepository implements DailyLocalRepository {
 
   @override
   Future<DailyStateSnapshot?> loadSnapshot() async {
-    final row = await (_db.select(_db.dailyStateCacheRows)
-          ..where((t) => t.id.equals(_mainId)))
-        .getSingleOrNull();
+    final row = await (_db.select(
+      _db.dailyStateCacheRows,
+    )..where((t) => t.id.equals(_mainId))).getSingleOrNull();
     if (row == null) return null;
     return _rowToSnapshot(row);
   }
@@ -35,7 +35,9 @@ final class DriftDailyLocalRepository implements DailyLocalRepository {
     final rewardState = snapshot.rewardState;
     final streak = snapshot.streakState;
     final challenge = snapshot.challengeState;
-    await _db.into(_db.dailyStateCacheRows).insertOnConflictUpdate(
+    await _db
+        .into(_db.dailyStateCacheRows)
+        .insertOnConflictUpdate(
           db_lib.DailyStateCacheRowsCompanion(
             id: const Value(_mainId),
             dayKey: Value(snapshot.dayKey),
@@ -47,15 +49,17 @@ final class DriftDailyLocalRepository implements DailyLocalRepository {
             streakCurrentDays: Value(streak.currentStreakDays),
             streakLastQualifiedDayKey: Value(streak.lastQualifiedDayKey),
             streakLongestDays: Value(streak.longestStreakDays),
-            streakClaimedMilestonesJson:
-                Value(jsonEncode(streak.claimedMilestones)),
+            streakClaimedMilestonesJson: Value(
+              jsonEncode(streak.claimedMilestones),
+            ),
             streakCycleId: Value(streak.streakCycleId),
             streakRevision: Value(streak.revision),
-            challengeCurrentDayKey: Value(challenge.currentDayKey.isEmpty
-                ? null
-                : challenge.currentDayKey),
-            challengeId:
-                Value(challenge.challengeId.isEmpty ? null : challenge.challengeId),
+            challengeCurrentDayKey: Value(
+              challenge.currentDayKey.isEmpty ? null : challenge.currentDayKey,
+            ),
+            challengeId: Value(
+              challenge.challengeId.isEmpty ? null : challenge.challengeId,
+            ),
             challengeCompleted: Value(challenge.completed),
             challengeRewardGranted: Value(challenge.rewardGranted),
             challengeCompletedAt: Value(challenge.completedAt),
@@ -67,19 +71,23 @@ final class DriftDailyLocalRepository implements DailyLocalRepository {
 
   @override
   Future<DailyChallengeDefinition?> loadChallengeDefinition(
-      String dayKey) async {
-    final row = await (_db.select(_db.dailyChallengeCacheRows)
-          ..where((t) => t.dayKey.equals(dayKey))
-          ..orderBy([(t) => OrderingTerm.desc(t.cachedAt)])
-          ..limit(1))
-        .getSingleOrNull();
+    String dayKey,
+  ) async {
+    final row =
+        await (_db.select(_db.dailyChallengeCacheRows)
+              ..where((t) => t.dayKey.equals(dayKey))
+              ..orderBy([(t) => OrderingTerm.desc(t.cachedAt)])
+              ..limit(1))
+            .getSingleOrNull();
     if (row == null) return null;
     return _rowToChallengeDef(row);
   }
 
   @override
   Future<void> saveChallengeDefinition(DailyChallengeDefinition def) async {
-    await _db.into(_db.dailyChallengeCacheRows).insertOnConflictUpdate(
+    await _db
+        .into(_db.dailyChallengeCacheRows)
+        .insertOnConflictUpdate(
           db_lib.DailyChallengeCacheRowsCompanion(
             challengeId: Value(def.challengeId),
             dayKey: Value(def.dayKey),
@@ -99,9 +107,9 @@ final class DriftDailyLocalRepository implements DailyLocalRepository {
 
   @override
   Future<NotificationPreferences> loadPreferences() async {
-    final row = await (_db.select(_db.notificationPreferenceRows)
-          ..where((t) => t.id.equals(_mainId)))
-        .getSingleOrNull();
+    final row = await (_db.select(
+      _db.notificationPreferenceRows,
+    )..where((t) => t.id.equals(_mainId))).getSingleOrNull();
     if (row == null) return NotificationPreferences.defaults;
     return NotificationPreferences(
       dailyChallengeEnabled: row.dailyChallengeEnabled,
@@ -111,7 +119,9 @@ final class DriftDailyLocalRepository implements DailyLocalRepository {
 
   @override
   Future<void> savePreferences(NotificationPreferences prefs) async {
-    await _db.into(_db.notificationPreferenceRows).insertOnConflictUpdate(
+    await _db
+        .into(_db.notificationPreferenceRows)
+        .insertOnConflictUpdate(
           db_lib.NotificationPreferenceRowsCompanion(
             id: const Value(_mainId),
             dailyChallengeEnabled: Value(prefs.dailyChallengeEnabled),
@@ -122,7 +132,9 @@ final class DriftDailyLocalRepository implements DailyLocalRepository {
 
   @override
   Future<void> saveDeviceRegistration(DeviceRegistrationInfo info) async {
-    await _db.into(_db.deviceRegistrationRows).insertOnConflictUpdate(
+    await _db
+        .into(_db.deviceRegistrationRows)
+        .insertOnConflictUpdate(
           db_lib.DeviceRegistrationRowsCompanion(
             deviceId: Value(info.deviceId),
             fcmToken: Value(info.fcmToken),
@@ -137,10 +149,11 @@ final class DriftDailyLocalRepository implements DailyLocalRepository {
 
   @override
   Future<DeviceRegistrationInfo?> loadDeviceRegistration(
-      String deviceId) async {
-    final row = await (_db.select(_db.deviceRegistrationRows)
-          ..where((t) => t.deviceId.equals(deviceId)))
-        .getSingleOrNull();
+    String deviceId,
+  ) async {
+    final row = await (_db.select(
+      _db.deviceRegistrationRows,
+    )..where((t) => t.deviceId.equals(deviceId))).getSingleOrNull();
     if (row == null) return null;
     return DeviceRegistrationInfo(
       deviceId: row.deviceId,
@@ -188,7 +201,8 @@ final class DriftDailyLocalRepository implements DailyLocalRepository {
   }
 
   static DailyChallengeDefinition _rowToChallengeDef(
-      db_lib.DailyChallengeCacheRow row) {
+    db_lib.DailyChallengeCacheRow row,
+  ) {
     return DailyChallengeDefinition(
       challengeId: row.challengeId,
       dayKey: row.dayKey,

@@ -36,14 +36,13 @@ abstract final class SyncMergePolicy {
   static CloudProgressionDto localToCloudProgression(
     JourneyProgress p,
     int currentRevision,
-  ) =>
-      CloudProgressionDto(
-        schemaVersion: CloudProgressionDto.currentSchema,
-        contentVersion: 1,
-        highestCompletedLevel: p.highestCompletedLevel,
-        revision: currentRevision + 1,
-        currentLevelId: p.currentLevelId,
-      );
+  ) => CloudProgressionDto(
+    schemaVersion: CloudProgressionDto.currentSchema,
+    contentVersion: 1,
+    highestCompletedLevel: p.highestCompletedLevel,
+    revision: currentRevision + 1,
+    currentLevelId: p.currentLevelId,
+  );
 
   // ── Story ───────────────────────────────────────────────────────────────────
 
@@ -54,8 +53,9 @@ abstract final class SyncMergePolicy {
   ) {
     if (cloud == null || !cloud.isSupported) return local;
 
-    final validIds =
-        JourneyContent.storyBeats.map((b) => b.storyBeatId).toSet();
+    final validIds = JourneyContent.storyBeats
+        .map((b) => b.storyBeatId)
+        .toSet();
 
     final mergedUnlocked = {
       ...local.unlockedStoryBeatIds,
@@ -77,13 +77,12 @@ abstract final class SyncMergePolicy {
   static CloudStoryDto localToCloudStory(
     PlayerLocalFlags flags,
     int currentRevision,
-  ) =>
-      CloudStoryDto(
-        schemaVersion: CloudStoryDto.currentSchema,
-        unlockedStoryBeatIds: flags.unlockedStoryBeatIds.toList(),
-        viewedStoryBeatIds: flags.viewedStoryBeatIds.toList(),
-        revision: currentRevision + 1,
-      );
+  ) => CloudStoryDto(
+    schemaVersion: CloudStoryDto.currentSchema,
+    unlockedStoryBeatIds: flags.unlockedStoryBeatIds.toList(),
+    viewedStoryBeatIds: flags.viewedStoryBeatIds.toList(),
+    revision: currentRevision + 1,
+  );
 
   // ── Tutorial / Onboarding ───────────────────────────────────────────────────
 
@@ -131,8 +130,9 @@ abstract final class SyncMergePolicy {
     required Set<String> existingCompleted,
   }) {
     final levels = JourneyContent.buildLevels();
-    final validLevels =
-        levels.where((l) => l.globalLevelNumber <= highestCompleted).toList();
+    final validLevels = levels
+        .where((l) => l.globalLevelNumber <= highestCompleted)
+        .toList();
 
     final completedIds = {
       ...existingCompleted,

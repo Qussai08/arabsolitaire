@@ -27,7 +27,11 @@ class SettingsScreen extends ConsumerWidget {
         children: [
           const _SectionHeader(label: 'الصوت'),
           _SwitchTile(label: 'الموسيقى', value: true, onChanged: (_) {}),
-          _SwitchTile(label: 'المؤثرات الصوتية', value: true, onChanged: (_) {}),
+          _SwitchTile(
+            label: 'المؤثرات الصوتية',
+            value: true,
+            onChanged: (_) {},
+          ),
           _SwitchTile(label: 'الاهتزاز', value: true, onChanged: (_) {}),
           const SizedBox(height: 24),
           const _SectionHeader(label: 'معلومات'),
@@ -49,24 +53,33 @@ class SettingsScreen extends ConsumerWidget {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: const Color(0xFF162033),
-        title: const Text('تأكيد إعادة الضبط',
-            style: TextStyle(color: Colors.white, fontFamily: 'Cairo')),
+        title: const Text(
+          'تأكيد إعادة الضبط',
+          style: TextStyle(color: Colors.white, fontFamily: 'Cairo'),
+        ),
         content: const Text(
           'هل أنت متأكد؟ سيتم حذف جميع بيانات التقدم المحلية.',
           textDirection: TextDirection.rtl,
           style: TextStyle(
-              color: Colors.white70, fontFamily: 'Cairo', fontSize: 14),
+            color: Colors.white70,
+            fontFamily: 'Cairo',
+            fontSize: 14,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('إلغاء',
-                style: TextStyle(color: Color(0xFFD4A017), fontFamily: 'Cairo')),
+            child: const Text(
+              'إلغاء',
+              style: TextStyle(color: Color(0xFFD4A017), fontFamily: 'Cairo'),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('إعادة ضبط',
-                style: TextStyle(color: Colors.redAccent, fontFamily: 'Cairo')),
+            child: const Text(
+              'إعادة ضبط',
+              style: TextStyle(color: Colors.redAccent, fontFamily: 'Cairo'),
+            ),
           ),
         ],
       ),
@@ -75,9 +88,7 @@ class SettingsScreen extends ConsumerWidget {
       // Reset journey state
       final journeyState = ref.read(journeyControllerProvider);
       if (journeyState is JourneyReady) {
-        await ref
-            .read(journeyControllerProvider.notifier)
-            .completeOnboarding();
+        await ref.read(journeyControllerProvider.notifier).completeOnboarding();
       }
     }
   }
@@ -199,7 +210,10 @@ class _DangerTile extends StatelessWidget {
           textDirection: TextDirection.rtl,
           style: const TextStyle(color: Colors.redAccent, fontFamily: 'Cairo'),
         ),
-        trailing: const Icon(Icons.warning_amber_outlined, color: Colors.redAccent),
+        trailing: const Icon(
+          Icons.warning_amber_outlined,
+          color: Colors.redAccent,
+        ),
         onTap: onTap,
       ),
     );

@@ -16,9 +16,9 @@ final class SyncEngine {
     required this._cloudProgression,
     required this._cloudStory,
     required this._cloudSettings,
-  })  : _auth = authRepository,
-        _journey = journeyRepository,
-        _queue = syncQueue;
+  }) : _auth = authRepository,
+       _journey = journeyRepository,
+       _queue = syncQueue;
 
   final AuthRepository _auth;
   final JourneyRepository _journey;
@@ -32,8 +32,7 @@ final class SyncEngine {
 
   Future<void> enqueueProgressionUpsert(JourneyProgress progress) async {
     final op = SyncOperation(
-      operationId:
-          'progression_${DateTime.now().millisecondsSinceEpoch}',
+      operationId: 'progression_${DateTime.now().millisecondsSinceEpoch}',
       operationType: SyncOperationType.upsertProgression,
       payload: {
         'highestCompletedLevel': progress.highestCompletedLevel,
@@ -81,10 +80,7 @@ final class SyncEngine {
         await _executeOperation(uid, op);
         await _queue.markCompleted(op.operationId);
       } catch (_) {
-        await _queue.markFailed(
-          op.operationId,
-          retryable: true,
-        );
+        await _queue.markFailed(op.operationId, retryable: true);
         anyFailed = true;
       }
     }
@@ -103,14 +99,14 @@ final class SyncEngine {
       final localProgress = await _journey.loadProgress();
       final localFlags = await _journey.loadFlags();
 
-      final cloudProgression =
-          await _cloudProgression.load(uid);
+      final cloudProgression = await _cloudProgression.load(uid);
       final cloudStory = await _cloudStory.load(uid);
 
-      final mergedProgress =
-          SyncMergePolicy.mergeProgression(localProgress, cloudProgression);
-      final mergedFlags =
-          SyncMergePolicy.mergeStory(localFlags, cloudStory);
+      final mergedProgress = SyncMergePolicy.mergeProgression(
+        localProgress,
+        cloudProgression,
+      );
+      final mergedFlags = SyncMergePolicy.mergeStory(localFlags, cloudStory);
 
       await _journey.saveProgress(mergedProgress);
       await _journey.saveFlags(mergedFlags);
@@ -139,10 +135,9 @@ final class SyncEngine {
         final p = op.payload;
         final dto = CloudStoryDto(
           schemaVersion: CloudStoryDto.currentSchema,
-          unlockedStoryBeatIds:
-              (p['unlockedStoryBeatIds'] as List).cast<String>(),
-          viewedStoryBeatIds:
-              (p['viewedStoryBeatIds'] as List).cast<String>(),
+          unlockedStoryBeatIds: (p['unlockedStoryBeatIds'] as List)
+              .cast<String>(),
+          viewedStoryBeatIds: (p['viewedStoryBeatIds'] as List).cast<String>(),
           revision: DateTime.now().millisecondsSinceEpoch,
         );
         await _cloudStory.upsert(uid, dto);

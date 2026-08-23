@@ -10,8 +10,7 @@ import '../domain/content_bundle.dart';
 
 // ── Infrastructure providers ──────────────────────────────────────────────────
 
-final bundledContentRepositoryProvider =
-    Provider<BundledContentRepository>(
+final bundledContentRepositoryProvider = Provider<BundledContentRepository>(
   (_) => BundledContentRepository(),
 );
 
@@ -19,8 +18,7 @@ final localBundleStoreProvider = Provider<LocalBundleStore>(
   (_) => LocalBundleStore(),
 );
 
-final remoteContentRepositoryProvider =
-    Provider<RemoteContentRepository>(
+final remoteContentRepositoryProvider = Provider<RemoteContentRepository>(
   (_) => RemoteContentRepository(),
 );
 
@@ -43,8 +41,7 @@ final contentManagerProvider = Provider<ContentManager>(
 
 /// Loads and exposes the initial content snapshot. Completes before the
 /// home screen is shown so Journey/Story use typed content immediately.
-final contentSnapshotProvider =
-    FutureProvider<ContentSnapshot>((ref) async {
+final contentSnapshotProvider = FutureProvider<ContentSnapshot>((ref) async {
   final manager = ref.watch(contentManagerProvider);
   await manager.loadInitialContent();
   return manager.current;
@@ -60,8 +57,7 @@ final disableMetadataProvider = Provider<DisableMetadata>((ref) {
 
 // ── Content manager state ─────────────────────────────────────────────────────
 
-final contentManagerStateProvider =
-    Provider<ContentManagerState>((ref) {
+final contentManagerStateProvider = Provider<ContentManagerState>((ref) {
   final manager = ref.watch(contentManagerProvider);
   return manager.state;
 });

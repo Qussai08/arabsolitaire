@@ -101,17 +101,24 @@ class _LevelResultScreenState extends ConsumerState<LevelResultScreen>
                 const _RewardRow(label: 'المكافأة الأساسية', value: 50),
                 const SizedBox(height: 8),
                 _RewardRow(
-                    label: 'مكافأة الحركات (${r.remainingMoves}×2)',
-                    value: r.movesBonus),
+                  label: 'مكافأة الحركات (${r.remainingMoves}×2)',
+                  value: r.movesBonus,
+                ),
                 const SizedBox(height: 8),
                 if (r.earnedStreakCoins > 0)
                   _RewardRow(
-                      label: 'مكافأة التسلسل', value: r.earnedStreakCoins),
+                    label: 'مكافأة التسلسل',
+                    value: r.earnedStreakCoins,
+                  ),
                 if (_isChapterComplete) ...[
                   const SizedBox(height: 8),
                   const _RewardRow(label: 'مكافأة إتمام الفصل', value: 500),
                 ],
-                const Divider(color: Color(0xFFD4A017), thickness: 0.5, height: 32),
+                const Divider(
+                  color: Color(0xFFD4A017),
+                  thickness: 0.5,
+                  height: 32,
+                ),
                 _TotalRow(total: r.total + (_isChapterComplete ? 500 : 0)),
                 const Spacer(),
                 SizedBox(

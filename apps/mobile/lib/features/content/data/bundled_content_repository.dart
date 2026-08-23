@@ -29,8 +29,7 @@ class BundledContentRepository {
 
   Future<BundleManifest> _loadManifest() async {
     final raw = await rootBundle.loadString('$_base/manifest.json');
-    return BundleManifest.fromJson(
-        json.decode(raw) as Map<String, dynamic>);
+    return BundleManifest.fromJson(json.decode(raw) as Map<String, dynamic>);
   }
 
   Future<List<ChapterDto>> _loadChapters() async {
@@ -53,8 +52,7 @@ class BundledContentRepository {
     final raw = await rootBundle.loadString('$_base/associations.json');
     final list = json.decode(raw) as List<dynamic>;
     return list
-        .map((e) =>
-            AssociationVariantDto.fromJson(e as Map<String, dynamic>))
+        .map((e) => AssociationVariantDto.fromJson(e as Map<String, dynamic>))
         .toList();
   }
 
@@ -67,8 +65,7 @@ class BundledContentRepository {
   }
 
   Future<Map<String, String>> _loadLocalization() async {
-    final raw =
-        await rootBundle.loadString('$_base/localization/ar.json');
+    final raw = await rootBundle.loadString('$_base/localization/ar.json');
     final j = json.decode(raw) as Map<String, dynamic>;
     final strings = j['strings'] as Map<String, dynamic>? ?? {};
     return strings.map((k, v) => MapEntry(k, v as String));

@@ -69,15 +69,15 @@ class _AssociationSlotView extends StatelessWidget {
             color: accepting
                 ? const Color(0xFF2A5C2A).withAlpha((255 * 0.3).round())
                 : (slot.isEmpty
-                    ? const Color(0xFF0D2040).withAlpha((255 * 0.6).round())
-                    : const Color(0xFF1A4A7C).withAlpha((255 * 0.4).round())),
+                      ? const Color(0xFF0D2040).withAlpha((255 * 0.6).round())
+                      : const Color(0xFF1A4A7C).withAlpha((255 * 0.4).round())),
             borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: highlighted
                   ? const Color(0xFFFFD700)
                   : (slot.isEmpty
-                      ? const Color(0xFF3A5A8C).withAlpha((255 * 0.5).round())
-                      : const Color(0xFF4A8AEC)),
+                        ? const Color(0xFF3A5A8C).withAlpha((255 * 0.5).round())
+                        : const Color(0xFF4A8AEC)),
               width: highlighted ? 2.5 : 1.2,
             ),
           ),

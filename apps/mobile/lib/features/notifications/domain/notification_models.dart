@@ -28,10 +28,7 @@ final class DeviceRegistrationInfo {
 
 // ── Notification type ─────────────────────────────────────────────────────────
 
-enum NotificationType {
-  dailyChallenge,
-  streakRisk,
-}
+enum NotificationType { dailyChallenge, streakRisk }
 
 // ── Notification schedule check ───────────────────────────────────────────────
 
@@ -122,8 +119,7 @@ abstract final class NotificationScheduler {
         reason: 'no_active_streak',
       );
     }
-    final qualifiedToday =
-        streak.lastQualifiedDayKey == snapshot.dayKey;
+    final qualifiedToday = streak.lastQualifiedDayKey == snapshot.dayKey;
     if (qualifiedToday) {
       return const NotificationEligibility(
         type: NotificationType.streakRisk,

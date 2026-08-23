@@ -144,7 +144,8 @@ void _simulationSuite({
       expect(
         summary.replayFailures,
         0,
-        reason: '[$name] ${summary.replayFailures} accepted boards failed replay',
+        reason:
+            '[$name] ${summary.replayFailures} accepted boards failed replay',
       );
 
       // ── Bounded behavior: generator must not only be inconclusive ─────────
@@ -152,7 +153,8 @@ void _simulationSuite({
       expect(
         conclusiveRate,
         greaterThan(0.0),
-        reason: '[$name] Generator produced 0 accepted boards — '
+        reason:
+            '[$name] Generator produced 0 accepted boards — '
             'possible config or solver regression',
       );
     },
@@ -196,16 +198,14 @@ final class SimulationSummary {
         solutionOverLimitRejects += metrics.solutionOverLimitRejects;
         engineInvariantRejects += metrics.engineInvariantRejects;
         inconclusiveRejects += metrics.solverInconclusiveCount;
-        difficultyRejects +=
-            metrics.tooEasyRejects + metrics.tooHardRejects;
+        difficultyRejects += metrics.tooEasyRejects + metrics.tooHardRejects;
       case GenerationFailed(:final metrics):
         failed++;
         unsolvableRejects += metrics.unsolvableRejects;
         solutionOverLimitRejects += metrics.solutionOverLimitRejects;
         engineInvariantRejects += metrics.engineInvariantRejects;
         inconclusiveRejects += metrics.solverInconclusiveCount;
-        difficultyRejects +=
-            metrics.tooEasyRejects + metrics.tooHardRejects;
+        difficultyRejects += metrics.tooEasyRejects + metrics.tooHardRejects;
       case GenerationInconclusive(:final metrics):
         inconclusiveRejects += metrics.solverInconclusiveCount;
         failed++;
@@ -214,10 +214,10 @@ final class SimulationSummary {
 
   @override
   String toString() {
-    final avgSolution =
-        accepted > 0 ? (totalSolutionLength / accepted).toStringAsFixed(1) : '-';
-    final avgAttempts =
-        (totalGenerationAttempts / total).toStringAsFixed(1);
+    final avgSolution = accepted > 0
+        ? (totalSolutionLength / accepted).toStringAsFixed(1)
+        : '-';
+    final avgAttempts = (totalGenerationAttempts / total).toStringAsFixed(1);
     final elapsedSec = totalElapsed.inMilliseconds / 1000.0;
     final acceptRate = (accepted / total * 100).toStringAsFixed(1);
     return '''

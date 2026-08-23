@@ -16,8 +16,8 @@ class RemoteContentRepository {
     this.environment = 'prod',
     FirebaseFirestore? firestore,
     FirebaseStorage? storage,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _storage = storage ?? FirebaseStorage.instance;
+  }) : _firestore = firestore ?? FirebaseFirestore.instance,
+       _storage = storage ?? FirebaseStorage.instance;
 
   final String environment;
   final FirebaseFirestore _firestore;
@@ -60,15 +60,13 @@ class RemoteContentRepository {
   // ── Bundle manifest download ──────────────────────────────────────────────
 
   Future<BundleManifest?> fetchManifest(String bundleVersion) async {
-    final path =
-        'content/$environment/bundles/$bundleVersion/manifest.json';
+    final path = 'content/$environment/bundles/$bundleVersion/manifest.json';
     try {
       final ref = _storage.ref(path);
       final bytes = await ref.getData();
       if (bytes == null) return null;
       final raw = utf8.decode(bytes);
-      return BundleManifest.fromJson(
-          json.decode(raw) as Map<String, dynamic>);
+      return BundleManifest.fromJson(json.decode(raw) as Map<String, dynamic>);
     } catch (_) {
       return null;
     }
@@ -82,8 +80,7 @@ class RemoteContentRepository {
   ) async {
     final result = <String, Uint8List>{};
     for (final entry in entries) {
-      final path =
-          'content/$environment/bundles/$bundleVersion/${entry.path}';
+      final path = 'content/$environment/bundles/$bundleVersion/${entry.path}';
       try {
         final ref = _storage.ref(path);
         final bytes = await ref.getData();

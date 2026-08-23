@@ -42,10 +42,7 @@ class AccountController extends Notifier<AccountViewState> {
   Future<void> _initialize() async {
     try {
       final authState = await _authRepo.ensureAnonymousIdentity();
-      state = AccountReady(
-        authState: authState,
-        syncStatus: SyncStatus.idle,
-      );
+      state = AccountReady(authState: authState, syncStatus: SyncStatus.idle);
       // After securing identity, trigger initial pull+merge.
       await syncNow();
     } catch (e) {
@@ -65,8 +62,8 @@ class AccountController extends Notifier<AccountViewState> {
     }
     final pullStatus = await engine.pullAndMerge();
     final flushStatus = await engine.flush();
-    final finalStatus = (pullStatus == SyncStatus.synced &&
-            flushStatus == SyncStatus.synced)
+    final finalStatus =
+        (pullStatus == SyncStatus.synced && flushStatus == SyncStatus.synced)
         ? SyncStatus.synced
         : SyncStatus.recoverableError;
     final current2 = state;
@@ -85,8 +82,9 @@ class AccountController extends Notifier<AccountViewState> {
       final current = state;
       state = AccountReady(
         authState: newState,
-        syncStatus:
-            current is AccountReady ? current.syncStatus : SyncStatus.idle,
+        syncStatus: current is AccountReady
+            ? current.syncStatus
+            : SyncStatus.idle,
       );
     }
     return result;
@@ -99,8 +97,9 @@ class AccountController extends Notifier<AccountViewState> {
       final current = state;
       state = AccountReady(
         authState: newState,
-        syncStatus:
-            current is AccountReady ? current.syncStatus : SyncStatus.idle,
+        syncStatus: current is AccountReady
+            ? current.syncStatus
+            : SyncStatus.idle,
       );
     }
     return result;
@@ -109,5 +108,5 @@ class AccountController extends Notifier<AccountViewState> {
 
 final accountControllerProvider =
     NotifierProvider<AccountController, AccountViewState>(
-  AccountController.new,
-);
+      AccountController.new,
+    );

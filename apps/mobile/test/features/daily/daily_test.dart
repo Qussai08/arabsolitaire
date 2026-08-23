@@ -115,23 +115,38 @@ void main() {
 
   group('QuietHoursPolicy', () {
     test('23:00 is in quiet hours', () {
-      expect(QuietHoursPolicy.isInQuietHours(DateTime(2026, 1, 1, 23, 0)), isTrue);
+      expect(
+        QuietHoursPolicy.isInQuietHours(DateTime(2026, 1, 1, 23, 0)),
+        isTrue,
+      );
     });
 
     test('00:00 is in quiet hours', () {
-      expect(QuietHoursPolicy.isInQuietHours(DateTime(2026, 1, 1, 0, 0)), isTrue);
+      expect(
+        QuietHoursPolicy.isInQuietHours(DateTime(2026, 1, 1, 0, 0)),
+        isTrue,
+      );
     });
 
     test('08:59 is in quiet hours', () {
-      expect(QuietHoursPolicy.isInQuietHours(DateTime(2026, 1, 1, 8, 59)), isTrue);
+      expect(
+        QuietHoursPolicy.isInQuietHours(DateTime(2026, 1, 1, 8, 59)),
+        isTrue,
+      );
     });
 
     test('09:00 is not in quiet hours', () {
-      expect(QuietHoursPolicy.isInQuietHours(DateTime(2026, 1, 1, 9, 0)), isFalse);
+      expect(
+        QuietHoursPolicy.isInQuietHours(DateTime(2026, 1, 1, 9, 0)),
+        isFalse,
+      );
     });
 
     test('14:00 is not in quiet hours', () {
-      expect(QuietHoursPolicy.isInQuietHours(DateTime(2026, 1, 1, 14, 0)), isFalse);
+      expect(
+        QuietHoursPolicy.isInQuietHours(DateTime(2026, 1, 1, 14, 0)),
+        isFalse,
+      );
     });
   });
 

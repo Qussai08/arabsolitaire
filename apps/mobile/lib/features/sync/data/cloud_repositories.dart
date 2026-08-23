@@ -4,8 +4,7 @@ import 'package:mobile/features/sync/domain/cloud_dtos.dart';
 /// Paths in Firestore.
 abstract final class FirestorePaths {
   static String playerDoc(String uid) => 'players/$uid';
-  static String progressionDoc(String uid) =>
-      'players/$uid/state/progression';
+  static String progressionDoc(String uid) => 'players/$uid/state/progression';
   static String storyDoc(String uid) => 'players/$uid/state/story';
   static String settingsDoc(String uid) => 'players/$uid/state/settings';
 }
@@ -25,8 +24,7 @@ final class FirestoreProgressionRepository
   @override
   Future<CloudProgressionDto?> load(String uid) async {
     try {
-      final snap =
-          await _db.doc(FirestorePaths.progressionDoc(uid)).get();
+      final snap = await _db.doc(FirestorePaths.progressionDoc(uid)).get();
       if (!snap.exists) return null;
       final data = snap.data()!;
       final dto = CloudProgressionDto.fromMap(data);
@@ -39,13 +37,10 @@ final class FirestoreProgressionRepository
 
   @override
   Future<void> upsert(String uid, CloudProgressionDto dto) async {
-    await _db.doc(FirestorePaths.progressionDoc(uid)).set(
-      {
-        ...dto.toMap(),
-        'updatedAt': FieldValue.serverTimestamp(),
-      },
-      SetOptions(merge: true),
-    );
+    await _db.doc(FirestorePaths.progressionDoc(uid)).set({
+      ...dto.toMap(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
   }
 }
 
@@ -75,13 +70,10 @@ final class FirestoreStoryRepository implements CloudStoryRepository {
 
   @override
   Future<void> upsert(String uid, CloudStoryDto dto) async {
-    await _db.doc(FirestorePaths.storyDoc(uid)).set(
-      {
-        ...dto.toMap(),
-        'updatedAt': FieldValue.serverTimestamp(),
-      },
-      SetOptions(merge: true),
-    );
+    await _db.doc(FirestorePaths.storyDoc(uid)).set({
+      ...dto.toMap(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
   }
 }
 
@@ -99,8 +91,7 @@ final class FirestoreSettingsRepository implements CloudSettingsRepository {
   @override
   Future<CloudSettingsDto?> load(String uid) async {
     try {
-      final snap =
-          await _db.doc(FirestorePaths.settingsDoc(uid)).get();
+      final snap = await _db.doc(FirestorePaths.settingsDoc(uid)).get();
       if (!snap.exists) return null;
       final dto = CloudSettingsDto.fromMap(snap.data()!);
       if (!dto.isSupported) return null;
@@ -112,13 +103,10 @@ final class FirestoreSettingsRepository implements CloudSettingsRepository {
 
   @override
   Future<void> upsert(String uid, CloudSettingsDto dto) async {
-    await _db.doc(FirestorePaths.settingsDoc(uid)).set(
-      {
-        ...dto.toMap(),
-        'updatedAt': FieldValue.serverTimestamp(),
-      },
-      SetOptions(merge: true),
-    );
+    await _db.doc(FirestorePaths.settingsDoc(uid)).set({
+      ...dto.toMap(),
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
   }
 }
 
@@ -134,15 +122,12 @@ final class FirestorePlayerProfileRepository {
     required List<String> linkedProviders,
   }) async {
     final doc = _db.doc(FirestorePaths.playerDoc(uid));
-    await doc.set(
-      {
-        'schemaVersion': 1,
-        'authType': authType,
-        'linkedProviders': linkedProviders,
-        'updatedAt': FieldValue.serverTimestamp(),
-      },
-      SetOptions(merge: true),
-    );
+    await doc.set({
+      'schemaVersion': 1,
+      'authType': authType,
+      'linkedProviders': linkedProviders,
+      'updatedAt': FieldValue.serverTimestamp(),
+    }, SetOptions(merge: true));
   }
 }
 

@@ -68,14 +68,19 @@ abstract final class DifficultyEvaluator {
     String modelVersion = difficultyModelVersion,
   }) {
     final lengthTerm = _clamp(m.solutionLengthRatio / 1.2, 0, 1);
-    final nodesTerm = _clamp(math.log(1 + m.nodesExpanded) / math.ln10 / 5, 0, 1);
+    final nodesTerm = _clamp(
+      math.log(1 + m.nodesExpanded) / math.ln10 / 5,
+      0,
+      1,
+    );
     final advanceTerm = m.solutionLength == 0
         ? 0.0
         : _clamp(m.stockAdvancesInSolution / m.solutionLength, 0, 1);
     final restoreTerm = _clamp(m.stockRestoresInSolution / 3.0, 0, 1);
     final hiddenTerm = _clamp(m.hiddenRatio, 0, 1);
 
-    final value = 100 *
+    final value =
+        100 *
         (0.55 * lengthTerm +
             0.25 * nodesTerm +
             0.10 * advanceTerm +

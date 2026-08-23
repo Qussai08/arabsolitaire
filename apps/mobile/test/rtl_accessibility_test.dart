@@ -45,12 +45,11 @@ Widget _rtlApp({required Widget home}) {
 
 void main() {
   group('Arabic RTL baseline', () {
-    testWidgets('MaterialApp sets RTL directionality for Arabic locale',
-        (tester) async {
+    testWidgets('MaterialApp sets RTL directionality for Arabic locale', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        _rtlApp(
-          home: const Scaffold(body: Text('مرحبا')),
-        ),
+        _rtlApp(home: const Scaffold(body: Text('مرحبا'))),
       );
       await tester.pumpAndSettle();
 
@@ -65,8 +64,9 @@ void main() {
       );
     });
 
-    testWidgets('DiagnosticsScreen renders in RTL with non-empty version data',
-        (tester) async {
+    testWidgets('DiagnosticsScreen renders in RTL with non-empty version data', (
+      tester,
+    ) async {
       await tester.pumpWidget(_rtlApp(home: const DiagnosticsScreen()));
       await tester.pumpAndSettle();
 
@@ -74,13 +74,29 @@ void main() {
       expect(find.text('الإصدار'), findsOneWidget);
       expect(find.text('البيئة'), findsOneWidget);
       expect(find.text('إصدار قواعد اللعبة'), findsOneWidget);
+      expect(find.text('إصدار المولّد'), findsOneWidget);
 
-      // App version must not be empty (from AppConfig.forEnvironment).
-      final versionFinder = find.text('1.0.0');
+      // App / rules / generator may all display "1.0.0"; assert each labeled value.
+      Finder valueBeside(String label) => find.descendant(
+        of: find.widgetWithText(Row, label),
+        matching: find.byType(SelectableText),
+      );
+
+      expect(valueBeside('الإصدار'), findsOneWidget);
       expect(
-        versionFinder,
-        findsOneWidget,
-        reason: 'AppConfig.appVersion must be non-empty in diagnostics',
+        tester.widget<SelectableText>(valueBeside('الإصدار')).data,
+        '1.0.0',
+        reason: 'AppConfig.appVersion must be labeled and non-empty',
+      );
+      expect(
+        tester.widget<SelectableText>(valueBeside('إصدار قواعد اللعبة')).data,
+        isNotEmpty,
+        reason: 'rulesVersion must be labeled and non-empty',
+      );
+      expect(
+        tester.widget<SelectableText>(valueBeside('إصدار المولّد')).data,
+        isNotEmpty,
+        reason: 'generatorVersion must be labeled and non-empty',
       );
     });
 
@@ -93,8 +109,9 @@ void main() {
   });
 
   group('Accessibility baseline', () {
-    testWidgets('DiagnosticsScreen has no immediate accessibility violations',
-        (tester) async {
+    testWidgets('DiagnosticsScreen has no immediate accessibility violations', (
+      tester,
+    ) async {
       final handle = tester.ensureSemantics();
       await tester.pumpWidget(_rtlApp(home: const DiagnosticsScreen()));
       await tester.pumpAndSettle();
@@ -127,10 +144,7 @@ void main() {
 
     test('English locale is in supported locales', () {
       const supported = AppLocalizations.supportedLocales;
-      expect(
-        supported.any((l) => l.languageCode == 'en'),
-        isTrue,
-      );
+      expect(supported.any((l) => l.languageCode == 'en'), isTrue);
     });
   });
 }

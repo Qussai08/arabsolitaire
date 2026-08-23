@@ -45,13 +45,10 @@ class TimeoutException implements Exception {
   String toString() => 'TimeoutException: $message';
 }
 
-
 /// Provider overrides for tests: in-memory DB + fake repository.
 List<Override> _buildTestOverrides(ActiveAttemptRepository repo) {
   return [
-    appDatabaseProvider.overrideWith(
-      (ref) async => openTestDatabase(),
-    ),
+    appDatabaseProvider.overrideWith((ref) async => openTestDatabase()),
     activeAttemptRepositoryProvider.overrideWithValue(repo),
   ];
 }
@@ -73,10 +70,7 @@ void main() {
         overrides: [
           ..._buildTestOverrides(repo),
           gameplayControllerProvider.overrideWith(
-            () => GameplayController(
-              config: config,
-              contentSelector: content,
-            ),
+            () => GameplayController(config: config, contentSelector: content),
           ),
         ],
       );
@@ -105,10 +99,7 @@ void main() {
         overrides: [
           ..._buildTestOverrides(repo),
           gameplayControllerProvider.overrideWith(
-            () => GameplayController(
-              config: config,
-              contentSelector: content,
-            ),
+            () => GameplayController(config: config, contentSelector: content),
           ),
         ],
       );
@@ -120,8 +111,7 @@ void main() {
 
       // Try AdvanceStock — may or may not be legal.
       const engine = GameEngine();
-      final legalActions =
-          engine.enumerateLegalActions(playing0.gameState);
+      final legalActions = engine.enumerateLegalActions(playing0.gameState);
 
       if (legalActions.isNotEmpty) {
         container
@@ -191,10 +181,7 @@ void main() {
         overrides: [
           ..._buildTestOverrides(repo),
           gameplayControllerProvider.overrideWith(
-            () => GameplayController(
-              config: config,
-              contentSelector: content,
-            ),
+            () => GameplayController(config: config, contentSelector: content),
           ),
         ],
       );
@@ -205,9 +192,7 @@ void main() {
       final firstSave = repo.lastAttempt;
 
       // Restart.
-      await container
-          .read(gameplayControllerProvider.notifier)
-          .restart();
+      await container.read(gameplayControllerProvider.notifier).restart();
 
       final s2 = await _awaitPlaying(container, maxMs: 60000);
       expect(s2, isA<GameplayPlaying>());
@@ -254,8 +239,7 @@ void main() {
       // We try all legal actions until one results in outOfMoves.
       for (final action in legal) {
         final t = engine.applyAction(state, action);
-        if (t.accepted &&
-            t.nextState.status == AttemptStatus.outOfMoves) {
+        if (t.accepted && t.nextState.status == AttemptStatus.outOfMoves) {
           state = t.nextState;
           break;
         }
@@ -264,63 +248,59 @@ void main() {
       // If we couldn't reach oom from a 1-move board via normal moves,
       // that's fine — the engine's oom detection works regardless.
       // This test validates the AttemptStatus enum mapping.
-      expect(
-        AttemptStatus.values.contains(AttemptStatus.outOfMoves),
-        isTrue,
-      );
+      expect(AttemptStatus.values.contains(AttemptStatus.outOfMoves), isTrue);
     });
 
-    test('controller transitions to GameplayOutOfMoves when moves reach zero',
-        () async {
-      final repo = _FakeAttemptRepository();
+    test(
+      'controller transitions to GameplayOutOfMoves when moves reach zero',
+      () async {
+        final repo = _FakeAttemptRepository();
 
-      // A board with moveLimit=1: one any-move will exhaust moves.
-      final config = LevelTemplates.stockHeavy(moveLimit: 1);
-      final content = FixedContentSelector(
-        SyntheticContent.forProfile(config.groupSizeProfile),
-      );
+        // A board with moveLimit=1: one any-move will exhaust moves.
+        final config = LevelTemplates.stockHeavy(moveLimit: 1);
+        final content = FixedContentSelector(
+          SyntheticContent.forProfile(config.groupSizeProfile),
+        );
 
-      final container = ProviderContainer(
-        overrides: [
-          ..._buildTestOverrides(repo),
-          gameplayControllerProvider.overrideWith(
-            () => GameplayController(
-              config: config,
-              contentSelector: content,
+        final container = ProviderContainer(
+          overrides: [
+            ..._buildTestOverrides(repo),
+            gameplayControllerProvider.overrideWith(
+              () =>
+                  GameplayController(config: config, contentSelector: content),
             ),
-          ),
-        ],
-      );
-      addTearDown(container.dispose);
+          ],
+        );
+        addTearDown(container.dispose);
 
-      final s0 = await _awaitPlaying(container, maxMs: 60000);
-      if (s0 is! GameplayPlaying) return; // skip if generation failed
+        final s0 = await _awaitPlaying(container, maxMs: 60000);
+        if (s0 is! GameplayPlaying) return; // skip if generation failed
 
-      const engine = GameEngine();
-      final legal = engine.enumerateLegalActions(s0.gameState);
+        const engine = GameEngine();
+        final legal = engine.enumerateLegalActions(s0.gameState);
 
-      if (legal.isEmpty) return; // no legal actions; skip
+        if (legal.isEmpty) return; // no legal actions; skip
 
-      // Apply an action that does not win the board.
-      final controller =
-          container.read(gameplayControllerProvider.notifier);
+        // Apply an action that does not win the board.
+        final controller = container.read(gameplayControllerProvider.notifier);
 
-      for (final action in legal) {
-        if (action is UndoLastMove) continue;
-        controller.applyAction(action);
-        await Future<void>.delayed(const Duration(milliseconds: 100));
-        final s1 = container.read(gameplayControllerProvider);
-        if (s1 is GameplayOutOfMoves) {
-          expect(s1.gameState.status, AttemptStatus.outOfMoves);
-          return;
+        for (final action in legal) {
+          if (action is UndoLastMove) continue;
+          controller.applyAction(action);
+          await Future<void>.delayed(const Duration(milliseconds: 100));
+          final s1 = container.read(gameplayControllerProvider);
+          if (s1 is GameplayOutOfMoves) {
+            expect(s1.gameState.status, AttemptStatus.outOfMoves);
+            return;
+          }
+          if (s1 is GameplayWon) {
+            // Happened to win — that's valid, test passes trivially.
+            return;
+          }
         }
-        if (s1 is GameplayWon) {
-          // Happened to win — that's valid, test passes trivially.
-          return;
-        }
-      }
-      // If none triggered oom in one move (all won), that's fine.
-    });
+        // If none triggered oom in one move (all won), that's fine.
+      },
+    );
   });
 
   // -------------------------------------------------------------------------
@@ -345,25 +325,24 @@ void main() {
       );
       final gameState = candidate.initialGameState;
 
-      await repo.save(SavedAttempt(
-        levelDefinitionId: gameState.levelDefinitionId,
-        attemptId: gameState.attemptId,
-        seed: seed.value,
-        gameState: gameState,
-        rulesVersion: gameState.rulesVersion,
-        saveSchemaVersion: gameState.saveSchemaVersion,
-        generatorVersion: '1.0.0',
-        revision: 5,
-      ));
+      await repo.save(
+        SavedAttempt(
+          levelDefinitionId: gameState.levelDefinitionId,
+          attemptId: gameState.attemptId,
+          seed: seed.value,
+          gameState: gameState,
+          rulesVersion: gameState.rulesVersion,
+          saveSchemaVersion: gameState.saveSchemaVersion,
+          generatorVersion: '1.0.0',
+          revision: 5,
+        ),
+      );
 
       final loaded = await repo.load();
       expect(loaded, isNotNull);
       expect(loaded!.revision, 5);
       expect(loaded.gameState.attemptId, gameState.attemptId);
-      expect(
-        loaded.gameState.movesRemaining,
-        gameState.movesRemaining,
-      );
+      expect(loaded.gameState.movesRemaining, gameState.movesRemaining);
       expect(loaded.gameState.tableau.length, gameState.tableau.length);
     });
 
@@ -383,16 +362,18 @@ void main() {
         generationAttemptIndex: 0,
       );
 
-      await repo.save(SavedAttempt(
-        levelDefinitionId: 'test',
-        attemptId: candidate.initialGameState.attemptId,
-        seed: 42,
-        gameState: candidate.initialGameState,
-        rulesVersion: candidate.initialGameState.rulesVersion,
-        saveSchemaVersion: candidate.initialGameState.saveSchemaVersion,
-        generatorVersion: '1.0.0',
-        revision: 1,
-      ));
+      await repo.save(
+        SavedAttempt(
+          levelDefinitionId: 'test',
+          attemptId: candidate.initialGameState.attemptId,
+          seed: 42,
+          gameState: candidate.initialGameState,
+          rulesVersion: candidate.initialGameState.rulesVersion,
+          saveSchemaVersion: candidate.initialGameState.saveSchemaVersion,
+          generatorVersion: '1.0.0',
+          revision: 1,
+        ),
+      );
 
       expect(await repo.load(), isNotNull);
       await repo.clear();
@@ -416,10 +397,7 @@ void main() {
         overrides: [
           ..._buildTestOverrides(repo),
           gameplayControllerProvider.overrideWith(
-            () => GameplayController(
-              config: config,
-              contentSelector: content,
-            ),
+            () => GameplayController(config: config, contentSelector: content),
           ),
         ],
       );
@@ -428,8 +406,7 @@ void main() {
       final s = await _awaitPlaying(container, maxMs: 60000);
       if (s is! GameplayPlaying) return;
 
-      final controller =
-          container.read(gameplayControllerProvider.notifier);
+      final controller = container.read(gameplayControllerProvider.notifier);
 
       // Request hint then immediately apply an action — if legal.
       final legal = const GameEngine().enumerateLegalActions(s.gameState);
@@ -471,4 +448,3 @@ final class _FakeAttemptRepository implements ActiveAttemptRepository {
   @override
   Future<void> clear() async => lastAttempt = null;
 }
-

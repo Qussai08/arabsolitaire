@@ -124,12 +124,9 @@ class ActiveAttempts extends Table {
   TextColumn get gameStateJson => text()();
   TextColumn get rulesVersion => text()();
   IntColumn get saveSchemaVersion => integer()();
-  TextColumn get generatorVersion =>
-      text().withDefault(const Constant(''))();
-  IntColumn get revision =>
-      integer().withDefault(const Constant(0))();
-  DateTimeColumn get savedAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  TextColumn get generatorVersion => text().withDefault(const Constant(''))();
+  IntColumn get revision => integer().withDefault(const Constant(0))();
+  DateTimeColumn get savedAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -149,8 +146,7 @@ class JourneyProgressRows extends Table {
       text().withDefault(const Constant('[]'))();
   IntColumn get progressionSchemaVersion =>
       integer().withDefault(const Constant(1))();
-  DateTimeColumn get updatedAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -159,8 +155,7 @@ class JourneyProgressRows extends Table {
 /// Serialised player flags — single row (id='main').
 class PlayerFlagRows extends Table {
   TextColumn get id => text()();
-  BoolColumn get isFirstLaunch =>
-      boolean().withDefault(const Constant(true))();
+  BoolColumn get isFirstLaunch => boolean().withDefault(const Constant(true))();
   BoolColumn get onboardingCompleted =>
       boolean().withDefault(const Constant(false))();
   BoolColumn get tutorialCompleted =>
@@ -169,8 +164,7 @@ class PlayerFlagRows extends Table {
       text().withDefault(const Constant('[]'))();
   TextColumn get viewedStoryBeatIdsJson =>
       text().withDefault(const Constant('[]'))();
-  DateTimeColumn get updatedAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -183,8 +177,7 @@ class PlayerIdentityRows extends Table {
   TextColumn get firebaseUid => text().nullable()();
   TextColumn get identityState =>
       text().withDefault(const Constant('offlineLocalOnly'))();
-  DateTimeColumn get createdAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   IntColumn get cloudMigrationVersion =>
       integer().withDefault(const Constant(0))();
   DateTimeColumn get cloudMigrationCompletedAt => dateTime().nullable()();
@@ -197,14 +190,12 @@ class PlayerIdentityRows extends Table {
 class SyncMetadataRows extends Table {
   TextColumn get id => text()();
   DateTimeColumn get lastSuccessfulSyncAt => dateTime().nullable()();
-  IntColumn get lastCloudRevision =>
-      integer().withDefault(const Constant(0))();
+  IntColumn get lastCloudRevision => integer().withDefault(const Constant(0))();
   IntColumn get pendingOperationsCount =>
       integer().withDefault(const Constant(0))();
   TextColumn get lastSyncErrorCode => text().nullable()();
   TextColumn get identityUid => text().nullable()();
-  IntColumn get syncSchemaVersion =>
-      integer().withDefault(const Constant(1))();
+  IntColumn get syncSchemaVersion => integer().withDefault(const Constant(1))();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -215,13 +206,10 @@ class SyncOperationRows extends Table {
   TextColumn get operationId => text()();
   TextColumn get operationType => text()();
   TextColumn get payloadJson => text()();
-  DateTimeColumn get createdAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   TextColumn get idempotencyKey => text()();
-  IntColumn get attemptCount =>
-      integer().withDefault(const Constant(0))();
-  TextColumn get status =>
-      text().withDefault(const Constant('pending'))();
+  IntColumn get attemptCount => integer().withDefault(const Constant(0))();
+  TextColumn get status => text().withDefault(const Constant('pending'))();
   DateTimeColumn get nextRetryAt => dateTime().nullable()();
 
   @override
@@ -232,19 +220,13 @@ class SyncOperationRows extends Table {
 class WalletCacheRows extends Table {
   TextColumn get id => text()();
   TextColumn get firebaseUid => text().nullable()();
-  IntColumn get coinBalance =>
-      integer().withDefault(const Constant(0))();
-  IntColumn get hintBalance =>
-      integer().withDefault(const Constant(0))();
-  IntColumn get pendingCoinDelta =>
-      integer().withDefault(const Constant(0))();
-  IntColumn get pendingHintDelta =>
-      integer().withDefault(const Constant(0))();
-  IntColumn get walletRevision =>
-      integer().withDefault(const Constant(0))();
+  IntColumn get coinBalance => integer().withDefault(const Constant(0))();
+  IntColumn get hintBalance => integer().withDefault(const Constant(0))();
+  IntColumn get pendingCoinDelta => integer().withDefault(const Constant(0))();
+  IntColumn get pendingHintDelta => integer().withDefault(const Constant(0))();
+  IntColumn get walletRevision => integer().withDefault(const Constant(0))();
   DateTimeColumn get lastReconciledAt => dateTime().nullable()();
-  BoolColumn get isStale =>
-      boolean().withDefault(const Constant(true))();
+  BoolColumn get isStale => boolean().withDefault(const Constant(true))();
   IntColumn get walletSchemaVersion =>
       integer().withDefault(const Constant(1))();
 
@@ -258,14 +240,11 @@ class EconomyOperationRows extends Table {
   TextColumn get operationType => text()();
   TextColumn get idempotencyKey => text()();
   TextColumn get payloadJson => text()();
-  DateTimeColumn get createdAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
   IntColumn get coinDelta => integer().withDefault(const Constant(0))();
   IntColumn get hintDelta => integer().withDefault(const Constant(0))();
-  TextColumn get status =>
-      text().withDefault(const Constant('pending'))();
-  IntColumn get attemptCount =>
-      integer().withDefault(const Constant(0))();
+  TextColumn get status => text().withDefault(const Constant('pending'))();
+  IntColumn get attemptCount => integer().withDefault(const Constant(0))();
   DateTimeColumn get nextRetryAt => dateTime().nullable()();
   TextColumn get serverTransactionId => text().nullable()();
 
@@ -276,17 +255,13 @@ class EconomyOperationRows extends Table {
 /// Entitlements (e.g. Remove Ads) — keyed by entitlement type string.
 class EntitlementRows extends Table {
   TextColumn get entitlementType => text()();
-  BoolColumn get active =>
-      boolean().withDefault(const Constant(false))();
-  TextColumn get source =>
-      text().withDefault(const Constant('none'))();
+  BoolColumn get active => boolean().withDefault(const Constant(false))();
+  TextColumn get source => text().withDefault(const Constant('none'))();
   TextColumn get storeProductId => text().nullable()();
   TextColumn get purchaseId => text().nullable()();
   DateTimeColumn get validatedAt => dateTime().nullable()();
-  IntColumn get revision =>
-      integer().withDefault(const Constant(0))();
-  DateTimeColumn get updatedAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  IntColumn get revision => integer().withDefault(const Constant(0))();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column<Object>> get primaryKey => {entitlementType};
@@ -300,8 +275,7 @@ class MonetizationStateRows extends Table {
   DateTimeColumn get lastRewardedAdAt => dateTime().nullable()();
   DateTimeColumn get lastPurchaseAt => dateTime().nullable()();
   DateTimeColumn get lastTutorialCompletedAt => dateTime().nullable()();
-  DateTimeColumn get updatedAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -318,19 +292,14 @@ class DailyStateCacheRows extends Table {
       integer().withDefault(const Constant(1))();
   TextColumn get rewardLastClaimedDayKey => text().nullable()();
   DateTimeColumn get rewardLastClaimedAt => dateTime().nullable()();
-  IntColumn get rewardRevision =>
-      integer().withDefault(const Constant(0))();
-  IntColumn get streakCurrentDays =>
-      integer().withDefault(const Constant(0))();
+  IntColumn get rewardRevision => integer().withDefault(const Constant(0))();
+  IntColumn get streakCurrentDays => integer().withDefault(const Constant(0))();
   TextColumn get streakLastQualifiedDayKey => text().nullable()();
-  IntColumn get streakLongestDays =>
-      integer().withDefault(const Constant(0))();
+  IntColumn get streakLongestDays => integer().withDefault(const Constant(0))();
   TextColumn get streakClaimedMilestonesJson =>
       text().withDefault(const Constant('[]'))();
-  TextColumn get streakCycleId =>
-      text().withDefault(const Constant('init'))();
-  IntColumn get streakRevision =>
-      integer().withDefault(const Constant(0))();
+  TextColumn get streakCycleId => text().withDefault(const Constant('init'))();
+  IntColumn get streakRevision => integer().withDefault(const Constant(0))();
   TextColumn get challengeCurrentDayKey => text().nullable()();
   TextColumn get challengeId => text().nullable()();
   BoolColumn get challengeCompleted =>
@@ -340,8 +309,7 @@ class DailyStateCacheRows extends Table {
   DateTimeColumn get challengeCompletedAt => dateTime().nullable()();
   IntColumn get challengeAttemptCount =>
       integer().withDefault(const Constant(0))();
-  DateTimeColumn get fetchedAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get fetchedAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -361,8 +329,7 @@ class DailyChallengeCacheRows extends Table {
   IntColumn get solverVersion => integer()();
   TextColumn get contentBundleVersion => text().nullable()();
   TextColumn get boardFingerprint => text().nullable()();
-  DateTimeColumn get cachedAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get cachedAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column<Object>> get primaryKey => {challengeId};
@@ -375,8 +342,7 @@ class NotificationPreferenceRows extends Table {
       boolean().withDefault(const Constant(true))();
   BoolColumn get streakRiskEnabled =>
       boolean().withDefault(const Constant(true))();
-  DateTimeColumn get updatedAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column<Object>> get primaryKey => {id};
@@ -387,15 +353,13 @@ class DeviceRegistrationRows extends Table {
   TextColumn get deviceId => text()();
   TextColumn get fcmToken => text()();
   TextColumn get platform => text()();
-  TextColumn get timezoneId =>
-      text().withDefault(const Constant('UTC'))();
+  TextColumn get timezoneId => text().withDefault(const Constant('UTC'))();
   BoolColumn get notificationsEnabled =>
       boolean().withDefault(const Constant(true))();
   TextColumn get appVersion => text().nullable()();
   DateTimeColumn get registeredAt =>
       dateTime().withDefault(currentDateAndTime)();
-  DateTimeColumn get lastSeenAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get lastSeenAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column<Object>> get primaryKey => {deviceId};
@@ -405,15 +369,13 @@ class DeviceRegistrationRows extends Table {
 class RewardedAdReceiptRows extends Table {
   TextColumn get operationId => text()();
   TextColumn get rewardType => text()();
-  BoolColumn get adCompleted =>
-      boolean().withDefault(const Constant(false))();
+  BoolColumn get adCompleted => boolean().withDefault(const Constant(false))();
   TextColumn get attemptId => text().nullable()();
   BoolColumn get backendGranted =>
       boolean().withDefault(const Constant(false))();
   BoolColumn get localEffectApplied =>
       boolean().withDefault(const Constant(false))();
-  DateTimeColumn get createdAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column<Object>> get primaryKey => {operationId};
@@ -430,8 +392,7 @@ class ContentMetadataRows extends Table {
       text().withDefault(const Constant('[]'))();
   DateTimeColumn get lastUpdateCheckAt => dateTime().nullable()();
   DateTimeColumn get lastSuccessfulActivationAt => dateTime().nullable()();
-  DateTimeColumn get updatedAt =>
-      dateTime().withDefault(currentDateAndTime)();
+  DateTimeColumn get updatedAt => dateTime().withDefault(currentDateAndTime)();
 
   @override
   Set<Column<Object>> get primaryKey => {id};

@@ -21,17 +21,17 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) {
 
 // ── Cloud repositories ────────────────────────────────────────────────────────
 
-final cloudProgressionRepositoryProvider =
-    Provider<CloudProgressionRepository>((ref) {
-  try {
-    return FirestoreProgressionRepository(FirebaseFirestore.instance);
-  } catch (_) {
-    return const OfflineProgressionRepository();
-  }
-});
+final cloudProgressionRepositoryProvider = Provider<CloudProgressionRepository>(
+  (ref) {
+    try {
+      return FirestoreProgressionRepository(FirebaseFirestore.instance);
+    } catch (_) {
+      return const OfflineProgressionRepository();
+    }
+  },
+);
 
-final cloudStoryRepositoryProvider =
-    Provider<CloudStoryRepository>((ref) {
+final cloudStoryRepositoryProvider = Provider<CloudStoryRepository>((ref) {
   try {
     return FirestoreStoryRepository(FirebaseFirestore.instance);
   } catch (_) {
@@ -39,8 +39,9 @@ final cloudStoryRepositoryProvider =
   }
 });
 
-final cloudSettingsRepositoryProvider =
-    Provider<CloudSettingsRepository>((ref) {
+final cloudSettingsRepositoryProvider = Provider<CloudSettingsRepository>((
+  ref,
+) {
   try {
     return FirestoreSettingsRepository(FirebaseFirestore.instance);
   } catch (_) {
@@ -50,8 +51,7 @@ final cloudSettingsRepositoryProvider =
 
 // ── Sync queue ────────────────────────────────────────────────────────────────
 
-final syncQueueRepositoryProvider =
-    Provider<DriftSyncQueueRepository?>((ref) {
+final syncQueueRepositoryProvider = Provider<DriftSyncQueueRepository?>((ref) {
   final db = ref.watch(appDatabaseProvider).valueOrNull;
   if (db == null) return null;
   return DriftSyncQueueRepository(db);

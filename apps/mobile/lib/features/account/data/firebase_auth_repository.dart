@@ -49,7 +49,8 @@ final class FirebaseAuthRepository implements AuthRepository {
       //
       // Return success on completion.
       throw UnimplementedError(
-          'Google linking requires google_sign_in wiring; architecture ready');
+        'Google linking requires google_sign_in wiring; architecture ready',
+      );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'credential-already-in-use') {
         return LinkResult(type: LinkResultType.conflict, error: e.code);
@@ -69,7 +70,8 @@ final class FirebaseAuthRepository implements AuthRepository {
       // Apple Sign-In uses apple_sign_in or sign_in_with_apple package.
       // Architecture stub — full wiring in platform integration step.
       throw UnimplementedError(
-          'Apple linking requires sign_in_with_apple wiring; architecture ready');
+        'Apple linking requires sign_in_with_apple wiring; architecture ready',
+      );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'credential-already-in-use') {
         return LinkResult(type: LinkResultType.conflict, error: e.code);
@@ -84,15 +86,13 @@ final class FirebaseAuthRepository implements AuthRepository {
   }
 
   @override
-  Stream<AuthState> watchAuthState() =>
-      _auth.authStateChanges().map((user) {
-        if (user == null) return AuthState.offline;
-        return _stateFromUser(user);
-      });
+  Stream<AuthState> watchAuthState() => _auth.authStateChanges().map((user) {
+    if (user == null) return AuthState.offline;
+    return _stateFromUser(user);
+  });
 
   static AuthState _stateFromUser(User user) {
-    final providers =
-        user.providerData.map((p) => p.providerId).toList();
+    final providers = user.providerData.map((p) => p.providerId).toList();
     final isAnonymous = user.isAnonymous;
     return AuthState(
       type: isAnonymous

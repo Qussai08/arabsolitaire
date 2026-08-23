@@ -104,8 +104,7 @@ final class LevelConfiguration {
 
   int get associationCount => groupSizeProfile.length;
 
-  int get tableauCardCount =>
-      tableauColumnSizes.fold<int>(0, (a, b) => a + b);
+  int get tableauCardCount => tableauColumnSizes.fold<int>(0, (a, b) => a + b);
 
   int get totalCardCount =>
       groupSizeProfile.fold<int>(0, (sum, members) => sum + 1 + members);
@@ -133,22 +132,22 @@ final class _Draft {
   });
 
   factory _Draft.from(LevelConfiguration c) => _Draft(
-        levelDefinitionId: c.levelDefinitionId,
-        groupSizeProfile: c.groupSizeProfile,
-        tableauColumnSizes: c.tableauColumnSizes,
-        stockCardCount: c.stockCardCount,
-        associationSlotCount: c.associationSlotCount,
-        moveLimit: c.moveLimit,
-        difficultyTarget: c.difficultyTarget,
-        chapterId: c.chapterId,
-        levelNumber: c.levelNumber,
-        rulesVersion: c.rulesVersion,
-        maxGenerationAttempts: c.maxGenerationAttempts,
-        solverOptions: c.solverOptions,
-        includeSolutionActions: c.includeSolutionActions,
-        semanticDifficultyTier: c.semanticDifficultyTier,
-        maxVisualAssociations: c.maxVisualAssociations,
-      );
+    levelDefinitionId: c.levelDefinitionId,
+    groupSizeProfile: c.groupSizeProfile,
+    tableauColumnSizes: c.tableauColumnSizes,
+    stockCardCount: c.stockCardCount,
+    associationSlotCount: c.associationSlotCount,
+    moveLimit: c.moveLimit,
+    difficultyTarget: c.difficultyTarget,
+    chapterId: c.chapterId,
+    levelNumber: c.levelNumber,
+    rulesVersion: c.rulesVersion,
+    maxGenerationAttempts: c.maxGenerationAttempts,
+    solverOptions: c.solverOptions,
+    includeSolutionActions: c.includeSolutionActions,
+    semanticDifficultyTier: c.semanticDifficultyTier,
+    maxVisualAssociations: c.maxVisualAssociations,
+  );
 
   final String levelDefinitionId;
   final List<int> groupSizeProfile;
@@ -168,8 +167,7 @@ final class _Draft {
 
   int get associationCount => groupSizeProfile.length;
 
-  int get tableauCardCount =>
-      tableauColumnSizes.fold<int>(0, (a, b) => a + b);
+  int get tableauCardCount => tableauColumnSizes.fold<int>(0, (a, b) => a + b);
 
   int get totalCardCount =>
       groupSizeProfile.fold<int>(0, (sum, members) => sum + 1 + members);

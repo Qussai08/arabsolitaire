@@ -19,11 +19,7 @@ abstract interface class FcmService {
 }
 
 final class FcmMessage {
-  const FcmMessage({
-    required this.notificationType,
-    this.dayKey,
-    this.payload,
-  });
+  const FcmMessage({required this.notificationType, this.dayKey, this.payload});
 
   final NotificationType notificationType;
   final String? dayKey;

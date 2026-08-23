@@ -19,10 +19,7 @@ sealed class CandidateValidation {
 }
 
 final class CandidateAccepted extends CandidateValidation {
-  const CandidateAccepted({
-    required this.solved,
-    required this.difficulty,
-  });
+  const CandidateAccepted({required this.solved, required this.difficulty});
 
   final Solved solved;
   final DifficultyEvaluation difficulty;
@@ -59,8 +56,10 @@ abstract final class CandidateValidator {
       );
     }
 
-    final result =
-        activeSolver.solve(state: state, options: config.solverOptions);
+    final result = activeSolver.solve(
+      state: state,
+      options: config.solverOptions,
+    );
     switch (result) {
       case Solved(:final actions):
         if (actions.length > config.moveLimit) {
@@ -85,19 +84,19 @@ abstract final class CandidateValidator {
         );
         return switch (difficulty.verdict) {
           DifficultyVerdict.accepted => CandidateAccepted(
-              solved: result,
-              difficulty: difficulty,
-            ),
+            solved: result,
+            difficulty: difficulty,
+          ),
           DifficultyVerdict.tooEasy => CandidateRejected(
-              reason: CandidateRejectReason.tooEasy,
-              solveResult: result,
-              difficulty: difficulty,
-            ),
+            reason: CandidateRejectReason.tooEasy,
+            solveResult: result,
+            difficulty: difficulty,
+          ),
           DifficultyVerdict.tooHard => CandidateRejected(
-              reason: CandidateRejectReason.tooHard,
-              solveResult: result,
-              difficulty: difficulty,
-            ),
+            reason: CandidateRejectReason.tooHard,
+            solveResult: result,
+            difficulty: difficulty,
+          ),
         };
       case Unsolvable():
         return CandidateRejected(

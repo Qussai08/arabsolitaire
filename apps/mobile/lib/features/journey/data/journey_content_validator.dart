@@ -22,11 +22,13 @@ abstract final class JourneyContentValidator {
     for (final c in chapters) {
       if (!ids.add(c.chapterId)) {
         throw ContentValidationException(
-            'Duplicate chapter ID: ${c.chapterId}');
+          'Duplicate chapter ID: ${c.chapterId}',
+        );
       }
       if (c.levelEnd < c.levelStart) {
         throw ContentValidationException(
-            'Chapter ${c.chapterId}: levelEnd < levelStart');
+          'Chapter ${c.chapterId}: levelEnd < levelStart',
+        );
       }
     }
     // Chapters must be sorted and contiguous
@@ -34,7 +36,8 @@ abstract final class JourneyContentValidator {
     for (int i = 0; i < sorted.length; i++) {
       if (sorted[i].order != i + 1) {
         throw ContentValidationException(
-            'Chapter order gap at position ${i + 1}');
+          'Chapter order gap at position ${i + 1}',
+        );
       }
     }
   }
@@ -54,15 +57,18 @@ abstract final class JourneyContentValidator {
     for (final l in levels) {
       if (!levelIds.add(l.levelDefinitionId)) {
         throw ContentValidationException(
-            'Duplicate level ID: ${l.levelDefinitionId}');
+          'Duplicate level ID: ${l.levelDefinitionId}',
+        );
       }
       if (!globalNumbers.add(l.globalLevelNumber)) {
         throw ContentValidationException(
-            'Duplicate global level number: ${l.globalLevelNumber}');
+          'Duplicate global level number: ${l.globalLevelNumber}',
+        );
       }
       if (!chapterIds.contains(l.chapterId)) {
         throw ContentValidationException(
-            'Level ${l.levelDefinitionId} references unknown chapter: ${l.chapterId}');
+          'Level ${l.levelDefinitionId} references unknown chapter: ${l.chapterId}',
+        );
       }
       if (l.globalLevelNumber == 1) hasLevel1 = true;
     }
@@ -72,11 +78,13 @@ abstract final class JourneyContentValidator {
     }
 
     // Global numbers must be contiguous starting from 1
-    final maxNumber =
-        levels.map((l) => l.globalLevelNumber).reduce((a, b) => a > b ? a : b);
+    final maxNumber = levels
+        .map((l) => l.globalLevelNumber)
+        .reduce((a, b) => a > b ? a : b);
     if (maxNumber != levels.length) {
       throw ContentValidationException(
-          'Global level numbers must be 1..${levels.length}, max was $maxNumber');
+        'Global level numbers must be 1..${levels.length}, max was $maxNumber',
+      );
     }
   }
 
@@ -86,11 +94,13 @@ abstract final class JourneyContentValidator {
     for (final b in JourneyContent.storyBeats) {
       if (!ids.add(b.storyBeatId)) {
         throw ContentValidationException(
-            'Duplicate story beat ID: ${b.storyBeatId}');
+          'Duplicate story beat ID: ${b.storyBeatId}',
+        );
       }
       if (!chapterIds.contains(b.chapterId)) {
         throw ContentValidationException(
-            'Story beat ${b.storyBeatId} references unknown chapter: ${b.chapterId}');
+          'Story beat ${b.storyBeatId} references unknown chapter: ${b.chapterId}',
+        );
       }
     }
   }

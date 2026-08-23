@@ -25,10 +25,9 @@ import 'package:mobile/features/journey/domain/journey_models.dart';
 AppDatabase _openTestDb() => AppDatabase(NativeDatabase.memory());
 
 List<Override> _buildOverrides(AppDatabase db) => [
-      appDatabaseProvider.overrideWith((_) async => db),
-      journeyRepositoryProvider
-          .overrideWithValue(DriftJourneyRepository(db)),
-    ];
+  appDatabaseProvider.overrideWith((_) async => db),
+  journeyRepositoryProvider.overrideWithValue(DriftJourneyRepository(db)),
+];
 
 Future<JourneyReady> _awaitReady(ProviderContainer c) async {
   for (int i = 0; i < 200; i++) {
@@ -79,15 +78,17 @@ void main() {
     });
 
     test('validates chapter IDs are stable', () {
-      final ids =
-          JourneyContent.chapters.map((c) => c.chapterId).toSet();
-      expect(ids, containsAll([
-        'chapter_cairo',
-        'chapter_alexandria',
-        'chapter_beirut',
-        'chapter_marrakech',
-        'chapter_dubai',
-      ]));
+      final ids = JourneyContent.chapters.map((c) => c.chapterId).toSet();
+      expect(
+        ids,
+        containsAll([
+          'chapter_cairo',
+          'chapter_alexandria',
+          'chapter_beirut',
+          'chapter_marrakech',
+          'chapter_dubai',
+        ]),
+      );
     });
 
     test('rejects duplicate chapter IDs', () {
@@ -130,8 +131,9 @@ void main() {
     });
 
     test('rejects if no Level 1', () {
-      final levels =
-          JourneyContent.buildLevels().where((l) => l.globalLevelNumber != 1).toList();
+      final levels = JourneyContent.buildLevels()
+          .where((l) => l.globalLevelNumber != 1)
+          .toList();
       expect(
         () => JourneyContentValidator.validate(
           chapters: JourneyContent.chapters,
@@ -187,10 +189,13 @@ void main() {
     test('completing Level 50 marks chapter complete', () {
       // Build a progress with all 50 Cairo levels complete
       var p = const JourneyProgress();
-      final levels = JourneyContent.buildLevels()
-          .where((l) => l.chapterId == 'chapter_cairo')
-          .toList()
-        ..sort((a, b) => a.globalLevelNumber.compareTo(b.globalLevelNumber));
+      final levels =
+          JourneyContent.buildLevels()
+              .where((l) => l.chapterId == 'chapter_cairo')
+              .toList()
+            ..sort(
+              (a, b) => a.globalLevelNumber.compareTo(b.globalLevelNumber),
+            );
 
       for (int i = 0; i < levels.length - 1; i++) {
         p = p.afterLevelCompleted(
@@ -214,13 +219,15 @@ void main() {
       final levels = JourneyContent.buildLevels();
       final level1 = levels.firstWhere((l) => l.globalLevelNumber == 1);
       final p1 = p.afterLevelCompleted(
-          levelId: level1.levelDefinitionId,
-          globalNumber: 1,
-          nextLevelId: null);
+        levelId: level1.levelDefinitionId,
+        globalNumber: 1,
+        nextLevelId: null,
+      );
       final p2 = p1.afterLevelCompleted(
-          levelId: level1.levelDefinitionId,
-          globalNumber: 1,
-          nextLevelId: null);
+        levelId: level1.levelDefinitionId,
+        globalNumber: 1,
+        nextLevelId: null,
+      );
       expect(p2.completedLevelIds.length, equals(1));
     });
   });
@@ -233,10 +240,12 @@ void main() {
 
     setUp(() {
       db = _openTestDb();
-      container = ProviderContainer(overrides: [
-        ..._buildOverrides(db),
-        journeyControllerProvider.overrideWith(JourneyController.new),
-      ]);
+      container = ProviderContainer(
+        overrides: [
+          ..._buildOverrides(db),
+          journeyControllerProvider.overrideWith(JourneyController.new),
+        ],
+      );
     });
 
     tearDown(() async {
@@ -263,10 +272,12 @@ void main() {
           );
 
       // Create a new container against the SAME db
-      final container2 = ProviderContainer(overrides: [
-        ..._buildOverrides(db),
-        journeyControllerProvider.overrideWith(JourneyController.new),
-      ]);
+      final container2 = ProviderContainer(
+        overrides: [
+          ..._buildOverrides(db),
+          journeyControllerProvider.overrideWith(JourneyController.new),
+        ],
+      );
       addTearDown(container2.dispose);
 
       final s2 = await _awaitReady(container2);
@@ -279,10 +290,12 @@ void main() {
           .read(journeyControllerProvider.notifier)
           .completeTutorial();
 
-      final container2 = ProviderContainer(overrides: [
-        ..._buildOverrides(db),
-        journeyControllerProvider.overrideWith(JourneyController.new),
-      ]);
+      final container2 = ProviderContainer(
+        overrides: [
+          ..._buildOverrides(db),
+          journeyControllerProvider.overrideWith(JourneyController.new),
+        ],
+      );
       addTearDown(container2.dispose);
 
       final s = await _awaitReady(container2);
@@ -301,7 +314,11 @@ void main() {
         final types = beats.map((b) => b.type).toSet();
         expect(
           types,
-          containsAll([StoryBeatType.start, StoryBeatType.midpoint, StoryBeatType.ending]),
+          containsAll([
+            StoryBeatType.start,
+            StoryBeatType.midpoint,
+            StoryBeatType.ending,
+          ]),
           reason: 'Chapter ${chapter.chapterId} missing beat types',
         );
       }
@@ -310,7 +327,8 @@ void main() {
     test('story beats have correct trigger levels', () {
       for (final chapter in JourneyContent.chapters) {
         final start = JourneyContent.storyBeats.firstWhere(
-          (b) => b.chapterId == chapter.chapterId && b.type == StoryBeatType.start,
+          (b) =>
+              b.chapterId == chapter.chapterId && b.type == StoryBeatType.start,
         );
         final mid = JourneyContent.storyBeats.firstWhere(
           (b) =>
@@ -319,50 +337,59 @@ void main() {
         );
         final end = JourneyContent.storyBeats.firstWhere(
           (b) =>
-              b.chapterId == chapter.chapterId && b.type == StoryBeatType.ending,
+              b.chapterId == chapter.chapterId &&
+              b.type == StoryBeatType.ending,
         );
         expect(start.triggerLevelNumber, equals(chapter.levelStart));
-        expect(mid.triggerLevelNumber,
-            equals(chapter.levelStart + 24)); // level 25 within chapter
+        expect(
+          mid.triggerLevelNumber,
+          equals(chapter.levelStart + 24),
+        ); // level 25 within chapter
         expect(end.triggerLevelNumber, equals(chapter.levelEnd));
       }
     });
 
-    test('unlocking story beat persists and does not replay on next check',
-        () async {
-      final db = _openTestDb();
-      final container = ProviderContainer(overrides: [
-        ..._buildOverrides(db),
-        journeyControllerProvider.overrideWith(JourneyController.new),
-      ]);
-      addTearDown(() async {
-        container.dispose();
-        await db.close();
-      });
+    test(
+      'unlocking story beat persists and does not replay on next check',
+      () async {
+        final db = _openTestDb();
+        final container = ProviderContainer(
+          overrides: [
+            ..._buildOverrides(db),
+            journeyControllerProvider.overrideWith(JourneyController.new),
+          ],
+        );
+        addTearDown(() async {
+          container.dispose();
+          await db.close();
+        });
 
-      await _awaitReady(container);
-      const beatId = 'chapter_cairo_start';
-      await container
-          .read(journeyControllerProvider.notifier)
-          .unlockStoryBeat(beatId);
-      await container
-          .read(journeyControllerProvider.notifier)
-          .markStoryBeatViewed(beatId);
+        await _awaitReady(container);
+        const beatId = 'chapter_cairo_start';
+        await container
+            .read(journeyControllerProvider.notifier)
+            .unlockStoryBeat(beatId);
+        await container
+            .read(journeyControllerProvider.notifier)
+            .markStoryBeatViewed(beatId);
 
-      final s = container.read(journeyControllerProvider) as JourneyReady;
-      expect(s.flags.unlockedStoryBeatIds, contains(beatId));
-      expect(s.flags.viewedStoryBeatIds, contains(beatId));
-      // pendingBeatsFor level 1 should now be empty
-      final pending = s.pendingBeatsFor(1);
-      expect(pending, isEmpty);
-    });
+        final s = container.read(journeyControllerProvider) as JourneyReady;
+        expect(s.flags.unlockedStoryBeatIds, contains(beatId));
+        expect(s.flags.viewedStoryBeatIds, contains(beatId));
+        // pendingBeatsFor level 1 should now be empty
+        final pending = s.pendingBeatsFor(1);
+        expect(pending, isEmpty);
+      },
+    );
 
     test('skip marks beat as unlocked and viewed', () async {
       final db = _openTestDb();
-      final container = ProviderContainer(overrides: [
-        ..._buildOverrides(db),
-        journeyControllerProvider.overrideWith(JourneyController.new),
-      ]);
+      final container = ProviderContainer(
+        overrides: [
+          ..._buildOverrides(db),
+          journeyControllerProvider.overrideWith(JourneyController.new),
+        ],
+      );
       addTearDown(() async {
         container.dispose();
         await db.close();
@@ -385,10 +412,13 @@ void main() {
 
     test('story archive ordering: start < midpoint < ending', () {
       for (final chapter in JourneyContent.chapters) {
-        final beats = JourneyContent.storyBeats
-            .where((b) => b.chapterId == chapter.chapterId)
-            .toList()
-          ..sort((a, b) => a.triggerLevelNumber.compareTo(b.triggerLevelNumber));
+        final beats =
+            JourneyContent.storyBeats
+                .where((b) => b.chapterId == chapter.chapterId)
+                .toList()
+              ..sort(
+                (a, b) => a.triggerLevelNumber.compareTo(b.triggerLevelNumber),
+              );
         expect(beats[0].type, StoryBeatType.start);
         expect(beats[1].type, StoryBeatType.midpoint);
         expect(beats[2].type, StoryBeatType.ending);

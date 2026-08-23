@@ -41,8 +41,7 @@ final class NoOpAdService implements AdService {
   Future<AdResult> showRewardedAd({
     required AdPlacement placement,
     required String operationId,
-  }) async =>
-      AdResult.notAvailable;
+  }) async => AdResult.notAvailable;
 
   @override
   Future<void> loadInterstitial() async {}

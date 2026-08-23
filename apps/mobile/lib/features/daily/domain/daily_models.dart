@@ -140,8 +140,7 @@ final class DayKey {
     return DayKey('$y-$m-$d');
   }
 
-  static DayKey today(DateTime Function() nowFn) =>
-      fromDate(nowFn());
+  static DayKey today(DateTime Function() nowFn) => fromDate(nowFn());
 
   bool isBeforeOrSame(DayKey other) => value.compareTo(other.value) <= 0;
   bool isBefore(DayKey other) => value.compareTo(other.value) < 0;
@@ -286,12 +285,10 @@ final class NotificationPreferences {
   NotificationPreferences copyWith({
     bool? dailyChallengeEnabled,
     bool? streakRiskEnabled,
-  }) =>
-      NotificationPreferences(
-        dailyChallengeEnabled:
-            dailyChallengeEnabled ?? this.dailyChallengeEnabled,
-        streakRiskEnabled: streakRiskEnabled ?? this.streakRiskEnabled,
-      );
+  }) => NotificationPreferences(
+    dailyChallengeEnabled: dailyChallengeEnabled ?? this.dailyChallengeEnabled,
+    streakRiskEnabled: streakRiskEnabled ?? this.streakRiskEnabled,
+  );
 }
 
 // ── Quiet hours ───────────────────────────────────────────────────────────────
@@ -328,8 +325,4 @@ final class DailyClaimFailed extends DailyClaimResult {
 
 // ── Streak activity sources ───────────────────────────────────────────────────
 
-enum DailyActivitySource {
-  levelCompletion,
-  dailyChallenge,
-  dailyRewardClaim,
-}
+enum DailyActivitySource { levelCompletion, dailyChallenge, dailyRewardClaim }

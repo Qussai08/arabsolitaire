@@ -11,13 +11,16 @@ export 'package:mobile/features/gameplay/data/active_attempt_providers.dart';
 
 /// The level definition the player is currently about to play or is playing.
 /// Set by JourneyScreen / HomeScreen before pushing [AppRoutes.gameplay].
-final currentPlayingLevelProvider = StateProvider<LevelDefinition?>((_) => null);
+final currentPlayingLevelProvider = StateProvider<LevelDefinition?>(
+  (_) => null,
+);
 
 LevelDefinition _defaultLevel() => JourneyContent.buildLevels().first;
 
 /// Resolves associations from the loaded content snapshot (or fallback).
-final approvedAssociationPoolProvider =
-    Provider<List<AssociationVariantDto>>((ref) {
+final approvedAssociationPoolProvider = Provider<List<AssociationVariantDto>>((
+  ref,
+) {
   final async = ref.watch(contentSnapshotProvider);
   return async.maybeWhen(
     data: (snapshot) => snapshot.associations,
@@ -27,8 +30,8 @@ final approvedAssociationPoolProvider =
 
 final gameplayControllerProvider =
     NotifierProvider<GameplayController, GameplayViewState>(
-  GameplayController.new,
-);
+      GameplayController.new,
+    );
 
 /// Extension helpers used by [GameplayController.build].
 extension GameplayLevelResolution on Ref {

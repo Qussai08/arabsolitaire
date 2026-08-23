@@ -69,15 +69,14 @@ class WalletController extends Notifier<WalletViewState> {
     required String completionId,
     required int remainingMoves,
     required int streakCoins,
-  }) =>
-      _executeOp(EconomyOperationType.levelReward, () async {
-        return _economyRepo.claimLevelReward(
-          levelId: levelId,
-          completionId: completionId,
-          remainingMoves: remainingMoves,
-          streakCoins: streakCoins,
-        );
-      });
+  }) => _executeOp(EconomyOperationType.levelReward, () async {
+    return _economyRepo.claimLevelReward(
+      levelId: levelId,
+      completionId: completionId,
+      remainingMoves: remainingMoves,
+      streakCoins: streakCoins,
+    );
+  });
 
   Future<EconomyResult> claimChapterReward({required String chapterId}) =>
       _executeOp(EconomyOperationType.chapterReward, () async {
@@ -85,9 +84,14 @@ class WalletController extends Notifier<WalletViewState> {
       });
 
   Future<EconomyResult> purchaseHint({required String operationId}) =>
-      _executeOp(EconomyOperationType.hintPurchase, () async {
-        return _economyRepo.purchaseHint(operationId: operationId);
-      }, localCoinDelta: -EconomyConfig.hintCostCoins, localHintDelta: 1);
+      _executeOp(
+        EconomyOperationType.hintPurchase,
+        () async {
+          return _economyRepo.purchaseHint(operationId: operationId);
+        },
+        localCoinDelta: -EconomyConfig.hintCostCoins,
+        localHintDelta: 1,
+      );
 
   Future<EconomyResult> consumeHint({required String operationId}) =>
       _executeOp(EconomyOperationType.hintConsume, () async {
@@ -110,9 +114,13 @@ class WalletController extends Notifier<WalletViewState> {
   }
 
   Future<EconomyResult> purchaseDeadEndRescue({required String attemptId}) =>
-      _executeOp(EconomyOperationType.deadEndRescuePurchase, () async {
-        return _economyRepo.purchaseDeadEndRescue(attemptId: attemptId);
-      }, localCoinDelta: -EconomyConfig.deadEndRescueCostCoins);
+      _executeOp(
+        EconomyOperationType.deadEndRescuePurchase,
+        () async {
+          return _economyRepo.purchaseDeadEndRescue(attemptId: attemptId);
+        },
+        localCoinDelta: -EconomyConfig.deadEndRescueCostCoins,
+      );
 
   // ── Reconciliation ────────────────────────────────────────────────────────
 
@@ -160,13 +168,9 @@ class WalletController extends Notifier<WalletViewState> {
             chapterId: op.payload['chapterId'] as String,
           );
         case EconomyOperationType.hintPurchase:
-          result = await _economyRepo.purchaseHint(
-            operationId: op.operationId,
-          );
+          result = await _economyRepo.purchaseHint(operationId: op.operationId);
         case EconomyOperationType.hintConsume:
-          result = await _economyRepo.consumeHint(
-            operationId: op.operationId,
-          );
+          result = await _economyRepo.consumeHint(operationId: op.operationId);
         case EconomyOperationType.extraMovesPurchase:
           result = await _economyRepo.purchaseExtraMoves(
             attemptId: op.payload['attemptId'] as String,
@@ -203,8 +207,10 @@ class WalletController extends Notifier<WalletViewState> {
     final current = state;
     if (current is WalletReady && current.isOperationInFlight) {
       return const EconomyFailure(
-        error: EconomyError(code: EconomyErrorCode.invalidOperation,
-            message: 'Operation in flight'),
+        error: EconomyError(
+          code: EconomyErrorCode.invalidOperation,
+          message: 'Operation in flight',
+        ),
       );
     }
 
@@ -239,10 +245,7 @@ class WalletController extends Notifier<WalletViewState> {
           );
         }
         final refreshed = await _walletRepo.getSnapshot();
-        state = WalletReady(
-          snapshot: refreshed,
-          lastError: result.error,
-        );
+        state = WalletReady(snapshot: refreshed, lastError: result.error);
       }
       return result;
     } catch (_) {
@@ -266,6 +269,4 @@ class WalletController extends Notifier<WalletViewState> {
 }
 
 final walletControllerProvider =
-    NotifierProvider<WalletController, WalletViewState>(
-  WalletController.new,
-);
+    NotifierProvider<WalletController, WalletViewState>(WalletController.new);

@@ -58,8 +58,9 @@ final class BootstrapController extends AsyncNotifier<BootstrapState> {
       final firebaseReady = await firebase.initializeSafely();
 
       if (firebaseReady) {
-        final uid =
-            await ref.read(authSkeletonProvider).ensureAnonymousSession();
+        final uid = await ref
+            .read(authSkeletonProvider)
+            .ensureAnonymousSession();
         logger.info(
           uid == null
               ? 'Anonymous auth skipped/failed — content sync may be limited'
