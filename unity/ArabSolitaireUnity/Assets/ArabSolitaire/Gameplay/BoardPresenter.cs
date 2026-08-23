@@ -56,6 +56,14 @@ namespace ArabSolitaire.Gameplay
             }
         }
 
+        public void ReconcileTo(JObject gameState, int revision)
+        {
+            if (BoardReconciler.NeedsReconcile(gameState, _lastPresentedState))
+            {
+                PresentGameState(gameState, revision);
+            }
+        }
+
         private void PresentGameState(JObject gameState, int revision)
         {
             _lastPresentedState = (JObject)gameState.DeepClone();

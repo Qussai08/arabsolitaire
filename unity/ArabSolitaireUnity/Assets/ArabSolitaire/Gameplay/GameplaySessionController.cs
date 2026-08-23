@@ -1,6 +1,7 @@
 using System.Collections;
 using ArabSolitaire.Animation;
 using ArabSolitaire.Bridge;
+using ArabSolitaire.Bridge.Android;
 using ArabSolitaire.Bridge.Mock;
 using ArabSolitaire.Cameras;
 using ArabSolitaire.Characters;
@@ -23,7 +24,8 @@ namespace ArabSolitaire.Gameplay
         [SerializeField] private MeaningThreadVfxPool meaningThreads;
         [SerializeField] private DistortionVfx distortionVfx;
 
-        private MockBridgeTransport _transport;
+        private MockBridgeTransport _mockTransport;
+        private NativeBridgeTransport _nativeTransport;
         private BridgeMessageRouter _router;
         private BridgeSessionGuard _guard;
         private DomainEventAnimationMapper _eventMapper;
@@ -31,10 +33,13 @@ namespace ArabSolitaire.Gameplay
         private InputLockController _inputLock;
         private CardInteractionController _interaction;
         private DropTargetResolver _targetResolver;
-        private bool _readyForInput = true;
+        private bool _readyForInput;
+        private bool _productionMode;
+        private bool _awaitingInitialSnapshot = true;
 
-        public bool ReadyForInput => _readyForInput && (_guard?.IsReadyForInput ?? true);
-        public MockBridgeTransport Transport => _transport;
+        public bool ReadyForInput => _readyForInput && (_guard?.IsReadyForInput ?? false);
+        public MockBridgeTransport Transport => _mockTransport;
+        public bool ProductionMode => _productionMode;
 
         public void Configure(
             TextAsset fixture,
@@ -70,20 +75,74 @@ namespace ArabSolitaire.Gameplay
         private void Start()
         {
             ResolveReferences();
+            _nativeTransport = NativeBridgeTransport.Instance;
+            if (_nativeTransport != null)
+            {
+                StartProduction(_nativeTransport);
+                return;
+            }
+
+            StartMock();
+        }
+
+        private void OnDestroy()
+        {
+            if (_mockTransport != null)
+            {
+                _mockTransport.OnOutboundMessage -= HandleOutbound;
+            }
+
+            if (_nativeTransport != null)
+            {
+                _nativeTransport.OnInboundMessage -= HandleProductionInbound;
+            }
+        }
+
+        private void StartMock()
+        {
             if (fixtureAsset == null || boardPresenter == null)
             {
                 Debug.LogError("GameplaySessionController: missing fixture or board presenter.");
                 return;
             }
 
-            _transport = MockBridgeTransport.CreateRuntime(fixtureAsset);
-            _guard = new BridgeSessionGuard(_transport.AuthoritativeRevision);
-            _transport.OnOutboundMessage += HandleOutbound;
+            _mockTransport = MockBridgeTransport.CreateRuntime(fixtureAsset);
+            _guard = new BridgeSessionGuard(_mockTransport.AuthoritativeRevision);
+            _mockTransport.OnOutboundMessage += HandleOutbound;
             _router.OnTransitionResult += HandleTransitionResult;
 
-            boardPresenter.PresentSnapshot(_transport.CurrentSnapshot);
-            hud?.Bind(this, _transport);
+            boardPresenter.PresentSnapshot(_mockTransport.CurrentSnapshot);
+            hud?.Bind(this, _mockTransport);
 
+            ConfigureInteraction();
+            _readyForInput = true;
+        }
+
+        private void StartProduction(NativeBridgeTransport transport)
+        {
+            _productionMode = true;
+            _nativeTransport = transport;
+            _guard = new BridgeSessionGuard(0);
+            transport.OnInboundMessage += HandleProductionInbound;
+            _router.OnSnapshot += HandleProductionSnapshot;
+            _router.OnTransitionResult += HandleTransitionResult;
+            _router.OnHintResult += HandleHintResult;
+            _router.OnFatalError += HandleFatalError;
+
+            hud?.Bind(this, null);
+            ConfigureInteraction();
+            _readyForInput = false;
+            _awaitingInitialSnapshot = true;
+            transport.EmitUnityReady();
+        }
+
+        public void ConfigureSessionFromAndroid(string sessionId, string attemptId, string levelDefinitionId)
+        {
+            _nativeTransport?.ConfigureSession(sessionId, attemptId, levelDefinitionId);
+        }
+
+        private void ConfigureInteraction()
+        {
             var cam = Camera.main;
             _targetResolver.Configure(boardPresenter.Tableau, boardPresenter.Stock, boardPresenter.Slots);
             _interaction.Configure(
@@ -92,15 +151,6 @@ namespace ArabSolitaire.Gameplay
                 _inputLock,
                 cam,
                 SubmitIntent);
-            _readyForInput = true;
-        }
-
-        private void OnDestroy()
-        {
-            if (_transport != null)
-            {
-                _transport.OnOutboundMessage -= HandleOutbound;
-            }
         }
 
         public void RequestAcceptMove() => LockAndRun(() => SubmitIntent(BuildMoveIntent(0, 2, $"req-accept-{Time.frameCount}")));
@@ -109,42 +159,99 @@ namespace ArabSolitaire.Gameplay
 
         public void RequestStockAdvance()
         {
-            LockAndRun(() => _transport?.HandleStockAdvanceDemo());
+            LockAndRun(() =>
+            {
+                if (_productionMode)
+                {
+                    SubmitIntent(BuildActionIntent("advanceStock", $"advance-{Time.frameCount}"));
+                    return;
+                }
+
+                _mockTransport?.HandleStockAdvanceDemo();
+            });
         }
 
         public void RequestStockRestore()
         {
-            LockAndRun(() => _transport?.HandleStockRestoreDemo());
+            LockAndRun(() =>
+            {
+                if (_productionMode)
+                {
+                    SubmitIntent(BuildActionIntent("restoreStock", $"restore-{Time.frameCount}"));
+                    return;
+                }
+
+                _mockTransport?.HandleStockRestoreDemo();
+            });
         }
 
         public void RequestHintMock()
         {
-            _transport?.HandleHintRequest();
+            if (_productionMode)
+            {
+                _nativeTransport?.EmitRequestHint();
+                return;
+            }
+
+            _mockTransport?.HandleHintRequest();
             shiboubPresenter?.PlayPoint();
             hud?.ShowHintFeedback();
         }
 
         public void RequestWinDemo()
         {
-            LockAndRun(() => _transport?.HandleWinDemo());
+            LockAndRun(() =>
+            {
+                if (_productionMode)
+                {
+                    SubmitIntent(BuildActionIntent("win", $"win-{Time.frameCount}"));
+                    return;
+                }
+
+                _mockTransport?.HandleWinDemo();
+            });
         }
 
-        public void RequestExit() => Debug.Log("Exit requested.");
+        public void RequestExit()
+        {
+            if (_productionMode)
+            {
+                _nativeTransport?.EmitRequestExit();
+                return;
+            }
+
+            Debug.Log("Exit requested.");
+        }
 
         public void SimulateDisconnect()
         {
-            _transport?.SimulateDisconnect();
+            if (_productionMode)
+            {
+                _nativeTransport?.SimulateDisconnect();
+            }
+            else
+            {
+                _mockTransport?.SimulateDisconnect();
+            }
+
             hud?.ShowConnectionError(true);
         }
 
         public void SimulateReconnect()
         {
-            _transport?.SimulateReconnect();
-            if (_transport?.CurrentSnapshot != null)
+            if (_productionMode)
             {
-                boardPresenter.ReconcileTo(_transport.CurrentSnapshot);
-                _guard.RestoreRevision(_transport.AuthoritativeRevision);
-                _interaction.CancelStaleInteraction(_transport.AuthoritativeRevision);
+                _nativeTransport?.SimulateReconnect();
+            }
+            else
+            {
+                _mockTransport?.SimulateReconnect();
+                if (_mockTransport?.CurrentSnapshot != null)
+                {
+                    boardPresenter.ReconcileTo(_mockTransport.CurrentSnapshot);
+                    _guard.RestoreRevision(_mockTransport.AuthoritativeRevision);
+                    _interaction.CancelStaleInteraction(_mockTransport.AuthoritativeRevision);
+                }
             }
 
             hud?.ShowConnectionError(false);
@@ -152,27 +259,52 @@ namespace ArabSolitaire.Gameplay
 
         private bool SubmitIntent(BridgeEnvelope intent)
         {
-            if (_transport == null || !_transport.IsConnected || !ReadyForInput)
+            if (!ReadyForInput && !_productionMode)
             {
                 Debug.LogWarning("Bridge not ready for input.");
                 return false;
             }
 
-            intent.revision = _transport.AuthoritativeRevision;
-            intent.sessionId = _transport.CurrentSnapshot.sessionId;
-            intent.attemptId = _transport.CurrentSnapshot.attemptId;
-            intent.levelDefinitionId = _transport.CurrentSnapshot.levelDefinitionId;
+            if (_productionMode)
+            {
+                if (_nativeTransport == null || !_nativeTransport.IsConnected || _awaitingInitialSnapshot)
+                {
+                    Debug.LogWarning("Production bridge awaiting authoritative snapshot.");
+                    return false;
+                }
+
+                intent.revision = _nativeTransport.AuthoritativeRevision;
+                intent.sessionId = _nativeTransport.SessionId;
+                intent.attemptId = _nativeTransport.AttemptId;
+                intent.levelDefinitionId = _nativeTransport.LevelDefinitionId;
+                _guard.LockInput();
+                _readyForInput = false;
+                hud?.SetBridgeWait(true);
+                _nativeTransport.EmitActionIntent(intent);
+                return true;
+            }
+
+            if (_mockTransport == null || !_mockTransport.IsConnected)
+            {
+                Debug.LogWarning("Bridge not ready for input.");
+                return false;
+            }
+
+            intent.revision = _mockTransport.AuthoritativeRevision;
+            intent.sessionId = _mockTransport.CurrentSnapshot.sessionId;
+            intent.attemptId = _mockTransport.CurrentSnapshot.attemptId;
+            intent.levelDefinitionId = _mockTransport.CurrentSnapshot.levelDefinitionId;
 
             _guard.LockInput();
             _readyForInput = false;
             hud?.SetBridgeWait(true);
-            _transport.HandleActionIntent(intent);
+            _mockTransport.HandleActionIntent(intent);
             return true;
         }
 
         private void LockAndRun(System.Action action)
         {
-            if (!ReadyForInput)
+            if (!ReadyForInput && !_productionMode)
             {
                 return;
             }
@@ -184,6 +316,31 @@ namespace ArabSolitaire.Gameplay
         }
 
         private void HandleOutbound(BridgeEnvelope envelope) => _router.Route(envelope);
+
+        private void HandleProductionInbound(BridgeEnvelope envelope) => _router.Route(envelope);
+
+        private void HandleProductionSnapshot(BridgeEnvelope snapshot)
+        {
+            _awaitingInitialSnapshot = false;
+            _guard.RestoreRevision(snapshot.revision);
+            boardPresenter.PresentSnapshot(snapshot);
+            _interaction.CancelStaleInteraction(snapshot.revision);
+            _readyForInput = true;
+            _guard.UnlockInput();
+            hud?.SetBridgeWait(false);
+        }
+
+        private void HandleHintResult(BridgeEnvelope envelope)
+        {
+            shiboubPresenter?.PlayPoint();
+            hud?.ShowHintFeedback();
+        }
+
+        private void HandleFatalError(BridgeEnvelope envelope)
+        {
+            hud?.ShowRejectFeedback(envelope.payload?["message"]?.Value<string>());
+            CompletePresentation();
+        }
 
         private void HandleTransitionResult(BridgeEnvelope transitionEnvelope)
         {
@@ -252,7 +409,19 @@ namespace ArabSolitaire.Gameplay
                 hud?.SetMovesRemaining(Mathf.Max(0, hud.MovesRemaining - payload.moveCost));
             }
 
-            boardPresenter.ReconcileTo(_transport.CurrentSnapshot);
+            if (_productionMode && _nativeTransport?.CurrentSnapshot != null)
+            {
+                boardPresenter.ReconcileTo(_nativeTransport.CurrentSnapshot);
+            }
+            else if (_mockTransport?.CurrentSnapshot != null)
+            {
+                boardPresenter.ReconcileTo(_mockTransport.CurrentSnapshot);
+            }
+            else if (payload.nextState != null)
+            {
+                boardPresenter.ReconcileTo(payload.nextState, payload.newRevision);
+            }
+
             CompletePresentation();
         }
 
@@ -261,7 +430,14 @@ namespace ArabSolitaire.Gameplay
             _guard.UnlockInput();
             _readyForInput = true;
             hud?.SetBridgeWait(false);
-            _transport?.EmitPresentationCompleted(_transport.AuthoritativeRevision);
+            if (_productionMode)
+            {
+                _nativeTransport?.EmitPresentationCompleted(_nativeTransport.AuthoritativeRevision);
+            }
+            else
+            {
+                _mockTransport?.EmitPresentationCompleted(_mockTransport.AuthoritativeRevision);
+            }
         }
 
         private void ResolveReferences()
@@ -280,10 +456,10 @@ namespace ArabSolitaire.Gameplay
             {
                 schemaVersion = BridgeConstants.SchemaVersion,
                 messageId = $"intent-{requestId}",
-                sessionId = _transport.CurrentSnapshot.sessionId,
-                attemptId = _transport.CurrentSnapshot.attemptId,
-                levelDefinitionId = _transport.CurrentSnapshot.levelDefinitionId,
-                revision = _transport.AuthoritativeRevision,
+                sessionId = ActiveSessionId(),
+                attemptId = ActiveAttemptId(),
+                levelDefinitionId = ActiveLevelDefinitionId(),
+                revision = ActiveRevision(),
                 type = BridgeMessageType.ActionIntent.ToWireName(),
                 requestId = requestId,
                 payload = new JObject
@@ -297,5 +473,38 @@ namespace ArabSolitaire.Gameplay
                 },
             };
         }
+
+        private BridgeEnvelope BuildActionIntent(string actionType, string requestId)
+        {
+            return new BridgeEnvelope
+            {
+                schemaVersion = BridgeConstants.SchemaVersion,
+                messageId = $"intent-{requestId}",
+                sessionId = ActiveSessionId(),
+                attemptId = ActiveAttemptId(),
+                levelDefinitionId = ActiveLevelDefinitionId(),
+                revision = ActiveRevision(),
+                type = BridgeMessageType.ActionIntent.ToWireName(),
+                requestId = requestId,
+                payload = new JObject
+                {
+                    ["action"] = new JObject { ["type"] = actionType },
+                },
+            };
+        }
+
+        private string ActiveSessionId() =>
+            _productionMode ? _nativeTransport?.SessionId ?? string.Empty : _mockTransport?.CurrentSnapshot.sessionId ?? string.Empty;
+
+        private string ActiveAttemptId() =>
+            _productionMode ? _nativeTransport?.AttemptId ?? string.Empty : _mockTransport?.CurrentSnapshot.attemptId ?? string.Empty;
+
+        private string ActiveLevelDefinitionId() =>
+            _productionMode
+                ? _nativeTransport?.LevelDefinitionId ?? string.Empty
+                : _mockTransport?.CurrentSnapshot.levelDefinitionId ?? string.Empty;
+
+        private int ActiveRevision() =>
+            _productionMode ? _nativeTransport?.AuthoritativeRevision ?? 0 : _mockTransport?.AuthoritativeRevision ?? 0;
     }
 }

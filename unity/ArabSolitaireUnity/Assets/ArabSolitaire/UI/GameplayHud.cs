@@ -30,7 +30,7 @@ namespace ArabSolitaire.UI
 
         public int MovesRemaining { get; private set; } = 30;
 
-        public void Bind(GameplaySessionController session, MockBridgeTransport transport)
+        public void Bind(GameplaySessionController session, MockBridgeTransport transport = null)
         {
             _session = session;
             ApplySafeArea();
