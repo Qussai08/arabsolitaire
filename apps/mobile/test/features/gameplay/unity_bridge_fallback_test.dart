@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/features/gameplay/application/gameplay_presentation_mode.dart';
 import 'package:mobile/features/gameplay/application/gameplay_presentation_providers.dart';
 import 'package:mobile/features/gameplay/bridge/unity_bridge_transport.dart';
+import 'package:mobile/features/gameplay/bridge/unity_runtime_service.dart';
 import 'package:unity_bridge_contracts/unity_bridge_contracts.dart';
 
 void main() {
@@ -21,13 +22,14 @@ void main() {
       );
     });
 
-    test('unity3d falls back to flutter2d when Unity is not ready', () {
+    test('unity3d falls back to flutter2d when runtime is not active', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       container.read(gameplayPresentationModeProvider.notifier).state =
           GameplayPresentationMode.unity3d;
-      container.read(unityRuntimeReadyProvider.notifier).state = false;
+      container.read(unityRuntimePhaseProvider.notifier).state =
+          UnityRuntimePhase.waitingReady;
 
       expect(
         container.read(effectiveGameplayPresentationModeProvider),
@@ -35,13 +37,14 @@ void main() {
       );
     });
 
-    test('unity3d is effective only when runtime is ready', () {
+    test('unity3d is effective only when runtime phase is active', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       container.read(gameplayPresentationModeProvider.notifier).state =
           GameplayPresentationMode.unity3d;
-      container.read(unityRuntimeReadyProvider.notifier).state = true;
+      container.read(unityRuntimePhaseProvider.notifier).state =
+          UnityRuntimePhase.active;
 
       expect(
         container.read(effectiveGameplayPresentationModeProvider),
