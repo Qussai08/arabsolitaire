@@ -9,6 +9,7 @@ workspace:
   - packages/game_engine
   - packages/game_solver
   - packages/level_generator
+  - packages/unity_bridge_contracts
 
 dev_dependencies:
   flutter_lints: ^6.0.0

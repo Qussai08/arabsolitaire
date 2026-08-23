@@ -1,0 +1,16 @@
+name: unity_bridge_contracts
+description: Framework-independent Flutter↔Unity bridge envelopes for Solitaire Al-Arab.
+version: 0.1.0
+publish_to: none
+resolution: workspace
+
+environment:
+  sdk: ^3.12.1
+
+dependencies:
+  game_engine:
+    path: ../game_engine
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.6
