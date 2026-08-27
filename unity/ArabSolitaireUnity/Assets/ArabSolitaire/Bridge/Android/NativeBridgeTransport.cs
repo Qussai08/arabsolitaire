@@ -216,6 +216,11 @@ namespace ArabSolitaire.Bridge.Android
 
         public static NativeBridgeTransport CreateRuntime()
         {
+            if (_instance != null)
+            {
+                return _instance;
+            }
+
             var go = new GameObject("NativeBridgeTransport");
             return go.AddComponent<NativeBridgeTransport>();
         }
