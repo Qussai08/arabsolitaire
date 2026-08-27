@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using ArabSolitaire.Animation;
 using ArabSolitaire.Bridge;
 using ArabSolitaire.Gameplay;
@@ -153,7 +154,7 @@ namespace ArabSolitaire.Tests.EditMode
         {
             var mapper = new DomainEventAnimationMapper();
             var steps = mapper.Map(new JArray { new JObject { ["type"] = "MoveRejected" } }, accepted: false);
-            Assert.IsTrue(steps.Exists(s => s.Kind == DomainAnimKind.MoveRejected));
+            Assert.IsTrue(steps.Any(s => s.Kind == DomainAnimKind.MoveRejected));
         }
 
         [Test]
@@ -169,7 +170,7 @@ namespace ArabSolitaire.Tests.EditMode
         {
             var mapper = new DomainEventAnimationMapper();
             var steps = mapper.Map(new JArray { new JObject { ["type"] = "FutureEvent" } }, accepted: true);
-            Assert.IsTrue(steps.Exists(s => s.Kind == DomainAnimKind.Unknown));
+            Assert.IsTrue(steps.Any(s => s.Kind == DomainAnimKind.Unknown));
         }
 
         [Test]

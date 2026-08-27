@@ -214,7 +214,7 @@ class _ContinueButton extends ConsumerWidget {
           // Set the current level so GameplayScreen can report result back.
           final levelToPlay = ready.levels.cast<LevelDefinition?>().firstWhere(
             (l) => l?.globalLevelNumber == ready.progress.highestUnlockedLevel,
-            orElse: () => null,
+            orElse: () => ready.levels.isNotEmpty ? ready.levels.first : null,
           );
           if (levelToPlay != null) {
             ref.read(currentPlayingLevelProvider.notifier).state = levelToPlay;

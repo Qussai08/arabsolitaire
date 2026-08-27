@@ -70,7 +70,7 @@ final class UnityRuntimeService {
       ref.read(unityRuntimePhaseProvider.notifier).state =
           UnityRuntimePhase.unavailable;
       ref.read(unityRuntimeErrorMessageProvider.notifier).state =
-          'تعذر تشغيل Unity على هذا الجهاز.';
+          'تعذر تشغيل Unity على هذا الجهاز (يتطلب arm64-v8a).';
       return false;
     }
 
@@ -179,13 +179,13 @@ final class UnityRuntimeService {
 
 final unityRuntimeServiceProvider = Provider.autoDispose<UnityRuntimeService?>(
   (ref) {
-    final level = ref.watch(currentPlayingLevelProvider);
     final controller = ref.watch(gameplayControllerProvider.notifier);
     final viewState = ref.watch(gameplayControllerProvider);
-    if (level == null || viewState is! GameplayPlaying) {
+    if (viewState is! GameplayPlaying) {
       return null;
     }
 
+    final level = ref.resolvePlayingLevel();
     return UnityRuntimeService(
       ref: ref,
       controller: controller,

@@ -146,4 +146,6 @@ unity/ArabSolitaireUnity/Assets/InitTestScene*.unity.meta
 # Unity as a Library export (reproducible via Editor menu / batchmode)
 apps/mobile/android/unityLibrary/
 apps/mobile/android/_staging/
+apps/mobile/android/shared/
+apps/mobile/android/unity-export.properties
 apps/mobile/android/unityLibrary.README.md

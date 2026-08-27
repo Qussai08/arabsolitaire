@@ -34,7 +34,9 @@ android {
             unityLibraryPresent.toString(),
         )
         ndk {
-            abiFilters += listOf("arm64-v8a")
+            if (unityLibraryPresent) {
+                abiFilters += listOf("arm64-v8a")
+            }
         }
     }
 
@@ -94,6 +96,11 @@ flutter {
 dependencies {
     if (unityLibraryPresent) {
         implementation(project(":unityLibrary"))
+        // unityLibrary uses `implementation` for jars/deps; expose them to the app compile classpath.
+        implementation(files("../unityLibrary/libs/unity-classes.jar"))
+        implementation("androidx.appcompat:appcompat:1.6.1")
+        implementation("androidx.core:core:1.9.0")
+        implementation("androidx.games:games-activity:4.4.0")
     }
     testImplementation("junit:junit:4.13.2")
 }

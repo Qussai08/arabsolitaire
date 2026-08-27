@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ArabSolitaire.Gameplay;
+using ArabSolitaire.Rendering;
 using TMPro;
 using UnityEngine;
 
@@ -28,7 +29,7 @@ namespace ArabSolitaire.Cards
 
             if (faceRenderer != null)
             {
-                faceRenderer.material.color = tint;
+                PrototypeMaterial.Tint(faceRenderer, tint);
             }
 
             pickCollider ??= GetComponent<Collider>();
@@ -53,8 +54,10 @@ namespace ArabSolitaire.Cards
                 return;
             }
 
-            var c = faceRenderer.material.color;
-            faceRenderer.material.color = enabled ? c * 1.15f : c;
+            var c = faceRenderer.material.HasProperty("_BaseColor")
+                ? faceRenderer.material.GetColor("_BaseColor")
+                : faceRenderer.material.color;
+            PrototypeMaterial.Tint(faceRenderer, enabled ? c * 1.15f : c);
         }
 
         public void Recycle()
@@ -69,6 +72,7 @@ namespace ArabSolitaire.Cards
             go.name = "CardView";
             go.transform.SetParent(parent, false);
             go.transform.localScale = new Vector3(0.7f, 1f, 1f);
+            PrototypeMaterial.Apply(go.GetComponent<Renderer>(), Color.white);
 
             var labelGo = new GameObject("Label");
             labelGo.transform.SetParent(go.transform, false);

@@ -59,7 +59,7 @@ class UnityBridgePlugin :
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
-            "isAvailable" -> result.success(BuildConfig.UNITY_LIBRARY_AVAILABLE)
+            "isAvailable" -> result.success(runtimeController.isAvailable())
             "openGameplay" -> handleOpenGameplay(call, result)
             "sendToUnity" -> handleSendToUnity(call, result)
             "pauseUnity" -> {

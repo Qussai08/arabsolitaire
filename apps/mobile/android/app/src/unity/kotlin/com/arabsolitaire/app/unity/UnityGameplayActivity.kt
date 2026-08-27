@@ -1,4 +1,4 @@
-package com.arabsolitaire.app.unity
+﻿package com.arabsolitaire.app.unity
 
 import android.os.Bundle
 import com.unity3d.player.UnityPlayer
@@ -9,6 +9,11 @@ import com.unity3d.player.UnityPlayerGameActivity
  */
 class UnityGameplayActivity : UnityPlayerGameActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        // Prefer GLES on older Mali/Exynos devices (Vulkan often yields a black screen).
+        if (intent.getStringExtra("unity") == null) {
+            intent.putExtra("unity", "-force-gles")
+        }
+
         super.onCreate(savedInstanceState)
         requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
@@ -22,12 +27,15 @@ class UnityGameplayActivity : UnityPlayerGameActivity() {
             )
         }
 
-        UnityPlayer.UnitySendMessage(
-            "FlutterBridgeReceiver",
-            "ConfigureSession",
-            buildSessionPayload(),
-        )
-        controller.markUnityReady()
+        // Receiver exists only after Bootstrap Awake — delay session configure.
+        window.decorView.postDelayed({
+            UnityPlayer.UnitySendMessage(
+                "FlutterBridgeReceiver",
+                "ConfigureSession",
+                buildSessionPayload(),
+            )
+        }, 1500)
+        // Do not markUnityReady here — wait for first Unity→Flutter message.
     }
 
     override fun onPause() {
@@ -47,7 +55,9 @@ class UnityGameplayActivity : UnityPlayerGameActivity() {
 
     /** Called from Unity via JNI on the current Activity. */
     fun onUnityMessage(json: String) {
-        UnityBridgePlugin.instance?.runtimeController?.onUnityMessage(json)
+        val controller = UnityBridgePlugin.instance?.runtimeController ?: return
+        controller.markUnityReady()
+        controller.onUnityMessage(json)
     }
 
     private fun buildSessionPayload(): String {

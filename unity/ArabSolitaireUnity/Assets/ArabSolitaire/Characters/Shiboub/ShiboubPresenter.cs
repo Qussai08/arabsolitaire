@@ -1,4 +1,5 @@
 using ArabSolitaire.Animation;
+using ArabSolitaire.Rendering;
 using TMPro;
 using UnityEngine;
 
@@ -78,7 +79,7 @@ namespace ArabSolitaire.Characters
                 bodyGo.name = "ShiboubBody_PROTOTYPE";
                 bodyGo.transform.SetParent(transform, false);
                 bodyGo.transform.localScale = new Vector3(0.45f, 0.7f, 0.45f);
-                bodyGo.GetComponent<Renderer>().material.color = new Color(0.28f, 0.18f, 0.12f);
+                PrototypeMaterial.Apply(bodyGo.GetComponent<Renderer>(), new Color(0.28f, 0.18f, 0.12f));
                 body = bodyGo.transform;
             }
 
@@ -89,7 +90,7 @@ namespace ArabSolitaire.Characters
                 hairGo.transform.SetParent(body, false);
                 hairGo.transform.localPosition = new Vector3(0f, 0.75f, 0f);
                 hairGo.transform.localScale = new Vector3(0.9f, 0.55f, 0.9f);
-                hairGo.GetComponent<Renderer>().material.color = new Color(0.05f, 0.05f, 0.08f);
+                PrototypeMaterial.Apply(hairGo.GetComponent<Renderer>(), new Color(0.05f, 0.05f, 0.08f));
                 hair = hairGo.transform;
             }
 

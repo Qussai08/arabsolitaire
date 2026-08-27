@@ -25,6 +25,17 @@ plugins {
 
 include(":app")
 
+val unityExportProps = file("unity-export.properties")
+if (unityExportProps.exists()) {
+    val props = java.util.Properties()
+    unityExportProps.inputStream().use { props.load(it) }
+    gradle.beforeProject {
+        props.forEach { (key, value) ->
+            extensions.extraProperties.set(key.toString(), value.toString())
+        }
+    }
+}
+
 val unityLibraryDir = file("unityLibrary")
 if (unityLibraryDir.exists()) {
     include(":unityLibrary")

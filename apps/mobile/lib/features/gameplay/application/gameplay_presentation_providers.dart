@@ -3,9 +3,12 @@ import 'package:mobile/features/gameplay/application/gameplay_presentation_mode.
 import 'package:mobile/features/gameplay/bridge/unity_runtime_service.dart';
 
 /// Default remains Flutter 2D until Unity is explicitly requested.
+/// Pass `--dart-define=FORCE_UNITY3D=true` to launch Unity presentation in debug runs.
 final gameplayPresentationModeProvider =
     StateProvider<GameplayPresentationMode>(
-      (_) => GameplayPresentationMode.flutter2d,
+      (_) => const bool.fromEnvironment('FORCE_UNITY3D')
+          ? GameplayPresentationMode.unity3d
+          : GameplayPresentationMode.flutter2d,
     );
 
 /// Set when Unity presentationCompleted handshake completes.

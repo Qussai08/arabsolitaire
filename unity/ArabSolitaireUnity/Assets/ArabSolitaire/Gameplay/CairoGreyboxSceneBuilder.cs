@@ -3,6 +3,7 @@ using ArabSolitaire.Cameras;
 using ArabSolitaire.Chapters;
 using ArabSolitaire.Characters;
 using ArabSolitaire.Gameplay;
+using ArabSolitaire.Rendering;
 using ArabSolitaire.UI;
 using ArabSolitaire.Vfx;
 using UnityEngine;
@@ -89,7 +90,7 @@ namespace ArabSolitaire.Gameplay.Greybox
             arch.transform.SetParent(parent, false);
             arch.transform.position = pos;
             arch.transform.localScale = new Vector3(width, height, 0.35f);
-            arch.GetComponent<Renderer>().material.color = new Color(0.32f, 0.24f, 0.18f);
+            PrototypeMaterial.Apply(arch.GetComponent<Renderer>(), new Color(0.32f, 0.24f, 0.18f));
         }
 
         private static void BuildShelf(Transform parent, Vector3 pos)
@@ -99,7 +100,7 @@ namespace ArabSolitaire.Gameplay.Greybox
             shelf.transform.SetParent(parent, false);
             shelf.transform.position = pos;
             shelf.transform.localScale = new Vector3(0.25f, 2.4f, 1.6f);
-            shelf.GetComponent<Renderer>().material.color = new Color(0.28f, 0.2f, 0.14f);
+            PrototypeMaterial.Apply(shelf.GetComponent<Renderer>(), new Color(0.28f, 0.2f, 0.14f));
         }
 
         private static void BuildFabricStrip(Transform parent, Vector3 pos)
@@ -110,7 +111,7 @@ namespace ArabSolitaire.Gameplay.Greybox
             fabric.transform.position = pos;
             fabric.transform.localScale = new Vector3(1.2f, 2.5f, 1f);
             fabric.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-            fabric.GetComponent<Renderer>().material.color = new Color(0.55f, 0.22f, 0.18f, 0.85f);
+            PrototypeMaterial.Apply(fabric.GetComponent<Renderer>(), new Color(0.55f, 0.22f, 0.18f, 0.85f));
         }
 
         private static void BuildManuscript(Transform parent, Vector3 pos)
@@ -121,7 +122,7 @@ namespace ArabSolitaire.Gameplay.Greybox
             ms.transform.position = pos;
             ms.transform.localScale = new Vector3(0.8f, 0.5f, 1f);
             ms.transform.rotation = Quaternion.Euler(20f, 180f, 0f);
-            ms.GetComponent<Renderer>().material.color = new Color(0.82f, 0.74f, 0.58f);
+            PrototypeMaterial.Apply(ms.GetComponent<Renderer>(), new Color(0.82f, 0.74f, 0.58f));
         }
 
         private static void BuildDistortionAccent(Transform parent, Vector3 pos)
@@ -131,7 +132,7 @@ namespace ArabSolitaire.Gameplay.Greybox
             accent.transform.SetParent(parent, false);
             accent.transform.position = pos;
             accent.transform.localScale = Vector3.one * 0.35f;
-            accent.GetComponent<Renderer>().material.color = new Color(0.35f, 0.08f, 0.28f, 0.6f);
+            PrototypeMaterial.Apply(accent.GetComponent<Renderer>(), new Color(0.35f, 0.08f, 0.28f, 0.6f));
         }
 
         private static void BuildDust(Transform parent)
@@ -158,7 +159,7 @@ namespace ArabSolitaire.Gameplay.Greybox
             table.name = "GameTable_PROTOTYPE";
             table.transform.position = new Vector3(0f, -0.05f, 0f);
             table.transform.localScale = new Vector3(6.5f, 0.1f, 4.2f);
-            table.GetComponent<Renderer>().material.color = new Color(0.24f, 0.17f, 0.12f);
+            PrototypeMaterial.Apply(table.GetComponent<Renderer>(), new Color(0.24f, 0.17f, 0.12f));
         }
 
         private void BuildCamera()

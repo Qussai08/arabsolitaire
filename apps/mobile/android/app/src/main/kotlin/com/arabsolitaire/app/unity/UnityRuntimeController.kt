@@ -17,10 +17,11 @@ class UnityRuntimeController(
     private var activeLaunch: UnityLaunchArgs? = null
     private var exitRequested = false
 
-    fun isAvailable(): Boolean = unityLibraryAvailable
+    fun isAvailable(): Boolean =
+        UnityNativeRuntimeSupport.isSupported(unityLibraryAvailable)
 
     fun openGameplay(activity: Activity, args: UnityLaunchArgs): BridgeTransportError? {
-        if (!unityLibraryAvailable) {
+        if (!isAvailable()) {
             return BridgeTransportError.RuntimeNotReady
         }
 

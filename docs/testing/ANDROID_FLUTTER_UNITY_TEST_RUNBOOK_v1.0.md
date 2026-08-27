@@ -74,6 +74,8 @@ Or use Unity Test Runner GUI while developing.
 
 Output: `apps/mobile/android/unityLibrary/` (gitignored by default).
 
+Also copies `apps/mobile/android/shared/` (Gradle helpers) and writes `unity-export.properties` (Unity SDK/NDK paths). Both are gitignored; required for Gradle to evaluate `:unityLibrary`.
+
 Verify `apps/mobile/android/unityLibrary.README.md` is regenerated.
 
 ---
@@ -91,8 +93,16 @@ With export present (Unity 3D available):
 
 ```bash
 cd apps/mobile
-flutter build apk --flavor dev --debug
+flutter build apk --flavor dev --debug --target-platform android-arm64
 ```
+
+Install the arm64 APK on an **ARM64 emulator or device** for Unity E2E. On x86/x86_64 emulators the app runs in Flutter 2D; Unity 3D is blocked at runtime (arm64 native libs only).
+
+```bash
+flutter run --flavor dev --dart-define=FORCE_UNITY3D=true
+```
+
+On unsupported ABIs, gameplay shows a recoverable error with fallback to Flutter 2D instead of crashing.
 
 Verify logcat tag `UnityMessageBroker` shows no unhandled exceptions during launch.
 
@@ -102,7 +112,9 @@ Verify logcat tag `UnityMessageBroker` shows no unhandled exceptions during laun
 
 1. Launch dev flavor; sign in anonymously (dev config).
 2. Journey → Cairo level.
-3. Enable `unity3d` presentation flag (dev toggle / provider override).
+3. Enable `unity3d` presentation flag:
+   - Run with `--dart-define=FORCE_UNITY3D=true`, or
+   - Set `gameplayPresentationModeProvider` to `unity3d` via a debug override.
 4. Open gameplay → Unity Activity foreground.
 5. Confirm real generated Arabic board (not Cairo JSON fixture).
 6. Accepted move round-trip.

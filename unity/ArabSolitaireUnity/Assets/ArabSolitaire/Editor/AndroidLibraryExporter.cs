@@ -2,10 +2,10 @@
 using System;
 using System.IO;
 using System.Linq;
-using ArabSolitaire.Core;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace ArabSolitaire.EditorTools
 {
@@ -46,6 +46,14 @@ namespace ArabSolitaire.EditorTools
             EditorApplication.Exit(0);
         }
 
+        /// <summary>
+        /// Non-interactive export for automation (no dialog, no Editor exit).
+        /// </summary>
+        public static void ExportSilent()
+        {
+            ExportInternal();
+        }
+
         private static void ExportInternal()
         {
             ValidateScenes();
@@ -66,6 +74,9 @@ namespace ArabSolitaire.EditorTools
             EditorUserBuildSettings.exportAsGoogleAndroidProject = true;
             EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64;
+            // Galaxy S8 / Mali Exynos: Vulkan often blacks out after splash.
+            PlayerSettings.SetUseDefaultGraphicsAPIs(BuildTarget.Android, false);
+            PlayerSettings.SetGraphicsAPIs(BuildTarget.Android, new[] { GraphicsDeviceType.OpenGLES3 });
 
             var options = new BuildPlayerOptions
             {
@@ -97,6 +108,20 @@ namespace ArabSolitaire.EditorTools
             }
 
             CopyDirectory(unityLibrarySrc, unityLibraryDest);
+
+            var sharedSrc = Path.Combine(stagingRoot, "shared");
+            if (Directory.Exists(sharedSrc))
+            {
+                var sharedDest = Path.Combine(outputRoot, "shared");
+                if (Directory.Exists(sharedDest))
+                {
+                    Directory.Delete(sharedDest, true);
+                }
+
+                CopyDirectory(sharedSrc, sharedDest);
+            }
+
+            WriteUnityExportProperties(stagingRoot, outputRoot);
             WriteReadme(outputRoot);
 
             Debug.Log($"[AndroidLibraryExporter] Export complete: {unityLibraryDest}");
@@ -116,6 +141,18 @@ namespace ArabSolitaire.EditorTools
 
         private static void ValidateMobileSettings()
         {
+            var androidModulePath = Path.Combine(
+                EditorApplication.applicationContentsPath,
+                "PlaybackEngines",
+                "AndroidPlayer");
+            if (!Directory.Exists(androidModulePath))
+            {
+                throw new InvalidOperationException(
+                    "Android Build Support is not installed for this Unity Editor. " +
+                    "Install it via Unity Hub (6000.5.9f1 > Add modules > Android Build Support), " +
+                    "then rerun export.");
+            }
+
             if (PlayerSettings.defaultInterfaceOrientation != UIOrientation.Portrait &&
                 !PlayerSettings.allowedAutorotateToPortrait)
             {
@@ -138,6 +175,22 @@ namespace ArabSolitaire.EditorTools
             return Path.Combine(repoRoot, "apps", "mobile", "android");
         }
 
+        private static void WriteUnityExportProperties(string stagingRoot, string outputRoot)
+        {
+            var stagingGradleProps = Path.Combine(stagingRoot, "gradle.properties");
+            if (!File.Exists(stagingGradleProps))
+            {
+                Debug.LogWarning("[AndroidLibraryExporter] staging gradle.properties not found; skipped unity-export.properties");
+                return;
+            }
+
+            var unityLines = File.ReadAllLines(stagingGradleProps)
+                .Where(line => line.StartsWith("unity", StringComparison.Ordinal))
+                .ToArray();
+            var exportPath = Path.Combine(outputRoot, "unity-export.properties");
+            File.WriteAllLines(exportPath, unityLines);
+        }
+
         private static void WriteReadme(string outputRoot)
         {
             var readmePath = Path.Combine(outputRoot, "unityLibrary.README.md");
@@ -148,6 +201,7 @@ namespace ArabSolitaire.EditorTools
                 "Regenerate with:\n\n" +
                 "- Unity menu: Arab Solitaire > Build > Export Android Library\n" +
                 "- Or batchmode: `-executeMethod ArabSolitaire.EditorTools.AndroidLibraryExporter.ExportFromCommandLine`\n\n" +
+                "Also generates `shared/` Gradle helpers and `unity-export.properties` beside this folder.\n\n" +
                 "Do not commit this folder unless explicitly approved for artifact storage.\n");
         }
 

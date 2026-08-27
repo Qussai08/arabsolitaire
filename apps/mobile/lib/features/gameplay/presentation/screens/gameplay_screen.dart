@@ -30,6 +30,24 @@ class GameplayScreen extends ConsumerStatefulWidget {
 class _GameplayScreenState extends ConsumerState<GameplayScreen>
     with WidgetsBindingObserver {
   var _unityLaunchAttempted = false;
+  var _unityLaunchScheduled = false;
+
+  void _scheduleUnityLaunch(GameplayPlaying state) {
+    if (_unityLaunchAttempted || _unityLaunchScheduled) {
+      return;
+    }
+    _unityLaunchScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _unityLaunchScheduled = false;
+      if (!mounted) {
+        return;
+      }
+      final current = ref.read(gameplayControllerProvider);
+      if (current is GameplayPlaying) {
+        unawaited(_maybeLaunchUnity(current));
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -67,11 +85,17 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen>
     if (requested != GameplayPresentationMode.unity3d || _unityLaunchAttempted) {
       return;
     }
-    _unityLaunchAttempted = true;
+
     final service = ref.read(unityRuntimeServiceProvider);
     if (service == null) {
+      ref.read(unityRuntimePhaseProvider.notifier).state =
+          UnityRuntimePhase.error;
+      ref.read(unityRuntimeErrorMessageProvider.notifier).state =
+          'تعذر تهيئة خدمة Unity.';
       return;
     }
+
+    _unityLaunchAttempted = true;
     await service.launch();
   }
 
@@ -85,7 +109,7 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen>
 
     if (viewState is GameplayPlaying &&
         requestedMode == GameplayPresentationMode.unity3d) {
-      unawaited(_maybeLaunchUnity(viewState));
+      _scheduleUnityLaunch(viewState);
     }
 
     ref.listen<GameplayViewState>(gameplayControllerProvider, (prev, next) {
@@ -408,6 +432,7 @@ class _UnityLaunchingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final label = switch (phase) {
+      UnityRuntimePhase.checkingAvailability => 'جاري التحقق من Unity...',
       UnityRuntimePhase.launching => 'جاري فتح Unity...',
       UnityRuntimePhase.waitingReady => 'جاري تهيئة اللوحة...',
       _ => 'جاري التحميل...',
