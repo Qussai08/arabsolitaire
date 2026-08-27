@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Text;
 using ArabSolitaire.Bridge;
 using ArabSolitaire.Bridge.Android;
 using ArabSolitaire.Bridge.Mock;
@@ -8,7 +7,7 @@ using ArabSolitaire.Gameplay;
 using ArabSolitaire.Gameplay.Greybox;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
-using TMPro;
+using RTLTMPro;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -84,11 +83,11 @@ namespace ArabSolitaire.Tests.PlayMode
                 new Color(0.93f, 0.86f, 0.68f));
 
             var roleBadge = card.transform.Find("RoleBadge");
-            var typeLabel = roleBadge?.Find("TypeLabel")?.GetComponent<TMP_Text>();
+            var typeLabel = roleBadge?.Find("TypeLabel")?.GetComponent<RTLTextMeshPro3D>();
             var backArtwork = card.transform.Find("BackArtwork");
             Assert.IsNotNull(roleBadge);
             Assert.IsNotNull(typeLabel);
-            Assert.AreEqual("كلمة", NormalizeArabicPresentationForms(typeLabel.text));
+            Assert.AreEqual("كلمة", typeLabel.OriginalText);
             Assert.IsTrue(roleBadge.gameObject.activeSelf);
             Assert.IsNotNull(backArtwork);
             Assert.IsFalse(backArtwork.gameObject.activeSelf);
@@ -103,7 +102,7 @@ namespace ArabSolitaire.Tests.PlayMode
                     Interactable = true,
                 },
                 Color.white);
-            Assert.AreEqual("رابطة", NormalizeArabicPresentationForms(typeLabel.text));
+            Assert.AreEqual("رابطة", typeLabel.OriginalText);
             Assert.IsTrue(roleBadge.gameObject.activeSelf);
 
             card.BindIdentity(
@@ -120,7 +119,7 @@ namespace ArabSolitaire.Tests.PlayMode
             Assert.IsTrue(backArtwork.gameObject.activeSelf);
             Assert.AreEqual(
                 "دار الروابط",
-                NormalizeArabicPresentationForms(card.transform.Find("Label").GetComponent<TMP_Text>().text));
+                card.transform.Find("Label").GetComponent<RTLTextMeshPro3D>().OriginalText);
 
             Object.Destroy(root);
             yield return null;
@@ -214,11 +213,6 @@ namespace ArabSolitaire.Tests.PlayMode
             Assert.AreEqual("won", gameState?.Value<string>("status"));
             Object.Destroy(transport.gameObject);
             yield return null;
-        }
-
-        private static string NormalizeArabicPresentationForms(string value)
-        {
-            return value.Normalize(NormalizationForm.FormKC);
         }
 
         private static TextAsset LoadFixture()
