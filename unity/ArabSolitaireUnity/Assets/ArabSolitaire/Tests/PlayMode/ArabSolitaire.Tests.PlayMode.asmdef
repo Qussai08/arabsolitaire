@@ -4,6 +4,7 @@
     "references": [
         "ArabSolitaire.Runtime",
         "Unity.TextMeshPro",
+        "RTLTMPro",
         "Unity.Nuget.Newtonsoft-Json",
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner"
