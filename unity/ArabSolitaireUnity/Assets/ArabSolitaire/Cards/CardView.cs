@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using ArabSolitaire.Gameplay;
 using ArabSolitaire.Rendering;
@@ -58,6 +59,10 @@ namespace ArabSolitaire.Cards
             {
                 pickCollider.enabled = identity.Interactable;
             }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            StartCoroutine(LogVisibilityNextFrame());
+#endif
         }
 
         public void Bind(string cardId, Color tint) =>
@@ -166,6 +171,40 @@ namespace ArabSolitaire.Cards
             PrototypeMaterial.Apply(layer.GetComponent<Renderer>(), color);
             return layer;
         }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private IEnumerator LogVisibilityNextFrame()
+        {
+            yield return null;
+
+            var camera = Camera.main;
+            if (camera == null || faceRenderer == null)
+            {
+                Debug.LogWarning($"[CardVisibility] id={CardId} missingCamera={camera == null} missingRenderer={faceRenderer == null}");
+                yield break;
+            }
+
+            var bounds = faceRenderer.bounds;
+            var viewport = camera.WorldToViewportPoint(bounds.center);
+            var inFrustum = GeometryUtility.TestPlanesAABB(
+                GeometryUtility.CalculateFrustumPlanes(camera),
+                bounds);
+            var layerMaskIncludesCard = (camera.cullingMask & (1 << gameObject.layer)) != 0;
+            var material = faceRenderer.sharedMaterial;
+            var shaderName = material != null && material.shader != null
+                ? material.shader.name
+                : "<missing>";
+
+            Debug.Log(
+                $"[CardVisibility] id={CardId} world={bounds.center:F3} size={bounds.size:F3} " +
+                $"viewport={viewport:F3} inFrustum={inFrustum} rendererEnabled={faceRenderer.enabled} " +
+                $"rendererVisible={faceRenderer.isVisible} active={faceRenderer.gameObject.activeInHierarchy} " +
+                $"layer={LayerMask.LayerToName(gameObject.layer)} maskIncludes={layerMaskIncludesCard} " +
+                $"shader={shaderName} queue={(material != null ? material.renderQueue : -1)} " +
+                $"camera={camera.name} cameraPos={camera.transform.position:F3} " +
+                $"cameraEuler={camera.transform.eulerAngles:F3} near={camera.nearClipPlane} far={camera.farClipPlane}");
+        }
+#endif
 
         private static Color Lighten(Color color, float amount)
         {
