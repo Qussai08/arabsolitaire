@@ -13,6 +13,11 @@ namespace ArabSolitaire.Cards
 
         public static bool ContainsArabic(string value)
         {
+            if (string.IsNullOrEmpty(value))
+            {
+                return false;
+            }
+
             foreach (var c in value)
             {
                 if (c is >= '\u0600' and <= '\u06FF')
