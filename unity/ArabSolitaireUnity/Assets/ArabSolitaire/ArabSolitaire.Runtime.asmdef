@@ -3,6 +3,7 @@
   "rootNamespace": "ArabSolitaire",
   "references": [
     "Unity.TextMeshPro",
+    "RTLTMPro",
     "Unity.InputSystem",
     "Unity.Nuget.Newtonsoft-Json"
   ],

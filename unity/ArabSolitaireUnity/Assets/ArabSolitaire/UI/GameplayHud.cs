@@ -2,6 +2,7 @@ using ArabSolitaire.Bridge.Mock;
 using ArabSolitaire.Cards;
 using ArabSolitaire.Gameplay;
 using TMPro;
+using RTLTMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -194,7 +195,9 @@ namespace ArabSolitaire.UI
             rt.anchorMin = anchor;
             rt.anchorMax = anchor;
             rt.sizeDelta = new Vector2(320f, 64f);
-            var tmp = go.AddComponent<TextMeshProUGUI>();
+            var tmp = go.AddComponent<RTLTextMeshPro>();
+            tmp.PreserveNumbers = true;
+            tmp.Farsi = false;
             tmp.text = text;
             tmp.fontSize = size;
             tmp.alignment = TextAlignmentOptions.Center;
@@ -212,7 +215,9 @@ namespace ArabSolitaire.UI
             rt.sizeDelta = new Vector2(150f, 56f);
             var textGo = new GameObject("Label", typeof(RectTransform));
             textGo.transform.SetParent(go.transform, false);
-            var tmp = textGo.AddComponent<TextMeshProUGUI>();
+            var tmp = textGo.AddComponent<RTLTextMeshPro>();
+            tmp.PreserveNumbers = true;
+            tmp.Farsi = false;
             tmp.text = label;
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.fontSize = 24f;

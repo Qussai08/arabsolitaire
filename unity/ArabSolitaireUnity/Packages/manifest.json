@@ -1,5 +1,6 @@
 {
     "dependencies":  {
+                         "com.nosuchstudio.rtltmpro":  "https://github.com/hk1ll3r/RTLTMPro.git?path=/UPMPackage#v4.0.0",
                          "com.unity.ai.navigation":  "2.0.14",
                          "com.unity.collab-proxy":  "2.13.6",
                          "com.unity.ide.rider":  "3.0.38",
