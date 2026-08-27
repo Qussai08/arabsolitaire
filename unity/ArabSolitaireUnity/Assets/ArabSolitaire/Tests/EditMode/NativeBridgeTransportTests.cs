@@ -48,6 +48,8 @@ namespace ArabSolitaire.Tests.EditMode
         public void FlutterBridgeReceiver_routes_to_transport()
         {
             var transport = NativeBridgeTransport.CreateRuntime();
+            Assert.That(NativeBridgeTransport.Instance, Is.SameAs(transport));
+
             var receiverGo = new GameObject("receiver");
             var receiver = receiverGo.AddComponent<FlutterBridgeReceiver>();
 
