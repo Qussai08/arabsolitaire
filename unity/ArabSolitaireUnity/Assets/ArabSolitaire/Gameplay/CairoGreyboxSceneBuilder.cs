@@ -258,7 +258,9 @@ namespace ArabSolitaire.Gameplay.Greybox
             BoardPresenter.Configure(tableau, stock, slots);
             Session = systems.AddComponent<GameplaySessionController>();
 
-            var distortion = systems.AddComponent<DistortionVfx>();
+            var distortionOwner = new GameObject("DistortionVfx");
+            distortionOwner.transform.SetParent(systems.transform, false);
+            var distortion = distortionOwner.AddComponent<DistortionVfx>();
             runtimeConfig ??= ScriptableObject.CreateInstance<PresentationRuntimeConfig>();
 
             var canvasGo = new GameObject("UI", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
