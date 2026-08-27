@@ -10,7 +10,10 @@ namespace ArabSolitaire.Gameplay
     {
         [SerializeField] private Transform root;
         [SerializeField] private Color cardTint = new(0.93f, 0.86f, 0.68f);
-        [SerializeField] private float columnSpacing = 0.85f;
+        [SerializeField] private float columnSpacing = 0.88f;
+        [SerializeField] private Vector3 boardAnchor = new(0f, 0.68f, -0.28f);
+        [SerializeField] private float stackRise = 0.16f;
+        [SerializeField] private float depthStep = 0.012f;
 
         private readonly Dictionary<string, CardView> _cardsById = new();
         private CardViewPool _pool;
@@ -42,14 +45,14 @@ namespace ArabSolitaire.Gameplay
                     identity.Revision = revision;
                     var view = _pool.Rent();
                     view.BindIdentity(identity, cardTint);
-                    view.transform.localPosition = new Vector3(x, i * 0.08f, 0f);
+                    view.transform.localPosition = boardAnchor + new Vector3(x, i * stackRise, -i * depthStep);
                     _cardsById[identity.CardId] = view;
                 }
             }
         }
 
         public Vector3 GetColumnAnchor(int column, int columnCount) =>
-            new((column - (columnCount - 1) * 0.5f) * columnSpacing, 0f, 0f);
+            boardAnchor + new Vector3((column - (columnCount - 1) * 0.5f) * columnSpacing, 0f, 0f);
 
         public void Clear()
         {
