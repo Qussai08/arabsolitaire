@@ -175,7 +175,7 @@ namespace ArabSolitaire.UI
             hud.pauseButton = CreateButton(root.transform, "Pause", new Vector2(0.55f, 0.06f));
             hud.exitButton = CreateButton(root.transform, "Exit", new Vector2(0.85f, 0.06f));
             hud.stockAdvanceButton = CreateButton(root.transform, "Stock+", new Vector2(0.15f, 0.12f));
-            hud.stockRestoreButton = CreateButton(root.transform, "Stock↺", new Vector2(0.35f, 0.12f));
+            hud.stockRestoreButton = CreateButton(root.transform, "إرجاع", new Vector2(0.35f, 0.12f));
             hud.winDemoButton = CreateButton(root.transform, "Win", new Vector2(0.55f, 0.12f));
             hud.disconnectButton = CreateButton(root.transform, "Disc", new Vector2(0.7f, 0.12f));
             hud.reconnectButton = CreateButton(root.transform, "Rec", new Vector2(0.85f, 0.12f));
