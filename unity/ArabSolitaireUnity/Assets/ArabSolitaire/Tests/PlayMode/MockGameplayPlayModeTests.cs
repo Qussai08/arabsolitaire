@@ -2,10 +2,12 @@ using System.Collections;
 using ArabSolitaire.Bridge;
 using ArabSolitaire.Bridge.Android;
 using ArabSolitaire.Bridge.Mock;
+using ArabSolitaire.Cards;
 using ArabSolitaire.Gameplay;
 using ArabSolitaire.Gameplay.Greybox;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
+using TMPro;
 using UnityEngine;
 using UnityEngine.TestTools;
 
@@ -61,6 +63,64 @@ namespace ArabSolitaire.Tests.PlayMode
             }
 
             Object.Destroy(go);
+        }
+
+        [UnityTest]
+        public IEnumerator CardVisuals_DistinguishRoleAndConcealedBack()
+        {
+            var root = new GameObject("CardVisualTestRoot");
+            var card = CardView.Create(root.transform);
+
+            card.BindIdentity(
+                new CardVisualIdentity
+                {
+                    CardId = "أحمر",
+                    DisplayText = "أحمر",
+                    CardType = "member",
+                    VisualState = CardVisualState.Revealed,
+                    Interactable = true,
+                },
+                new Color(0.93f, 0.86f, 0.68f));
+
+            var roleBadge = card.transform.Find("RoleBadge");
+            var typeLabel = roleBadge?.Find("TypeLabel")?.GetComponent<TMP_Text>();
+            var backArtwork = card.transform.Find("BackArtwork");
+            Assert.IsNotNull(roleBadge);
+            Assert.IsNotNull(typeLabel);
+            Assert.AreEqual("كلمة", typeLabel.text);
+            Assert.IsTrue(roleBadge.gameObject.activeSelf);
+            Assert.IsNotNull(backArtwork);
+            Assert.IsFalse(backArtwork.gameObject.activeSelf);
+
+            card.BindIdentity(
+                new CardVisualIdentity
+                {
+                    CardId = "ألوان",
+                    DisplayText = "ألوان",
+                    CardType = "association",
+                    VisualState = CardVisualState.Revealed,
+                    Interactable = true,
+                },
+                Color.white);
+            Assert.AreEqual("رابطة", typeLabel.text);
+            Assert.IsTrue(roleBadge.gameObject.activeSelf);
+
+            card.BindIdentity(
+                new CardVisualIdentity
+                {
+                    CardId = "مخفي",
+                    DisplayText = "مخفي",
+                    CardType = "member",
+                    VisualState = CardVisualState.Stock,
+                    Interactable = false,
+                },
+                Color.white);
+            Assert.IsFalse(roleBadge.gameObject.activeSelf);
+            Assert.IsTrue(backArtwork.gameObject.activeSelf);
+            Assert.AreEqual("دار الروابط", card.transform.Find("Label").GetComponent<TMP_Text>().text);
+
+            Object.Destroy(root);
+            yield return null;
         }
 
         [UnityTest]

@@ -135,12 +135,39 @@ namespace ArabSolitaire.Gameplay.Greybox
 
         private static void BuildDistortionAccent(Transform parent, Vector3 pos)
         {
-            var accent = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-            accent.name = "DistortionAccent_PROTOTYPE";
-            accent.transform.SetParent(parent, false);
-            accent.transform.position = pos;
-            accent.transform.localScale = Vector3.one * 0.35f;
-            PrototypeMaterial.Apply(accent.GetComponent<Renderer>(), new Color(0.35f, 0.08f, 0.28f, 0.6f));
+            var accentRoot = new GameObject("DistortionRift_PROTOTYPE");
+            accentRoot.transform.SetParent(parent, false);
+            accentRoot.transform.position = pos;
+
+            var core = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+            core.name = "RiftCore";
+            core.transform.SetParent(accentRoot.transform, false);
+            core.transform.localScale = Vector3.one * 0.24f;
+            PrototypeMaterial.Apply(core.GetComponent<Renderer>(), new Color(0.20f, 0.045f, 0.18f));
+            var coreCollider = core.GetComponent<Collider>();
+            if (coreCollider != null)
+            {
+                coreCollider.enabled = false;
+            }
+
+            var motes = new GameObject("RiftMotes");
+            motes.transform.SetParent(accentRoot.transform, false);
+            var ps = motes.AddComponent<ParticleSystem>();
+            var main = ps.main;
+            main.startLifetime = new ParticleSystem.MinMaxCurve(0.8f, 1.6f);
+            main.startSpeed = new ParticleSystem.MinMaxCurve(0.025f, 0.08f);
+            main.startSize = new ParticleSystem.MinMaxCurve(0.025f, 0.065f);
+            main.maxParticles = 18;
+            main.startColor = new ParticleSystem.MinMaxGradient(
+                new Color(0.42f, 0.10f, 0.34f, 0.70f),
+                new Color(0.88f, 0.62f, 0.22f, 0.75f));
+            var emission = ps.emission;
+            emission.rateOverTime = 6f;
+            var shape = ps.shape;
+            shape.shapeType = ParticleSystemShapeType.Sphere;
+            shape.radius = 0.30f;
+            var particleRenderer = ps.GetComponent<ParticleSystemRenderer>();
+            particleRenderer.sharedMaterial = PrototypeMaterial.CreateParticle(Color.white);
         }
 
         private static void BuildDust(Transform parent)
@@ -159,6 +186,8 @@ namespace ArabSolitaire.Gameplay.Greybox
             var shape = ps.shape;
             shape.shapeType = ParticleSystemShapeType.Box;
             shape.scale = new Vector3(8f, 2f, 4f);
+            var particleRenderer = ps.GetComponent<ParticleSystemRenderer>();
+            particleRenderer.sharedMaterial = PrototypeMaterial.CreateParticle(Color.white);
         }
 
         private void BuildTable()
@@ -189,22 +218,53 @@ namespace ArabSolitaire.Gameplay.Greybox
             CreateTablePart(tableRoot.transform, "GoldInlayNear", new Vector3(0f, 0.105f, -1.99f), new Vector3(6.15f, 0.025f, 0.035f), gold);
             CreateTablePart(tableRoot.transform, "GoldInlayFar", new Vector3(0f, 0.105f, 1.99f), new Vector3(6.15f, 0.025f, 0.035f), gold);
 
-            var laneColor = new Color(0.10f, 0.27f, 0.23f);
+            var laneFill = new Color(0.065f, 0.22f, 0.19f);
+            var laneOutline = new Color(0.55f, 0.38f, 0.15f);
             for (var i = 0; i < 6; i++)
             {
                 var x = (i - 2.5f) * 0.85f;
                 CreateTablePart(
                     tableRoot.transform,
+                    $"TableauLaneFill_{i + 1}",
+                    new Vector3(x, 0.018f, -0.28f),
+                    new Vector3(0.64f, 0.014f, 1.58f),
+                    laneFill);
+                CreateTableOutline(
+                    tableRoot.transform,
                     $"TableauLane_{i + 1}",
-                    new Vector3(x, 0.02f, -0.20f),
-                    new Vector3(0.67f, 0.018f, 1.65f),
-                    laneColor);
+                    new Vector3(x, 0.032f, -0.28f),
+                    new Vector2(0.72f, 1.70f),
+                    0.026f,
+                    laneOutline);
             }
 
-            var slotColor = new Color(0.26f, 0.20f, 0.14f);
-            CreateTablePart(tableRoot.transform, "StockMat", new Vector3(-2.8f, 0.02f, 1.2f), new Vector3(0.76f, 0.018f, 1.10f), slotColor);
-            CreateTablePart(tableRoot.transform, "WasteMat", new Vector3(-2.0f, 0.02f, 1.2f), new Vector3(0.76f, 0.018f, 1.10f), slotColor);
-            CreateTablePart(tableRoot.transform, "AssociationMat", new Vector3(2.6f, 0.02f, 1.1f), new Vector3(0.86f, 0.018f, 1.18f), gold);
+            var slotFill = new Color(0.075f, 0.17f, 0.15f);
+            CreateTablePart(tableRoot.transform, "StockMatFill", new Vector3(-2.8f, 0.018f, 0.95f), new Vector3(0.66f, 0.014f, 0.94f), slotFill);
+            CreateTablePart(tableRoot.transform, "WasteMatFill", new Vector3(-1.95f, 0.018f, 0.95f), new Vector3(0.66f, 0.014f, 0.94f), slotFill);
+            CreateTablePart(tableRoot.transform, "AssociationMatFill", new Vector3(2.55f, 0.018f, 0.95f), new Vector3(0.76f, 0.014f, 1.00f), slotFill);
+            CreateTableOutline(tableRoot.transform, "StockMat", new Vector3(-2.8f, 0.032f, 0.95f), new Vector2(0.72f, 1.02f), 0.03f, laneOutline);
+            CreateTableOutline(tableRoot.transform, "WasteMat", new Vector3(-1.95f, 0.032f, 0.95f), new Vector2(0.72f, 1.02f), 0.03f, laneOutline);
+            CreateTableOutline(tableRoot.transform, "AssociationMat", new Vector3(2.55f, 0.032f, 0.95f), new Vector2(0.82f, 1.08f), 0.035f, gold);
+        }
+
+        private static void CreateTableOutline(
+            Transform parent,
+            string name,
+            Vector3 position,
+            Vector2 size,
+            float stroke,
+            Color color)
+        {
+            var outline = new GameObject(name);
+            outline.transform.SetParent(parent, false);
+            outline.transform.localPosition = position;
+
+            var halfWidth = size.x * 0.5f;
+            var halfHeight = size.y * 0.5f;
+            CreateTablePart(outline.transform, "Top", new Vector3(0f, 0f, halfHeight), new Vector3(size.x, 0.018f, stroke), color);
+            CreateTablePart(outline.transform, "Bottom", new Vector3(0f, 0f, -halfHeight), new Vector3(size.x, 0.018f, stroke), color);
+            CreateTablePart(outline.transform, "Left", new Vector3(-halfWidth, 0f, 0f), new Vector3(stroke, 0.018f, size.y), color);
+            CreateTablePart(outline.transform, "Right", new Vector3(halfWidth, 0f, 0f), new Vector3(stroke, 0.018f, size.y), color);
         }
 
         private static GameObject CreateTablePart(
@@ -262,6 +322,9 @@ namespace ArabSolitaire.Gameplay.Greybox
             distortionOwner.transform.SetParent(systems.transform, false);
             var distortion = distortionOwner.AddComponent<DistortionVfx>();
             runtimeConfig ??= ScriptableObject.CreateInstance<PresentationRuntimeConfig>();
+            tableau.ConfigurePresentation(runtimeConfig);
+            stock.ConfigurePresentation(runtimeConfig);
+            slots.ConfigurePresentation(runtimeConfig);
 
             var canvasGo = new GameObject("UI", typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
             var canvas = canvasGo.GetComponent<Canvas>();

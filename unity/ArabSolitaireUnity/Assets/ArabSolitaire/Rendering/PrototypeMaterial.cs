@@ -18,6 +18,30 @@ namespace ArabSolitaire.Rendering
             return mat;
         }
 
+        public static Material CreateParticle(Color color)
+        {
+            var shader =
+                Shader.Find("Universal Render Pipeline/Particles/Unlit")
+                ?? Shader.Find("Particles/Standard Unlit")
+                ?? ResolveShader();
+            var mat = new Material(shader);
+            ApplyColor(mat, color);
+
+            if (mat.HasProperty("_Surface"))
+            {
+                mat.SetFloat("_Surface", 1f);
+                mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
+            }
+
+            if (mat.HasProperty("_ZWrite"))
+            {
+                mat.SetFloat("_ZWrite", 0f);
+            }
+
+            mat.renderQueue = 3000;
+            return mat;
+        }
+
         public static void Apply(Renderer renderer, Color color)
         {
             if (renderer == null)
