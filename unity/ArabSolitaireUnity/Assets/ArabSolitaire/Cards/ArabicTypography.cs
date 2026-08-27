@@ -55,7 +55,23 @@ namespace ArabSolitaire.Cards
                 return;
             }
 
-            _font = Resources.Load<TMP_FontAsset>("Arabic/NotoNaskhArabic SDF");
+            _font = Resources.Load<TMP_FontAsset>("Arabic/NotoNaskhArabic SDF")
+                ?? Resources.Load<TMP_FontAsset>("Arabic/Noto Naskh Arabic SDF");
+
+            if (_font == null)
+            {
+                var availableFonts = Resources.LoadAll<TMP_FontAsset>("Arabic");
+                if (availableFonts.Length > 0)
+                {
+                    _font = availableFonts[0];
+                }
+            }
+
+            if (_font == null)
+            {
+                Debug.LogError(
+                    "ArabicTypography: no TMP font asset found under a Resources/Arabic folder.");
+            }
         }
     }
 }
