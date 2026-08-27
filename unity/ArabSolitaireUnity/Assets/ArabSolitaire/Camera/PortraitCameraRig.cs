@@ -9,9 +9,9 @@ namespace ArabSolitaire.Cameras
     public sealed class PortraitCameraRig : MonoBehaviour
     {
         [SerializeField] private Camera targetCamera;
-        [SerializeField] private Vector3 position = new(0f, 4.8f, -5.6f);
-        [SerializeField] private Vector3 euler = new(34f, 0f, 0f);
-        [SerializeField] private float fieldOfView = 48f;
+        [SerializeField] private Vector3 position = new(0f, 4.05f, -6.6f);
+        [SerializeField] private Vector3 euler = new(29f, 0f, 0f);
+        [SerializeField] private float fieldOfView = 44f;
 
         private void Awake()
         {
