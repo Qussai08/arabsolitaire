@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using ArabSolitaire.Gameplay;
 using ArabSolitaire.Rendering;
@@ -59,10 +58,6 @@ namespace ArabSolitaire.Cards
             {
                 pickCollider.enabled = identity.Interactable;
             }
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-            StartCoroutine(LogVisibilityNextFrame());
-#endif
         }
 
         public void Bind(string cardId, Color tint) =>
@@ -173,15 +168,22 @@ namespace ArabSolitaire.Cards
         }
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        private IEnumerator LogVisibilityNextFrame()
+        public void LogVisibilityDiagnostic()
         {
-            yield return null;
-
             var camera = Camera.main;
+            var hierarchyState = string.Empty;
+            for (var current = transform; current != null; current = current.parent)
+            {
+                hierarchyState +=
+                    $"{current.name}(self={current.gameObject.activeSelf},hierarchy={current.gameObject.activeInHierarchy})/";
+            }
+
             if (camera == null || faceRenderer == null)
             {
-                Debug.LogWarning($"[CardVisibility] id={CardId} missingCamera={camera == null} missingRenderer={faceRenderer == null}");
-                yield break;
+                Debug.LogWarning(
+                    $"[CardVisibility] id={CardId} missingCamera={camera == null} " +
+                    $"missingRenderer={faceRenderer == null} hierarchy={hierarchyState}");
+                return;
             }
 
             var bounds = faceRenderer.bounds;
@@ -198,7 +200,8 @@ namespace ArabSolitaire.Cards
             Debug.Log(
                 $"[CardVisibility] id={CardId} world={bounds.center:F3} size={bounds.size:F3} " +
                 $"viewport={viewport:F3} inFrustum={inFrustum} rendererEnabled={faceRenderer.enabled} " +
-                $"rendererVisible={faceRenderer.isVisible} active={faceRenderer.gameObject.activeInHierarchy} " +
+                $"rendererVisible={faceRenderer.isVisible} activeSelf={gameObject.activeSelf} " +
+                $"activeHierarchy={gameObject.activeInHierarchy} hierarchy={hierarchyState} " +
                 $"layer={LayerMask.LayerToName(gameObject.layer)} maskIncludes={layerMaskIncludesCard} " +
                 $"shader={shaderName} queue={(material != null ? material.renderQueue : -1)} " +
                 $"camera={camera.name} cameraPos={camera.transform.position:F3} " +

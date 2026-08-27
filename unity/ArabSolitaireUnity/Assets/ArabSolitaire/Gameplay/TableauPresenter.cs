@@ -46,6 +46,9 @@ namespace ArabSolitaire.Gameplay
                     var view = _pool.Rent();
                     view.BindIdentity(identity, cardTint);
                     view.transform.localPosition = boardAnchor + new Vector3(x, i * stackRise, -i * depthStep);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+                    view.LogVisibilityDiagnostic();
+#endif
                     _cardsById[identity.CardId] = view;
                 }
             }
