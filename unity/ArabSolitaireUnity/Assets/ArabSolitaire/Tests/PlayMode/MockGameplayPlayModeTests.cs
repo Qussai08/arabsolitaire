@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Text;
 using ArabSolitaire.Bridge;
 using ArabSolitaire.Bridge.Android;
 using ArabSolitaire.Bridge.Mock;
@@ -87,7 +88,7 @@ namespace ArabSolitaire.Tests.PlayMode
             var backArtwork = card.transform.Find("BackArtwork");
             Assert.IsNotNull(roleBadge);
             Assert.IsNotNull(typeLabel);
-            Assert.AreEqual("كلمة", typeLabel.text);
+            Assert.AreEqual("كلمة", NormalizeArabicPresentationForms(typeLabel.text));
             Assert.IsTrue(roleBadge.gameObject.activeSelf);
             Assert.IsNotNull(backArtwork);
             Assert.IsFalse(backArtwork.gameObject.activeSelf);
@@ -102,7 +103,7 @@ namespace ArabSolitaire.Tests.PlayMode
                     Interactable = true,
                 },
                 Color.white);
-            Assert.AreEqual("رابطة", typeLabel.text);
+            Assert.AreEqual("رابطة", NormalizeArabicPresentationForms(typeLabel.text));
             Assert.IsTrue(roleBadge.gameObject.activeSelf);
 
             card.BindIdentity(
@@ -117,7 +118,9 @@ namespace ArabSolitaire.Tests.PlayMode
                 Color.white);
             Assert.IsFalse(roleBadge.gameObject.activeSelf);
             Assert.IsTrue(backArtwork.gameObject.activeSelf);
-            Assert.AreEqual("دار الروابط", card.transform.Find("Label").GetComponent<TMP_Text>().text);
+            Assert.AreEqual(
+                "دار الروابط",
+                NormalizeArabicPresentationForms(card.transform.Find("Label").GetComponent<TMP_Text>().text));
 
             Object.Destroy(root);
             yield return null;
@@ -211,6 +214,11 @@ namespace ArabSolitaire.Tests.PlayMode
             Assert.AreEqual("won", gameState?.Value<string>("status"));
             Object.Destroy(transport.gameObject);
             yield return null;
+        }
+
+        private static string NormalizeArabicPresentationForms(string value)
+        {
+            return value.Normalize(NormalizationForm.FormKC);
         }
 
         private static TextAsset LoadFixture()
