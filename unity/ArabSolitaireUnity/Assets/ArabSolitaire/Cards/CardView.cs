@@ -167,47 +167,6 @@ namespace ArabSolitaire.Cards
             return layer;
         }
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD
-        public void LogVisibilityDiagnostic()
-        {
-            var camera = Camera.main;
-            var hierarchyState = string.Empty;
-            for (var current = transform; current != null; current = current.parent)
-            {
-                hierarchyState +=
-                    $"{current.name}(self={current.gameObject.activeSelf},hierarchy={current.gameObject.activeInHierarchy})/";
-            }
-
-            if (camera == null || faceRenderer == null)
-            {
-                Debug.LogWarning(
-                    $"[CardVisibility] id={CardId} missingCamera={camera == null} " +
-                    $"missingRenderer={faceRenderer == null} hierarchy={hierarchyState}");
-                return;
-            }
-
-            var bounds = faceRenderer.bounds;
-            var viewport = camera.WorldToViewportPoint(bounds.center);
-            var inFrustum = GeometryUtility.TestPlanesAABB(
-                GeometryUtility.CalculateFrustumPlanes(camera),
-                bounds);
-            var layerMaskIncludesCard = (camera.cullingMask & (1 << gameObject.layer)) != 0;
-            var material = faceRenderer.sharedMaterial;
-            var shaderName = material != null && material.shader != null
-                ? material.shader.name
-                : "<missing>";
-
-            Debug.Log(
-                $"[CardVisibility] id={CardId} world={bounds.center:F3} size={bounds.size:F3} " +
-                $"viewport={viewport:F3} inFrustum={inFrustum} rendererEnabled={faceRenderer.enabled} " +
-                $"rendererVisible={faceRenderer.isVisible} activeSelf={gameObject.activeSelf} " +
-                $"activeHierarchy={gameObject.activeInHierarchy} hierarchy={hierarchyState} " +
-                $"layer={LayerMask.LayerToName(gameObject.layer)} maskIncludes={layerMaskIncludesCard} " +
-                $"shader={shaderName} queue={(material != null ? material.renderQueue : -1)} " +
-                $"camera={camera.name} cameraPos={camera.transform.position:F3} " +
-                $"cameraEuler={camera.transform.eulerAngles:F3} near={camera.nearClipPlane} far={camera.farClipPlane}");
-        }
-#endif
 
         private static Color Lighten(Color color, float amount)
         {
