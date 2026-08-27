@@ -22,8 +22,15 @@ namespace ArabSolitaire.Tests.PlayMode
             var builder = go.AddComponent<CairoGreyboxSceneBuilder>();
             builder.SetFixtureAsset(fixture);
             builder.Build();
-            yield return null;
 
+            for (var frame = 0; frame < 10 && builder.Session?.Transport == null; frame++)
+            {
+                yield return null;
+            }
+
+            Assert.IsNotNull(
+                builder.Session?.Transport,
+                "Mock session did not initialize within 10 frames.");
             var board = builder.BoardPresenter;
             Assert.IsNotNull(board);
             Assert.GreaterOrEqual(board.ActiveCardCount, 2);
@@ -89,10 +96,17 @@ namespace ArabSolitaire.Tests.PlayMode
             var builder = go.AddComponent<CairoGreyboxSceneBuilder>();
             builder.SetFixtureAsset(fixture);
             builder.Build();
-            yield return null;
 
             var session = builder.Session;
             Assert.IsNotNull(session);
+            for (var frame = 0; frame < 10 && session.Transport == null; frame++)
+            {
+                yield return null;
+            }
+
+            Assert.IsNotNull(
+                session.Transport,
+                "Mock session did not initialize within 10 frames.");
             session.SimulateDisconnect();
             session.SimulateReconnect();
             yield return null;
