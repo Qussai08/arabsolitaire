@@ -36,6 +36,7 @@ namespace ArabSolitaire.Gameplay
         private bool _readyForInput;
         private bool _productionMode;
         private bool _awaitingInitialSnapshot = true;
+        private bool _initialized;
 
         public bool ReadyForInput => _readyForInput && (_guard?.IsReadyForInput ?? false);
         public MockBridgeTransport Transport => _mockTransport;
@@ -72,17 +73,26 @@ namespace ArabSolitaire.Gameplay
             ResolveReferences();
         }
 
-        private void Start()
+        private void Start() => Initialize();
+
+        public void Initialize()
         {
+            if (_initialized)
+            {
+                return;
+            }
+
             ResolveReferences();
             _nativeTransport = NativeBridgeTransport.Instance;
             if (_nativeTransport != null)
             {
                 StartProduction(_nativeTransport);
+                _initialized = true;
                 return;
             }
 
             StartMock();
+            _initialized = _mockTransport != null;
         }
 
         private void OnDestroy()
