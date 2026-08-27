@@ -216,6 +216,7 @@ namespace ArabSolitaire.UI
             tmp.text = label;
             tmp.alignment = TextAlignmentOptions.Center;
             tmp.fontSize = 24f;
+            ArabicTypography.ApplyTo(tmp);
             return go.GetComponent<Button>();
         }
 
