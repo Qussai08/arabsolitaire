@@ -7,8 +7,8 @@ namespace ArabSolitaire.Gameplay
     public sealed class StockPresenter : MonoBehaviour
     {
         [SerializeField] private Transform root;
-        [SerializeField] private Vector3 stockAnchor = new(-2.8f, 0.05f, 1.2f);
-        [SerializeField] private Vector3 wasteAnchor = new(-2.1f, 0.05f, 1.2f);
+        [SerializeField] private Vector3 stockAnchor = new(-2.8f, 0.68f, 0.95f);
+        [SerializeField] private Vector3 wasteAnchor = new(-1.95f, 0.68f, 0.95f);
         [SerializeField] private Color cardTint = new(0.88f, 0.82f, 0.7f);
 
         private readonly List<CardView> _active = new();
@@ -33,7 +33,7 @@ namespace ArabSolitaire.Gameplay
                 var view = _pool.Rent();
                 view.BindIdentity(identity, cardTint);
                 view.transform.localPosition = identity.VisualState == CardVisualState.Waste
-                    ? wasteAnchor + Vector3.right * (wasteIndex++ * 0.12f)
+                    ? wasteAnchor + new Vector3(wasteIndex * 0.10f, wasteIndex * 0.035f, -wasteIndex++ * 0.012f)
                     : stockAnchor;
                 _active.Add(view);
             }
