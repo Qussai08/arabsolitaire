@@ -55,7 +55,8 @@ namespace ArabSolitaire.Cards
                 return;
             }
 
-            _font = Resources.Load<TMP_FontAsset>("Arabic/NotoNaskhArabic SDF")
+            _font = TMP_Settings.defaultFontAsset
+                ?? Resources.Load<TMP_FontAsset>("Arabic/NotoNaskhArabic SDF")
                 ?? Resources.Load<TMP_FontAsset>("Arabic/Noto Naskh Arabic SDF");
 
             if (_font == null)
@@ -70,7 +71,7 @@ namespace ArabSolitaire.Cards
             if (_font == null)
             {
                 Debug.LogError(
-                    "ArabicTypography: no TMP font asset found under a Resources/Arabic folder.");
+                    "ArabicTypography: configure a default font in TMP Settings or add one under Resources/Arabic.");
             }
         }
     }
