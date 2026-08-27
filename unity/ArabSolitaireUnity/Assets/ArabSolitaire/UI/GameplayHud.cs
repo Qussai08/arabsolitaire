@@ -10,6 +10,15 @@ namespace ArabSolitaire.UI
 {
     public sealed class GameplayHud : MonoBehaviour
     {
+        private static readonly Color HeaderColor = new Color(0.10f, 0.07f, 0.15f, 0.94f);
+        private static readonly Color PrimaryPanelColor = new Color(0.16f, 0.10f, 0.18f, 0.96f);
+        private static readonly Color DeveloperPanelColor = new Color(0.09f, 0.08f, 0.12f, 0.88f);
+        private static readonly Color GoldColor = new Color(0.96f, 0.76f, 0.32f, 1f);
+        private static readonly Color CreamColor = new Color(1f, 0.95f, 0.84f, 1f);
+        private static readonly Color AccentColor = new Color(0.50f, 0.16f, 0.34f, 1f);
+        private static readonly Color SecondaryButtonColor = new Color(0.25f, 0.18f, 0.31f, 1f);
+        private static readonly Color DangerColor = new Color(0.48f, 0.15f, 0.18f, 1f);
+
         [SerializeField] private TMP_Text movesLabel;
         [SerializeField] private TMP_Text streakLabel;
         [SerializeField] private TMP_Text statusLabel;
@@ -162,23 +171,48 @@ namespace ArabSolitaire.UI
         {
             var root = new GameObject("GameplayHud", typeof(RectTransform));
             root.transform.SetParent(canvas.transform, false);
+            var rootRect = root.GetComponent<RectTransform>();
+            Stretch(rootRect);
+
             var hud = root.AddComponent<GameplayHud>();
-            hud.safeAreaRoot = root.GetComponent<RectTransform>();
+            hud.safeAreaRoot = rootRect;
 
-            hud.titleLabel = CreateLabel(root.transform, "TitleLabel", new Vector2(0.5f, 0.92f), "ألوان أساسية", 42);
-            hud.movesLabel = CreateLabel(root.transform, "MovesLabel", new Vector2(0.15f, 0.92f), "الحركات: 30", 34);
-            hud.streakLabel = CreateLabel(root.transform, "StreakLabel", new Vector2(0.85f, 0.92f), "سلسلة: —", 34);
-            hud.statusLabel = CreateLabel(root.transform, "StatusLabel", new Vector2(0.5f, 0.85f), string.Empty, 30);
+            var header = CreatePanel(
+                root.transform,
+                "HeaderPanel",
+                new Vector2(0.025f, 0.855f),
+                new Vector2(0.975f, 0.985f),
+                HeaderColor);
 
-            hud.hintButton = CreateButton(root.transform, "Hint", new Vector2(0.15f, 0.06f));
-            hud.undoButton = CreateButton(root.transform, "Undo", new Vector2(0.35f, 0.06f));
-            hud.pauseButton = CreateButton(root.transform, "Pause", new Vector2(0.55f, 0.06f));
-            hud.exitButton = CreateButton(root.transform, "Exit", new Vector2(0.85f, 0.06f));
-            hud.stockAdvanceButton = CreateButton(root.transform, "Stock+", new Vector2(0.15f, 0.12f));
-            hud.stockRestoreButton = CreateButton(root.transform, "إرجاع", new Vector2(0.35f, 0.12f));
-            hud.winDemoButton = CreateButton(root.transform, "Win", new Vector2(0.55f, 0.12f));
-            hud.disconnectButton = CreateButton(root.transform, "Disc", new Vector2(0.7f, 0.12f));
-            hud.reconnectButton = CreateButton(root.transform, "Rec", new Vector2(0.85f, 0.12f));
+            hud.titleLabel = CreateLabel(header.transform, "TitleLabel", new Vector2(0.5f, 0.67f), "ألوان أساسية", 42f, GoldColor, new Vector2(520f, 68f));
+            hud.movesLabel = CreateLabel(header.transform, "MovesLabel", new Vector2(0.22f, 0.22f), "الحركات: 30", 28f, CreamColor, new Vector2(360f, 54f));
+            hud.streakLabel = CreateLabel(header.transform, "StreakLabel", new Vector2(0.78f, 0.22f), "سلسلة: —", 28f, CreamColor, new Vector2(360f, 54f));
+            hud.statusLabel = CreateLabel(root.transform, "StatusLabel", new Vector2(0.5f, 0.81f), string.Empty, 28f, GoldColor, new Vector2(640f, 56f));
+
+            var developerPanel = CreatePanel(
+                root.transform,
+                "DeveloperControlsPanel",
+                new Vector2(0.025f, 0.115f),
+                new Vector2(0.975f, 0.185f),
+                DeveloperPanelColor);
+
+            hud.stockAdvanceButton = CreateButton(developerPanel.transform, "Stock+", "سحب", new Vector2(0.10f, 0.5f), new Vector2(150f, 50f), SecondaryButtonColor, 22f);
+            hud.stockRestoreButton = CreateButton(developerPanel.transform, "إرجاع", "إرجاع", new Vector2(0.30f, 0.5f), new Vector2(150f, 50f), SecondaryButtonColor, 22f);
+            hud.winDemoButton = CreateButton(developerPanel.transform, "Win", "فوز", new Vector2(0.50f, 0.5f), new Vector2(150f, 50f), SecondaryButtonColor, 22f);
+            hud.disconnectButton = CreateButton(developerPanel.transform, "Disc", "فصل", new Vector2(0.70f, 0.5f), new Vector2(150f, 50f), DangerColor, 22f);
+            hud.reconnectButton = CreateButton(developerPanel.transform, "Rec", "اتصال", new Vector2(0.90f, 0.5f), new Vector2(150f, 50f), SecondaryButtonColor, 22f);
+
+            var primaryPanel = CreatePanel(
+                root.transform,
+                "PrimaryControlsPanel",
+                new Vector2(0.025f, 0.015f),
+                new Vector2(0.975f, 0.105f),
+                PrimaryPanelColor);
+
+            hud.hintButton = CreateButton(primaryPanel.transform, "Hint", "تلميح", new Vector2(0.14f, 0.5f), new Vector2(190f, 64f), AccentColor, 26f);
+            hud.undoButton = CreateButton(primaryPanel.transform, "Undo", "تراجع", new Vector2(0.38f, 0.5f), new Vector2(190f, 64f), SecondaryButtonColor, 26f);
+            hud.pauseButton = CreateButton(primaryPanel.transform, "Pause", "إيقاف", new Vector2(0.62f, 0.5f), new Vector2(190f, 64f), SecondaryButtonColor, 26f);
+            hud.exitButton = CreateButton(primaryPanel.transform, "Exit", "خروج", new Vector2(0.86f, 0.5f), new Vector2(190f, 64f), DangerColor, 26f);
 
             hud.winOverlay = CreateOverlay(root.transform, "WinOverlay", "فوز!");
             hud.outOfMovesOverlay = CreateOverlay(root.transform, "OutOfMovesOverlay", "نفدت الحركات");
@@ -187,57 +221,147 @@ namespace ArabSolitaire.UI
             return hud;
         }
 
-        private static TMP_Text CreateLabel(Transform parent, string name, Vector2 anchor, string text, float size)
+        private static GameObject CreatePanel(Transform parent, string name, Vector2 anchorMin, Vector2 anchorMax, Color color)
+        {
+            var panel = new GameObject(name, typeof(RectTransform), typeof(Image));
+            panel.transform.SetParent(parent, false);
+            var rect = panel.GetComponent<RectTransform>();
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+
+            var image = panel.GetComponent<Image>();
+            image.color = color;
+            image.raycastTarget = false;
+            return panel;
+        }
+
+        private static TMP_Text CreateLabel(
+            Transform parent,
+            string name,
+            Vector2 anchor,
+            string text,
+            float size,
+            Color color,
+            Vector2 dimensions)
         {
             var go = new GameObject(name, typeof(RectTransform));
             go.transform.SetParent(parent, false);
-            var rt = go.GetComponent<RectTransform>();
-            rt.anchorMin = anchor;
-            rt.anchorMax = anchor;
-            rt.sizeDelta = new Vector2(320f, 64f);
+            var rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = anchor;
+            rect.anchorMax = anchor;
+            rect.sizeDelta = dimensions;
+
             var tmp = go.AddComponent<RTLTextMeshPro>();
             tmp.PreserveNumbers = true;
             tmp.Farsi = false;
             tmp.text = text;
             tmp.fontSize = size;
+            tmp.color = color;
             tmp.alignment = TextAlignmentOptions.Center;
+            tmp.raycastTarget = false;
             ArabicTypography.ApplyTo(tmp);
             return tmp;
         }
 
-        private static Button CreateButton(Transform parent, string label, Vector2 anchor)
+        private static Button CreateButton(
+            Transform parent,
+            string objectName,
+            string label,
+            Vector2 anchor,
+            Vector2 dimensions,
+            Color color,
+            float fontSize)
         {
-            var go = new GameObject(label + "Button", typeof(RectTransform), typeof(Image), typeof(Button));
+            var go = new GameObject(objectName + "Button", typeof(RectTransform), typeof(Image), typeof(Button));
             go.transform.SetParent(parent, false);
-            var rt = go.GetComponent<RectTransform>();
-            rt.anchorMin = anchor;
-            rt.anchorMax = anchor;
-            rt.sizeDelta = new Vector2(150f, 56f);
+            var rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = anchor;
+            rect.anchorMax = anchor;
+            rect.sizeDelta = dimensions;
+
+            var image = go.GetComponent<Image>();
+            image.color = color;
+
+            var button = go.GetComponent<Button>();
+            var colors = button.colors;
+            colors.normalColor = color;
+            colors.highlightedColor = Lighten(color, 0.10f);
+            colors.selectedColor = Lighten(color, 0.06f);
+            colors.pressedColor = Darken(color, 0.18f);
+            colors.disabledColor = new Color(color.r, color.g, color.b, 0.35f);
+            colors.colorMultiplier = 1f;
+            colors.fadeDuration = 0.08f;
+            button.colors = colors;
+            button.targetGraphic = image;
+
             var textGo = new GameObject("Label", typeof(RectTransform));
             textGo.transform.SetParent(go.transform, false);
+            var textRect = textGo.GetComponent<RectTransform>();
+            Stretch(textRect);
+            textRect.offsetMin = new Vector2(8f, 4f);
+            textRect.offsetMax = new Vector2(-8f, -4f);
+
             var tmp = textGo.AddComponent<RTLTextMeshPro>();
             tmp.PreserveNumbers = true;
             tmp.Farsi = false;
             tmp.text = label;
             tmp.alignment = TextAlignmentOptions.Center;
-            tmp.fontSize = 24f;
+            tmp.fontSize = fontSize;
+            tmp.enableAutoSizing = true;
+            tmp.fontSizeMin = 16f;
+            tmp.fontSizeMax = fontSize;
+            tmp.color = CreamColor;
+            tmp.raycastTarget = false;
             ArabicTypography.ApplyTo(tmp);
-            return go.GetComponent<Button>();
+            return button;
         }
 
         private static GameObject CreateOverlay(Transform parent, string name, string text)
         {
-            var go = new GameObject(name, typeof(RectTransform), typeof(Image));
-            go.transform.SetParent(parent, false);
-            var rt = go.GetComponent<RectTransform>();
-            rt.anchorMin = Vector2.zero;
-            rt.anchorMax = Vector2.one;
-            rt.offsetMin = Vector2.zero;
-            rt.offsetMax = Vector2.zero;
-            go.GetComponent<Image>().color = new Color(0f, 0f, 0f, 0.55f);
-            var label = CreateLabel(go.transform, "Label", new Vector2(0.5f, 0.5f), text, 48);
+            var overlay = new GameObject(name, typeof(RectTransform), typeof(Image));
+            overlay.transform.SetParent(parent, false);
+            var rect = overlay.GetComponent<RectTransform>();
+            Stretch(rect);
+            overlay.GetComponent<Image>().color = new Color(0.04f, 0.02f, 0.07f, 0.82f);
+
+            var card = CreatePanel(
+                overlay.transform,
+                "MessagePanel",
+                new Vector2(0.16f, 0.38f),
+                new Vector2(0.84f, 0.62f),
+                HeaderColor);
+
+            var label = CreateLabel(card.transform, "Label", new Vector2(0.5f, 0.5f), text, 52f, GoldColor, new Vector2(620f, 120f));
             label.alignment = TextAlignmentOptions.Center;
-            return go;
+            return overlay;
+        }
+
+        private static void Stretch(RectTransform rect)
+        {
+            rect.anchorMin = Vector2.zero;
+            rect.anchorMax = Vector2.one;
+            rect.offsetMin = Vector2.zero;
+            rect.offsetMax = Vector2.zero;
+        }
+
+        private static Color Lighten(Color color, float amount)
+        {
+            return new Color(
+                Mathf.Clamp01(color.r + amount),
+                Mathf.Clamp01(color.g + amount),
+                Mathf.Clamp01(color.b + amount),
+                color.a);
+        }
+
+        private static Color Darken(Color color, float amount)
+        {
+            return new Color(
+                Mathf.Clamp01(color.r - amount),
+                Mathf.Clamp01(color.g - amount),
+                Mathf.Clamp01(color.b - amount),
+                color.a);
         }
     }
 }
