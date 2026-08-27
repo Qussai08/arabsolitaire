@@ -282,7 +282,7 @@ namespace ArabSolitaire.UI
             rect.sizeDelta = dimensions;
 
             var image = go.GetComponent<Image>();
-            image.color = color;
+            image.color = Color.white;
 
             var button = go.GetComponent<Button>();
             var colors = button.colors;
