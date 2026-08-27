@@ -7,7 +7,7 @@ namespace ArabSolitaire.Gameplay
     public sealed class AssociationSlotPresenter : MonoBehaviour
     {
         [SerializeField] private Transform root;
-        [SerializeField] private Vector3 slotAnchor = new(2.6f, 0.05f, 1.1f);
+        [SerializeField] private Vector3 slotAnchor = new(2.55f, 0.68f, 0.95f);
         [SerializeField] private Color slotTint = new(0.75f, 0.62f, 0.35f);
 
         private readonly List<CardView> _active = new();
@@ -36,7 +36,7 @@ namespace ArabSolitaire.Gameplay
                 identity.Revision = revision;
                 var view = _pool.Rent();
                 view.BindIdentity(identity, slotTint);
-                view.transform.localPosition = slotAnchor + Vector3.up * (i * 0.15f);
+                view.transform.localPosition = slotAnchor + new Vector3(0f, i * 0.16f, -i * 0.012f);
                 _active.Add(view);
             }
         }
