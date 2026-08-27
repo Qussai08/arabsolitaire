@@ -163,11 +163,71 @@ namespace ArabSolitaire.Gameplay.Greybox
 
         private void BuildTable()
         {
-            var table = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            table.name = "GameTable_PROTOTYPE";
-            table.transform.position = new Vector3(0f, -0.05f, 0f);
-            table.transform.localScale = new Vector3(6.5f, 0.1f, 4.2f);
-            PrototypeMaterial.Apply(table.GetComponent<Renderer>(), new Color(0.24f, 0.17f, 0.12f));
+            var tableRoot = new GameObject("GameTable_PROTOTYPE");
+
+            CreateTablePart(
+                tableRoot.transform,
+                "WoodUnderframe",
+                new Vector3(0f, -0.17f, 0f),
+                new Vector3(6.9f, 0.22f, 4.55f),
+                new Color(0.22f, 0.09f, 0.045f));
+
+            CreateTablePart(
+                tableRoot.transform,
+                "FeltSurface",
+                new Vector3(0f, -0.045f, 0f),
+                new Vector3(6.5f, 0.10f, 4.2f),
+                new Color(0.055f, 0.19f, 0.17f));
+
+            var wood = new Color(0.34f, 0.14f, 0.065f);
+            CreateTablePart(tableRoot.transform, "RailLeft", new Vector3(-3.31f, 0.04f, 0f), new Vector3(0.18f, 0.20f, 4.45f), wood);
+            CreateTablePart(tableRoot.transform, "RailRight", new Vector3(3.31f, 0.04f, 0f), new Vector3(0.18f, 0.20f, 4.45f), wood);
+            CreateTablePart(tableRoot.transform, "RailNear", new Vector3(0f, 0.04f, -2.14f), new Vector3(6.45f, 0.20f, 0.18f), wood);
+            CreateTablePart(tableRoot.transform, "RailFar", new Vector3(0f, 0.04f, 2.14f), new Vector3(6.45f, 0.20f, 0.18f), wood);
+
+            var gold = new Color(0.72f, 0.47f, 0.16f);
+            CreateTablePart(tableRoot.transform, "GoldInlayNear", new Vector3(0f, 0.105f, -1.99f), new Vector3(6.15f, 0.025f, 0.035f), gold);
+            CreateTablePart(tableRoot.transform, "GoldInlayFar", new Vector3(0f, 0.105f, 1.99f), new Vector3(6.15f, 0.025f, 0.035f), gold);
+
+            var laneColor = new Color(0.10f, 0.27f, 0.23f);
+            for (var i = 0; i < 6; i++)
+            {
+                var x = (i - 2.5f) * 0.85f;
+                CreateTablePart(
+                    tableRoot.transform,
+                    $"TableauLane_{i + 1}",
+                    new Vector3(x, 0.02f, -0.20f),
+                    new Vector3(0.67f, 0.018f, 1.65f),
+                    laneColor);
+            }
+
+            var slotColor = new Color(0.26f, 0.20f, 0.14f);
+            CreateTablePart(tableRoot.transform, "StockMat", new Vector3(-2.8f, 0.02f, 1.2f), new Vector3(0.76f, 0.018f, 1.10f), slotColor);
+            CreateTablePart(tableRoot.transform, "WasteMat", new Vector3(-2.0f, 0.02f, 1.2f), new Vector3(0.76f, 0.018f, 1.10f), slotColor);
+            CreateTablePart(tableRoot.transform, "AssociationMat", new Vector3(2.6f, 0.02f, 1.1f), new Vector3(0.86f, 0.018f, 1.18f), gold);
+        }
+
+        private static GameObject CreateTablePart(
+            Transform parent,
+            string name,
+            Vector3 position,
+            Vector3 scale,
+            Color color)
+        {
+            var part = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            part.name = name;
+            part.transform.SetParent(parent, false);
+            part.transform.localPosition = position;
+            part.transform.localScale = scale;
+            PrototypeMaterial.Apply(part.GetComponent<Renderer>(), color);
+
+            var collider = part.GetComponent<Collider>();
+            if (collider != null)
+            {
+                collider.enabled = false;
+            }
+
+            return part;
         }
 
         private void BuildCamera()
