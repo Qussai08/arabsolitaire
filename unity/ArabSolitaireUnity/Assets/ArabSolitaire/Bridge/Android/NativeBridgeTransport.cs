@@ -222,7 +222,13 @@ namespace ArabSolitaire.Bridge.Android
             }
 
             var go = new GameObject("NativeBridgeTransport");
-            return go.AddComponent<NativeBridgeTransport>();
+            var transport = go.AddComponent<NativeBridgeTransport>();
+
+            // Awake is not guaranteed to run when a runtime object is created
+            // from an EditMode test, so register the factory-created instance
+            // explicitly. In PlayMode Awake has already assigned the same object.
+            _instance ??= transport;
+            return _instance;
         }
     }
 }
