@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using ArabSolitaire.Gameplay;
 using ArabSolitaire.Rendering;
 using TMPro;
+using RTLTMPro;
 using UnityEngine;
 
 namespace ArabSolitaire.Cards
@@ -77,7 +78,9 @@ namespace ArabSolitaire.Cards
             var labelGo = new GameObject("Label");
             labelGo.transform.SetParent(go.transform, false);
             labelGo.transform.localPosition = new Vector3(0f, 0f, -0.02f);
-            var tmp = labelGo.AddComponent<TextMeshPro>();
+            var tmp = labelGo.AddComponent<RTLTextMeshPro3D>();
+            tmp.PreserveNumbers = true;
+            tmp.Farsi = false;
             tmp.fontSize = 3f;
             tmp.alignment = TextAlignmentOptions.Center;
             ArabicTypography.ApplyTo(tmp);
