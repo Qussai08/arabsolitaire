@@ -18,6 +18,8 @@ namespace ArabSolitaire.Gameplay.Greybox
         [SerializeField] private PresentationRuntimeConfig runtimeConfig;
         [SerializeField] private bool buildOnStart = true;
 
+        private bool _built;
+
         public BoardPresenter BoardPresenter { get; private set; }
         public GameplaySessionController Session { get; private set; }
         public GameplayHud Hud { get; private set; }
@@ -34,12 +36,18 @@ namespace ArabSolitaire.Gameplay.Greybox
 
         public void Build()
         {
+            if (_built)
+            {
+                return;
+            }
+
+            _built = true;
             ApplyLighting();
             BuildEnvironment();
             BuildTable();
             BuildCamera();
-            BuildSystems();
             BuildMeaningThreads();
+            BuildSystems();
         }
 
         private void ApplyLighting()
@@ -214,6 +222,7 @@ namespace ArabSolitaire.Gameplay.Greybox
                 cameraDirector,
                 threads,
                 distortion);
+            Session.Initialize();
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             systems.AddComponent<DevPerformanceOverlay>();
