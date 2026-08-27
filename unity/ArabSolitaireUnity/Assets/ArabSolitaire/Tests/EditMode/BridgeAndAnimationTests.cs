@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ArabSolitaire.Animation;
 using ArabSolitaire.Bridge;
+using ArabSolitaire.Cards;
 using ArabSolitaire.Gameplay;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
@@ -108,6 +109,22 @@ namespace ArabSolitaire.Tests.EditMode
             Assert.IsFalse(guard.IsReadyForInput);
             guard.UnlockInput();
             Assert.IsTrue(guard.IsReadyForInput);
+        }
+    }
+
+    public sealed class ArabicTypographyTests
+    {
+        [TestCase(null)]
+        [TestCase("")]
+        public void ContainsArabic_NullOrEmpty_ReturnsFalse(string value)
+        {
+            Assert.IsFalse(ArabicTypography.ContainsArabic(value));
+        }
+
+        [Test]
+        public void ContainsArabic_ArabicText_ReturnsTrue()
+        {
+            Assert.IsTrue(ArabicTypography.ContainsArabic("أحمر"));
         }
     }
 
