@@ -127,6 +127,7 @@ namespace ArabSolitaire.Cards
             var labelGo = new GameObject("Label");
             labelGo.transform.SetParent(root.transform, false);
             labelGo.transform.localPosition = new Vector3(0f, 0f, -0.045f);
+            labelGo.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
             var tmp = labelGo.AddComponent<RTLTextMeshPro3D>();
             tmp.PreserveNumbers = true;
             tmp.Farsi = false;
@@ -162,6 +163,7 @@ namespace ArabSolitaire.Cards
             layer.name = name;
             layer.transform.SetParent(parent, false);
             layer.transform.localPosition = localPosition;
+            layer.transform.localRotation = Quaternion.Euler(0f, 180f, 0f);
             layer.transform.localScale = localScale;
             PrototypeMaterial.Apply(layer.GetComponent<Renderer>(), color);
             return layer;
