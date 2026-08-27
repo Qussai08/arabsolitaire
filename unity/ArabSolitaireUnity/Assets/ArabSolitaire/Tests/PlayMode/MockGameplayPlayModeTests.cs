@@ -50,6 +50,16 @@ namespace ArabSolitaire.Tests.PlayMode
             var board = builder.BoardPresenter;
             Assert.IsNotNull(board);
             Assert.GreaterOrEqual(board.ActiveCardCount, 2);
+            Assert.IsTrue(
+                builder.Session.gameObject.activeInHierarchy,
+                "GameplaySystems must remain active after distortion VFX initialization.");
+            foreach (var card in board.Tableau.CardsById.Values)
+            {
+                Assert.IsTrue(
+                    card.gameObject.activeInHierarchy,
+                    $"Presented card '{card.CardId}' must be active in the hierarchy.");
+            }
+
             Object.Destroy(go);
         }
 
