@@ -1,5 +1,6 @@
 using System.Collections;
 using ArabSolitaire.Bridge;
+using ArabSolitaire.Bridge.Android;
 using ArabSolitaire.Bridge.Mock;
 using ArabSolitaire.Gameplay;
 using ArabSolitaire.Gameplay.Greybox;
@@ -13,6 +14,21 @@ namespace ArabSolitaire.Tests.PlayMode
     public sealed class MockGameplayPlayModeTests
     {
         private const string FixturePath = "Assets/ArabSolitaire/Bridge/Fixtures/cairo_mock_state.json";
+
+        [UnitySetUp]
+        public IEnumerator RemoveProductionTransport()
+        {
+            var nativeTransport = NativeBridgeTransport.Instance;
+            if (nativeTransport != null)
+            {
+                Object.Destroy(nativeTransport.gameObject);
+                yield return null;
+            }
+
+            Assert.IsNull(
+                NativeBridgeTransport.Instance,
+                "Mock PlayMode tests require the production native transport to be absent.");
+        }
 
         [UnityTest]
         public IEnumerator FixtureLoad_PresentsExpectedCardCount()
