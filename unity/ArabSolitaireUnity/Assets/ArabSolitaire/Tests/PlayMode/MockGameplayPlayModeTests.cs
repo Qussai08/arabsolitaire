@@ -24,7 +24,7 @@ namespace ArabSolitaire.Tests.PlayMode
             builder.Build();
             yield return null;
 
-            var board = Object.FindFirstObjectByType<BoardPresenter>();
+            var board = builder.BoardPresenter;
             Assert.IsNotNull(board);
             Assert.GreaterOrEqual(board.ActiveCardCount, 2);
             Object.Destroy(go);
@@ -91,7 +91,7 @@ namespace ArabSolitaire.Tests.PlayMode
             builder.Build();
             yield return null;
 
-            var session = Object.FindFirstObjectByType<GameplaySessionController>();
+            var session = builder.Session;
             Assert.IsNotNull(session);
             session.SimulateDisconnect();
             session.SimulateReconnect();
