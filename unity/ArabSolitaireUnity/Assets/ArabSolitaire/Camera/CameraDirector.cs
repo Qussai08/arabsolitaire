@@ -22,9 +22,9 @@ namespace ArabSolitaire.Cameras
     {
         [SerializeField] private Camera targetCamera;
         [SerializeField] private PresentationRuntimeConfig config;
-        [SerializeField] private Vector3 gameplayPosition = new(0f, 4.8f, -5.6f);
-        [SerializeField] private Vector3 gameplayEuler = new(34f, 0f, 0f);
-        [SerializeField] private float gameplayFov = 48f;
+        [SerializeField] private Vector3 gameplayPosition = new(0f, 4.05f, -6.6f);
+        [SerializeField] private Vector3 gameplayEuler = new(29f, 0f, 0f);
+        [SerializeField] private float gameplayFov = 44f;
 
         private Coroutine _blend;
 
