@@ -70,7 +70,7 @@ void main() {
         levelDefinitionId: 'l1',
         revision: 0,
         type: BridgeMessageType.pause,
-        payload: const <String, Object?>{},
+        payload: <String, Object?>{},
       );
       await transport.send(outbound);
       expect(transport.sent, hasLength(1));
@@ -83,7 +83,7 @@ void main() {
         levelDefinitionId: 'l1',
         revision: 0,
         type: BridgeMessageType.unityReady,
-        payload: const <String, Object?>{},
+        payload: <String, Object?>{},
       );
       transport.emitFromUnity(inbound);
       await Future<void>.delayed(Duration.zero);
@@ -105,7 +105,7 @@ void main() {
             levelDefinitionId: 'l1',
             revision: 0,
             type: BridgeMessageType.pause,
-            payload: const <String, Object?>{},
+            payload: <String, Object?>{},
           ),
         ),
         throwsStateError,

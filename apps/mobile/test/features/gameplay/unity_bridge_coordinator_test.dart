@@ -76,7 +76,7 @@ void main() {
           levelDefinitionId: 'cairo-1',
           revision: 0,
           type: BridgeMessageType.unityReady,
-          payload: const <String, Object?>{},
+          payload: <String, Object?>{},
         ),
       );
       await Future<void>.delayed(Duration.zero);
@@ -114,7 +114,7 @@ void main() {
       await coordinator.start();
 
       transport.emitFromUnity(
-        const BridgeEnvelope(
+        BridgeEnvelope(
           schemaVersion: kBridgeSchemaVersion,
           messageId: 'intent-1',
           sessionId: 's1',
@@ -153,7 +153,7 @@ void main() {
       await coordinator.start();
 
       transport.emitFromUnity(
-        BridgeEnvelope(
+        const BridgeEnvelope(
           schemaVersion: kBridgeSchemaVersion,
           messageId: 'pc-1',
           sessionId: 's1',
@@ -161,7 +161,7 @@ void main() {
           levelDefinitionId: 'cairo-1',
           revision: 4,
           type: BridgeMessageType.presentationCompleted,
-          payload: const <String, Object?>{'revision': 4},
+          payload: <String, Object?>{'revision': 4},
         ),
       );
       await Future<void>.delayed(Duration.zero);
