@@ -62,7 +62,7 @@ void main() {
       final sub = transport.inbound.listen(received.add);
       addTearDown(sub.cancel);
 
-      final outbound = BridgeEnvelope(
+      const outbound = BridgeEnvelope(
         schemaVersion: kBridgeSchemaVersion,
         messageId: 'm1',
         sessionId: 's1',
@@ -75,7 +75,7 @@ void main() {
       await transport.send(outbound);
       expect(transport.sent, hasLength(1));
 
-      final inbound = BridgeEnvelope(
+      const inbound = BridgeEnvelope(
         schemaVersion: kBridgeSchemaVersion,
         messageId: 'u1',
         sessionId: 's1',
@@ -97,7 +97,7 @@ void main() {
 
       expect(
         () => transport.send(
-          BridgeEnvelope(
+          const BridgeEnvelope(
             schemaVersion: kBridgeSchemaVersion,
             messageId: 'm1',
             sessionId: 's1',

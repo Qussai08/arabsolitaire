@@ -77,15 +77,21 @@ class _FlameGameplayBoardState extends State<FlameGameplayBoard> {
 /// Presentation-only renderer. Rule decisions are emitted as [GameAction]s and
 /// remain authoritative in the pure-Dart [GameEngine].
 class ArabSolitaireFlameGame extends FlameGame {
-  ArabSolitaireFlameGame({
+  factory ArabSolitaireFlameGame({
     required GameState gameState,
     required int revision,
     required GameAction? hintAction,
     required ValueChanged<GameAction> onAction,
-  }) : _gameState = gameState,
-       _revision = revision,
-       _hintAction = hintAction,
-       _onAction = onAction;
+  }) {
+    return ArabSolitaireFlameGame._(gameState, revision, hintAction, onAction);
+  }
+
+  ArabSolitaireFlameGame._(
+    this._gameState,
+    this._revision,
+    this._hintAction,
+    this._onAction,
+  );
 
   GameState _gameState;
   int _revision;
@@ -464,9 +470,7 @@ class ArabSolitaireFlameGame extends FlameGame {
     final List<GameCard> cards = switch (payload.sourceType) {
       DragSourceType.tableau =>
         _gameState.tableau[payload.sourceIndex].exposedUnit?.cards ?? const [],
-      DragSourceType.stock => <GameCard>[
-        if (_gameState.stock.playableCard case final card?) card,
-      ],
+      DragSourceType.stock => <GameCard>[?_gameState.stock.playableCard],
     };
     if (cards.isEmpty) return;
 

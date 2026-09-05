@@ -9,7 +9,7 @@ import 'package:unity_bridge_contracts/unity_bridge_contracts.dart';
 final class _FakeGameplayBridgeHost implements GameplayBridgeHost {
   _FakeGameplayBridgeHost(this._state);
 
-  GameplayViewState _state;
+  final GameplayViewState _state;
   GameTransition? nextTransition;
 
   @override
@@ -68,7 +68,7 @@ void main() {
       await coordinator.start();
 
       transport.emitFromUnity(
-        BridgeEnvelope(
+        const BridgeEnvelope(
           schemaVersion: kBridgeSchemaVersion,
           messageId: 'ready-1',
           sessionId: 's1',
@@ -114,7 +114,7 @@ void main() {
       await coordinator.start();
 
       transport.emitFromUnity(
-        BridgeEnvelope(
+        const BridgeEnvelope(
           schemaVersion: kBridgeSchemaVersion,
           messageId: 'intent-1',
           sessionId: 's1',

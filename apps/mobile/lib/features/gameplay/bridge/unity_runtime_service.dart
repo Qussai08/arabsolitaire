@@ -10,7 +10,6 @@ import 'package:mobile/features/gameplay/application/gameplay_presentation_provi
 import 'package:mobile/features/gameplay/bridge/android_unity_bridge_transport.dart';
 import 'package:mobile/features/gameplay/bridge/unity_bridge_coordinator.dart';
 import 'package:mobile/features/gameplay/bridge/unity_bridge_transport.dart';
-import 'package:unity_bridge_contracts/unity_bridge_contracts.dart';
 
 enum UnityRuntimePhase {
   idle,
