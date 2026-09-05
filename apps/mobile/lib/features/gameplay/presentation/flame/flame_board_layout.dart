@@ -61,7 +61,7 @@ final class FlameBoardLayout {
     final slotRects = <Rect>[
       for (var i = 0; i < state.slots.length; i++)
         Rect.fromLTWH(
-          slotStartX + i * (cardWidth + slotGap),
+          slotStartX + i * (slotWidth + slotGap),
           slotY,
           slotWidth,
           slotHeight,
