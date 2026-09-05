@@ -49,20 +49,17 @@ final class AndroidUnityBridgeTransport implements UnityBridgeTransport {
 
   Future<void> startListening() async {
     await _subscription?.cancel();
-    _subscription = _events.receiveBroadcastStream().listen(
-      (dynamic event) {
-        if (_disposed || event is! String) {
-          return;
-        }
-        try {
-          final decoded = jsonDecode(event) as Map<String, dynamic>;
-          _inboundController.add(BridgeEnvelope.fromJson(decoded));
-        } catch (_) {
-          // Malformed payloads are surfaced by coordinator fatal handling.
-        }
-      },
-      onError: _inboundController.addError,
-    );
+    _subscription = _events.receiveBroadcastStream().listen((dynamic event) {
+      if (_disposed || event is! String) {
+        return;
+      }
+      try {
+        final decoded = jsonDecode(event) as Map<String, dynamic>;
+        _inboundController.add(BridgeEnvelope.fromJson(decoded));
+      } catch (_) {
+        // Malformed payloads are surfaced by coordinator fatal handling.
+      }
+    }, onError: _inboundController.addError);
   }
 
   Future<void> openGameplay({

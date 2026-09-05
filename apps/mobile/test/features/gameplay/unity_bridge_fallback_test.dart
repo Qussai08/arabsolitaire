@@ -8,21 +8,21 @@ import 'package:unity_bridge_contracts/unity_bridge_contracts.dart';
 
 void main() {
   group('Gameplay presentation mode', () {
-    test('defaults to flutter2d', () {
+    test('defaults to flame2d5', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       expect(
         container.read(gameplayPresentationModeProvider),
-        GameplayPresentationMode.flutter2d,
+        GameplayPresentationMode.flame2d5,
       );
       expect(
         container.read(effectiveGameplayPresentationModeProvider),
-        GameplayPresentationMode.flutter2d,
+        GameplayPresentationMode.flame2d5,
       );
     });
 
-    test('unity3d falls back to flutter2d when runtime is not active', () {
+    test('unity3d falls back to flame2d5 when runtime is not active', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
@@ -33,7 +33,7 @@ void main() {
 
       expect(
         container.read(effectiveGameplayPresentationModeProvider),
-        GameplayPresentationMode.flutter2d,
+        GameplayPresentationMode.flame2d5,
       );
     });
 
@@ -62,7 +62,7 @@ void main() {
       final sub = transport.inbound.listen(received.add);
       addTearDown(sub.cancel);
 
-      final outbound = BridgeEnvelope(
+      const outbound = BridgeEnvelope(
         schemaVersion: kBridgeSchemaVersion,
         messageId: 'm1',
         sessionId: 's1',
@@ -70,12 +70,12 @@ void main() {
         levelDefinitionId: 'l1',
         revision: 0,
         type: BridgeMessageType.pause,
-        payload: const <String, Object?>{},
+        payload: <String, Object?>{},
       );
       await transport.send(outbound);
       expect(transport.sent, hasLength(1));
 
-      final inbound = BridgeEnvelope(
+      const inbound = BridgeEnvelope(
         schemaVersion: kBridgeSchemaVersion,
         messageId: 'u1',
         sessionId: 's1',
@@ -83,7 +83,7 @@ void main() {
         levelDefinitionId: 'l1',
         revision: 0,
         type: BridgeMessageType.unityReady,
-        payload: const <String, Object?>{},
+        payload: <String, Object?>{},
       );
       transport.emitFromUnity(inbound);
       await Future<void>.delayed(Duration.zero);
@@ -97,7 +97,7 @@ void main() {
 
       expect(
         () => transport.send(
-          BridgeEnvelope(
+          const BridgeEnvelope(
             schemaVersion: kBridgeSchemaVersion,
             messageId: 'm1',
             sessionId: 's1',
@@ -105,7 +105,7 @@ void main() {
             levelDefinitionId: 'l1',
             revision: 0,
             type: BridgeMessageType.pause,
-            payload: const <String, Object?>{},
+            payload: <String, Object?>{},
           ),
         ),
         throwsStateError,

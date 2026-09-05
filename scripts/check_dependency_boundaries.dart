@@ -1,4 +1,5 @@
 #!/usr/bin/env dart
+
 // Dependency-boundary verification for pure Dart domain packages.
 //
 // Fails CI if forbidden imports appear in packages/.
@@ -42,7 +43,10 @@ void main() {
 
   scanPackage(packagePath: 'packages/game_engine', forbidden: flutterOrUi);
   scanPackage(packagePath: 'packages/game_solver', forbidden: flutterOrUi);
-  scanPackage(packagePath: 'packages/unity_bridge_contracts', forbidden: flutterOrUi);
+  scanPackage(
+    packagePath: 'packages/unity_bridge_contracts',
+    forbidden: flutterOrUi,
+  );
   scanPackage(
     packagePath: 'packages/level_generator',
     forbidden: [

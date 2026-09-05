@@ -1,6 +1,6 @@
 # Flutter + Unity Hybrid Architecture v1.0
 
-**Status:** APPROVED (Phase 1 foundation)  
+**Status:** SUPERSEDED for MVP by `ADR_FLAME_2_5D_FIRST_v1.0.md`
 **Product:** سوليتير العرب: أسطورة المعاني  
 **Approving decision:** Explicit Phase 1 hybrid implementation request (this workstream).  
 **Supersedes for presentation runtime:** older “Flutter-only MVP baseline / Unity not selected” notes in architecture docs — Flutter remains the application shell; Unity is an optional presentation runtime only.

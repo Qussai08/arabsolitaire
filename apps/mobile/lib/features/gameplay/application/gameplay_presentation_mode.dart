@@ -1,8 +1,11 @@
 /// Gameplay presentation backend selection.
 enum GameplayPresentationMode {
-  /// Existing Flutter 2D board (default until Unity is proven).
+  /// Flame-rendered 2.5D board used by the mobile MVP.
+  flame2d5,
+
+  /// Existing Flutter widget board kept as a lightweight fallback.
   flutter2d,
 
-  /// Unity 3D presentation via bridge (falls back if Unity is unavailable).
+  /// Paused Unity experiment, retained for a future full-3D evaluation.
   unity3d,
 }
