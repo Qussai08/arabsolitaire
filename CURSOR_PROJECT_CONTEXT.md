@@ -865,17 +865,19 @@ Primary application shell and client framework:
 - navigation into and out of gameplay;
 - persistence and analytics orchestration.
 
-## Unity (presentation runtime — APPROVED hybrid)
+## Flame (presentation runtime — APPROVED 2.5D MVP)
 
-Unity is approved as an optional **presentation-only** gameplay runtime:
-- 3D board, cards, interaction feedback, animation, VFX, lighting, camera;
-- chapter environments, Shiboub presentation, short in-runtime cinematics.
+Flame is the default **presentation-only** gameplay runtime for the mobile MVP:
+- fixed-camera 2.5D board, cards, shadows, interaction feedback, animation, and VFX;
+- lightweight chapter atmosphere behind the gameplay surface.
 
-Unity must never implement or validate gameplay rules. Authoritative flow:
+Flame must never implement or validate gameplay rules. Authoritative flow:
 
-`Unity action intent → Dart GameplayController/GameEngine → GameTransition → authoritative GameState + events → Unity presentation`
+`Flame pointer intent → Dart GameplayController/GameEngine → GameTransition → authoritative GameState + events → Flame presentation`
 
-Default presentation remains Flutter 2D until Unity init, round-trips, pause/resume, process recreation, performance, and tests are confirmed. See `docs/architecture/FLUTTER_UNITY_HYBRID_ARCHITECTURE_v1.0.md`.
+The previous Flutter widget board remains behind `FORCE_FLUTTER2D`. Unity is a
+paused future-3D experiment and is not in the current MVP runtime path. See
+`docs/architecture/ADR_FLAME_2_5D_FIRST_v1.0.md`.
 
 ## Riverpod
 

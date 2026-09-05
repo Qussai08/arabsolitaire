@@ -8,21 +8,21 @@ import 'package:unity_bridge_contracts/unity_bridge_contracts.dart';
 
 void main() {
   group('Gameplay presentation mode', () {
-    test('defaults to flutter2d', () {
+    test('defaults to flame2d5', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
       expect(
         container.read(gameplayPresentationModeProvider),
-        GameplayPresentationMode.flutter2d,
+        GameplayPresentationMode.flame2d5,
       );
       expect(
         container.read(effectiveGameplayPresentationModeProvider),
-        GameplayPresentationMode.flutter2d,
+        GameplayPresentationMode.flame2d5,
       );
     });
 
-    test('unity3d falls back to flutter2d when runtime is not active', () {
+    test('unity3d falls back to flame2d5 when runtime is not active', () {
       final container = ProviderContainer();
       addTearDown(container.dispose);
 
@@ -33,7 +33,7 @@ void main() {
 
       expect(
         container.read(effectiveGameplayPresentationModeProvider),
-        GameplayPresentationMode.flutter2d,
+        GameplayPresentationMode.flame2d5,
       );
     });
 

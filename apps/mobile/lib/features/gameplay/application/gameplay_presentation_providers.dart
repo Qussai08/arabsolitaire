@@ -2,13 +2,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/features/gameplay/application/gameplay_presentation_mode.dart';
 import 'package:mobile/features/gameplay/bridge/unity_runtime_service.dart';
 
-/// Default remains Flutter 2D until Unity is explicitly requested.
-/// Pass `--dart-define=FORCE_UNITY3D=true` to launch Unity presentation in debug runs.
+/// Flame 2.5D is the production default.
+///
+/// `FORCE_FLUTTER2D` keeps the previous widget board available for diagnostics.
+/// `FORCE_UNITY3D` is retained only for the paused Unity experiment.
 final gameplayPresentationModeProvider =
     StateProvider<GameplayPresentationMode>(
       (_) => const bool.fromEnvironment('FORCE_UNITY3D')
           ? GameplayPresentationMode.unity3d
-          : GameplayPresentationMode.flutter2d,
+          : const bool.fromEnvironment('FORCE_FLUTTER2D')
+          ? GameplayPresentationMode.flutter2d
+          : GameplayPresentationMode.flame2d5,
     );
 
 /// Set when Unity presentationCompleted handshake completes.
@@ -23,7 +27,9 @@ final effectiveGameplayPresentationModeProvider =
           phase == UnityRuntimePhase.active) {
         return GameplayPresentationMode.unity3d;
       }
-      return GameplayPresentationMode.flutter2d;
+      return requested == GameplayPresentationMode.unity3d
+          ? GameplayPresentationMode.flame2d5
+          : requested;
     });
 
 /// True when user requested Unity and launch is in progress or active.
