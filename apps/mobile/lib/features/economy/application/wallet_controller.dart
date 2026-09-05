@@ -114,13 +114,9 @@ class WalletController extends Notifier<WalletViewState> {
   }
 
   Future<EconomyResult> purchaseDeadEndRescue({required String attemptId}) =>
-      _executeOp(
-        EconomyOperationType.deadEndRescuePurchase,
-        () async {
-          return _economyRepo.purchaseDeadEndRescue(attemptId: attemptId);
-        },
-        localCoinDelta: -EconomyConfig.deadEndRescueCostCoins,
-      );
+      _executeOp(EconomyOperationType.deadEndRescuePurchase, () async {
+        return _economyRepo.purchaseDeadEndRescue(attemptId: attemptId);
+      }, localCoinDelta: -EconomyConfig.deadEndRescueCostCoins);
 
   // ── Reconciliation ────────────────────────────────────────────────────────
 

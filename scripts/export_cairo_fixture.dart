@@ -70,6 +70,7 @@ void main() {
   final path =
       '${repoRoot.path}/unity/ArabSolitaireUnity/Assets/ArabSolitaire/Bridge/Fixtures/cairo_mock_state.json';
   Directory(File(path).parent.path).createSync(recursive: true);
-  File(path).writeAsStringSync(const JsonEncoder.withIndent('  ').convert(fixture));
+  File(path)
+      .writeAsStringSync(const JsonEncoder.withIndent('  ').convert(fixture));
   stdout.writeln('Wrote fixture to $path');
 }
