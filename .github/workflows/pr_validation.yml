@@ -59,7 +59,7 @@ jobs:
 
       - name: Test level_generator
         working-directory: packages/level_generator
-        run: dart test
+        run: dart test --exclude-tags simulation
 
       - name: Codegen (Drift)
         working-directory: apps/mobile

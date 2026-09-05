@@ -11,6 +11,7 @@
 ///
 /// dart test packages/level_generator/test/simulation/simulation_10k_test.dart
 /// --reporter=compact --timeout=30m
+@Tags(['simulation'])
 library;
 
 import 'package:game_engine/game_engine.dart';
