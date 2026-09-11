@@ -8,9 +8,9 @@ const db = () => getFirestore();
 export const walletPath = (uid: string) =>
   `players/${uid}/economy/wallet`;
 export const transactionsPath = (uid: string) =>
-  `players/${uid}/economy/transactions`;
+  `${walletPath(uid)}/transactions`;
 export const operationReceiptsPath = (uid: string) =>
-  `players/${uid}/economy/operations`;
+  `${walletPath(uid)}/operations`;
 
 // ── Idempotency ────────────────────────────────────────────────────────────────
 

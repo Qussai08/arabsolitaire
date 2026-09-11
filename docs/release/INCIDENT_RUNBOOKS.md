@@ -29,7 +29,7 @@
 **Immediate actions:**
 1. Disable affected utility (Hint purchase / Extra Moves / Dead-End rescue) via Remote Config kill switch if safe.
 2. Do NOT create a generic admin-adjust endpoint.
-3. Inspect idempotency receipts in Firestore `economy/operations`.
+3. Inspect idempotency receipts in Firestore `economy/wallet/operations`.
 4. Audit Wallet ledger: `balance == Σ(transaction.amount)` for affected players.
 5. Block duplicate retries at Function level (idempotency key check).
 6. Reconcile affected users via a trusted one-off admin process (not ad-hoc client script).

@@ -69,51 +69,49 @@ void _solverBenchmark({
   required List<int> profile,
   required int sampleCount,
 }) {
-  test(
-    '$name — p50/p95/max within acceptable bounds',
-    () {
-      final generator = LevelGenerator();
-      final solver = GameSolver();
-      final contentSelector = FixedContentSelector(
-        SyntheticContent.forProfile(profile),
+  test('$name — p50/p95/max within acceptable bounds', () {
+    final generator = LevelGenerator();
+    final solver = GameSolver();
+    final contentSelector = FixedContentSelector(
+      SyntheticContent.forProfile(profile),
+    );
+
+    // First generate boards, then benchmark the solver separately.
+    final boards = <GameState>[];
+    for (var seed = 1; boards.length < sampleCount; seed++) {
+      final config = template();
+      final result = generator.generate(
+        config: config,
+        contentSelector: contentSelector,
+        baseSeed: GenerationSeed(seed),
       );
-
-      // First generate boards, then benchmark the solver separately.
-      final boards = <GameState>[];
-      for (var seed = 1; boards.length < sampleCount; seed++) {
-        final config = template();
-        final result = generator.generate(
-          config: config,
-          contentSelector: contentSelector,
-          baseSeed: GenerationSeed(seed),
-        );
-        if (result is GenerationSucceeded) {
-          boards.add(result.level.initialGameState);
-        }
-        if (seed > sampleCount * 4) {
-          break; // safety exit — should not happen
-        }
+      if (result is GenerationSucceeded) {
+        boards.add(result.level.initialGameState);
       }
-
-      final timingsMs = <int>[];
-      for (final board in boards) {
-        final sw = Stopwatch()..start();
-        solver.solve(state: board);
-        sw.stop();
-        timingsMs.add(sw.elapsedMilliseconds);
+      if (seed > sampleCount * 4) {
+        break; // safety exit — should not happen
       }
+    }
 
-      timingsMs.sort();
-      final p50 = timingsMs[timingsMs.length ~/ 2];
-      final p95 =
-          timingsMs[(timingsMs.length * 0.95).ceil().clamp(
-            0,
-            timingsMs.length - 1,
-          )];
-      final max = timingsMs.last;
+    final timingsMs = <int>[];
+    for (final board in boards) {
+      final sw = Stopwatch()..start();
+      solver.solve(state: board);
+      sw.stop();
+      timingsMs.add(sw.elapsedMilliseconds);
+    }
 
-      // ignore: avoid_print
-      print('''
+    timingsMs.sort();
+    final p50 = timingsMs[timingsMs.length ~/ 2];
+    final p95 =
+        timingsMs[(timingsMs.length * 0.95).ceil().clamp(
+          0,
+          timingsMs.length - 1,
+        )];
+    final max = timingsMs.last;
+
+    // ignore: avoid_print
+    print('''
 ┌─ Solver benchmark: $name
 │  Samples : ${timingsMs.length}
 │  p50     : ${p50}ms
@@ -121,14 +119,12 @@ void _solverBenchmark({
 │  max     : ${max}ms
 └─''');
 
-      // Non-blocking constraint: just ensure solver terminates on all boards.
-      // Exact budget TBD from measured device capability (§42 — no invented budget).
-      expect(timingsMs.length, greaterThan(0));
-      // All boards must produce a conclusive result (Solver must terminate).
-      expect(max, isNotNull);
-    },
-    timeout: const Timeout(Duration(minutes: 5)),
-  );
+    // Non-blocking constraint: just ensure solver terminates on all boards.
+    // Exact budget TBD from measured device capability (§42 — no invented budget).
+    expect(timingsMs.length, greaterThan(0));
+    // All boards must produce a conclusive result (Solver must terminate).
+    expect(max, isNotNull);
+  }, timeout: const Timeout(Duration(minutes: 5)));
 }
 
 void _generatorBenchmark({
@@ -137,43 +133,41 @@ void _generatorBenchmark({
   required List<int> profile,
   required int seedCount,
 }) {
-  test(
-    '$name — bounded per-seed generation time',
-    () {
-      final generator = LevelGenerator();
-      final contentSelector = FixedContentSelector(
-        SyntheticContent.forProfile(profile),
+  test('$name — bounded per-seed generation time', () {
+    final generator = LevelGenerator();
+    final contentSelector = FixedContentSelector(
+      SyntheticContent.forProfile(profile),
+    );
+
+    final perSeedMs = <int>[];
+    var accepted = 0;
+
+    for (var seed = 1; seed <= seedCount; seed++) {
+      final config = template();
+      final sw = Stopwatch()..start();
+      final result = generator.generate(
+        config: config,
+        contentSelector: contentSelector,
+        baseSeed: GenerationSeed(seed),
       );
-
-      final perSeedMs = <int>[];
-      var accepted = 0;
-
-      for (var seed = 1; seed <= seedCount; seed++) {
-        final config = template();
-        final sw = Stopwatch()..start();
-        final result = generator.generate(
-          config: config,
-          contentSelector: contentSelector,
-          baseSeed: GenerationSeed(seed),
-        );
-        sw.stop();
-        perSeedMs.add(sw.elapsedMilliseconds);
-        if (result is GenerationSucceeded) {
-          accepted++;
-        }
+      sw.stop();
+      perSeedMs.add(sw.elapsedMilliseconds);
+      if (result is GenerationSucceeded) {
+        accepted++;
       }
+    }
 
-      perSeedMs.sort();
-      final p50 = perSeedMs[perSeedMs.length ~/ 2];
-      final p95 =
-          perSeedMs[(perSeedMs.length * 0.95).ceil().clamp(
-            0,
-            perSeedMs.length - 1,
-          )];
-      final max = perSeedMs.last;
+    perSeedMs.sort();
+    final p50 = perSeedMs[perSeedMs.length ~/ 2];
+    final p95 =
+        perSeedMs[(perSeedMs.length * 0.95).ceil().clamp(
+          0,
+          perSeedMs.length - 1,
+        )];
+    final max = perSeedMs.last;
 
-      // ignore: avoid_print
-      print('''
+    // ignore: avoid_print
+    print('''
 ┌─ Generator benchmark: $name
 │  Seeds    : $seedCount
 │  Accepted : $accepted (${(accepted / seedCount * 100).toStringAsFixed(1)}%)
@@ -182,11 +176,9 @@ void _generatorBenchmark({
 │  max      : ${max}ms
 └─''');
 
-      // Generator must terminate for all seeds within retry budget.
-      expect(perSeedMs.length, seedCount);
-      // At least some boards must be accepted (config sanity check).
-      expect(accepted, greaterThan(0));
-    },
-    timeout: const Timeout(Duration(minutes: 5)),
-  );
+    // Generator must terminate for all seeds within retry budget.
+    expect(perSeedMs.length, seedCount);
+    // At least some boards must be accepted (config sanity check).
+    expect(accepted, greaterThan(0));
+  }, timeout: const Timeout(Duration(minutes: 5)));
 }

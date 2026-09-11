@@ -15,4 +15,8 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+    <!-- Keeps the paused Unity activity linkable when unityLibrary is absent. -->
+    <style name="BaseUnityGameActivityTheme" parent="@android:style/Theme.Black.NoTitleBar.Fullscreen">
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>

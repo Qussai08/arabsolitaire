@@ -2,7 +2,8 @@
 
 **Solitaire Al-Arab: The Legend of Meanings**
 
-Arabic-first association solitaire. This repository is a Flutter + pure-Dart monorepo with a Firebase-first cloud baseline.
+Arabic-first association solitaire. This repository is a Flutter + Flame +
+pure-Dart monorepo with a Firebase-first cloud baseline.
 
 ## Read first (required for contributors and agents)
 
@@ -29,12 +30,16 @@ scripts/             Developer / CI helpers
 ## Architecture (Sprint 0)
 
 ```text
-UI / Application (Flutter + Riverpod)
+UI / Application (Flutter + Riverpod + Flame 2.5D presentation)
         ↓
 Domain packages (game_engine → game_solver → level_generator)
         ↓
 Platform adapters (Drift, Firebase skeletons)
 ```
+
+Flame is the default gameplay renderer for the 2.5D mobile MVP. The previous
+Flutter widget board remains available with `--dart-define=FORCE_FLUTTER2D=true`.
+Unity integration is paused and is not part of the current MVP runtime path.
 
 - Game Engine does **not** depend on Flutter or Firebase.
 - Solver depends on Game Engine contracts only.

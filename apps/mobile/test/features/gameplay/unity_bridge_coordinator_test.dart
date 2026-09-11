@@ -9,7 +9,7 @@ import 'package:unity_bridge_contracts/unity_bridge_contracts.dart';
 final class _FakeGameplayBridgeHost implements GameplayBridgeHost {
   _FakeGameplayBridgeHost(this._state);
 
-  GameplayViewState _state;
+  final GameplayViewState _state;
   GameTransition? nextTransition;
 
   @override
@@ -68,7 +68,7 @@ void main() {
       await coordinator.start();
 
       transport.emitFromUnity(
-        BridgeEnvelope(
+        const BridgeEnvelope(
           schemaVersion: kBridgeSchemaVersion,
           messageId: 'ready-1',
           sessionId: 's1',
@@ -76,7 +76,7 @@ void main() {
           levelDefinitionId: 'cairo-1',
           revision: 0,
           type: BridgeMessageType.unityReady,
-          payload: const <String, Object?>{},
+          payload: <String, Object?>{},
         ),
       );
       await Future<void>.delayed(Duration.zero);
@@ -153,7 +153,7 @@ void main() {
       await coordinator.start();
 
       transport.emitFromUnity(
-        BridgeEnvelope(
+        const BridgeEnvelope(
           schemaVersion: kBridgeSchemaVersion,
           messageId: 'pc-1',
           sessionId: 's1',
@@ -161,7 +161,7 @@ void main() {
           levelDefinitionId: 'cairo-1',
           revision: 4,
           type: BridgeMessageType.presentationCompleted,
-          payload: const <String, Object?>{'revision': 4},
+          payload: <String, Object?>{'revision': 4},
         ),
       );
       await Future<void>.delayed(Duration.zero);

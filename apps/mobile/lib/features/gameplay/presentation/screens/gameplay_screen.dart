@@ -9,6 +9,7 @@ import 'package:mobile/features/gameplay/application/gameplay_presentation_provi
 import 'package:mobile/features/gameplay/application/gameplay_providers.dart';
 import 'package:mobile/features/gameplay/application/gameplay_state.dart';
 import 'package:mobile/features/gameplay/bridge/unity_runtime_service.dart';
+import 'package:mobile/features/gameplay/presentation/flame/flame_gameplay_board.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/association_slots_view.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/gameplay_overlay.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/gameplay_toolbar.dart';
@@ -18,8 +19,8 @@ import 'package:mobile/features/journey/presentation/screens/level_result_screen
 
 /// Main gameplay screen — Sprint 4 vertical slice.
 ///
-/// Default presentation is Flutter 2D. Unity 3D launches a native Activity when
-/// [gameplayPresentationModeProvider] resolves to unity3d.
+/// Default presentation is the Flame 2.5D board. Unity is a paused experiment
+/// that can still be launched explicitly for comparison builds.
 class GameplayScreen extends ConsumerStatefulWidget {
   const GameplayScreen({super.key});
 
@@ -82,7 +83,8 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen>
 
   Future<void> _maybeLaunchUnity(GameplayPlaying state) async {
     final requested = ref.read(gameplayPresentationModeProvider);
-    if (requested != GameplayPresentationMode.unity3d || _unityLaunchAttempted) {
+    if (requested != GameplayPresentationMode.unity3d ||
+        _unityLaunchAttempted) {
       return;
     }
 
@@ -197,7 +199,7 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen>
           },
           onFallbackToFlutter2d: () {
             ref.read(gameplayPresentationModeProvider.notifier).state =
-                GameplayPresentationMode.flutter2d;
+                GameplayPresentationMode.flame2d5;
             ref.read(unityRuntimePhaseProvider.notifier).state =
                 UnityRuntimePhase.idle;
           },
@@ -216,7 +218,7 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen>
         phase: unityPhase,
         onCancel: () {
           ref.read(gameplayPresentationModeProvider.notifier).state =
-              GameplayPresentationMode.flutter2d;
+              GameplayPresentationMode.flame2d5;
           ref.read(unityRuntimePhaseProvider.notifier).state =
               UnityRuntimePhase.idle;
         },
@@ -231,13 +233,20 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen>
           onHint: controller.requestHint,
         ),
         Expanded(
-          child: _buildBoard(
-            context,
-            state.gameState,
-            state.revision,
-            controller,
-            hintAction: state.hint.suggestedAction,
-          ),
+          child: requestedMode == GameplayPresentationMode.flame2d5
+              ? FlameGameplayBoard(
+                  gameState: state.gameState,
+                  revision: state.revision,
+                  hintAction: state.hint.suggestedAction,
+                  onAction: controller.applyAction,
+                )
+              : _buildBoard(
+                  context,
+                  state.gameState,
+                  state.revision,
+                  controller,
+                  hintAction: state.hint.suggestedAction,
+                ),
         ),
         if (state.hint.phase == HintPhase.noResult)
           const _HintBanner(text: 'لا توجد حركة مقترحة'),
@@ -391,10 +400,7 @@ class _DeadEndCheckIndicator extends StatelessWidget {
 
 /// Shown while Unity Activity is foreground or reconnecting.
 class _UnityActivePlaceholder extends StatelessWidget {
-  const _UnityActivePlaceholder({
-    required this.revision,
-    required this.onExit,
-  });
+  const _UnityActivePlaceholder({required this.revision, required this.onExit});
 
   final int revision;
   final VoidCallback onExit;
@@ -421,10 +427,7 @@ class _UnityActivePlaceholder extends StatelessWidget {
 }
 
 class _UnityLaunchingView extends StatelessWidget {
-  const _UnityLaunchingView({
-    required this.phase,
-    required this.onCancel,
-  });
+  const _UnityLaunchingView({required this.phase, required this.onCancel});
 
   final UnityRuntimePhase phase;
   final VoidCallback onCancel;

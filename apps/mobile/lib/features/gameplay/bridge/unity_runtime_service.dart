@@ -10,7 +10,6 @@ import 'package:mobile/features/gameplay/application/gameplay_presentation_provi
 import 'package:mobile/features/gameplay/bridge/android_unity_bridge_transport.dart';
 import 'package:mobile/features/gameplay/bridge/unity_bridge_coordinator.dart';
 import 'package:mobile/features/gameplay/bridge/unity_bridge_transport.dart';
-import 'package:unity_bridge_contracts/unity_bridge_contracts.dart';
 
 enum UnityRuntimePhase {
   idle,
@@ -76,7 +75,8 @@ final class UnityRuntimeService {
 
     final playing = controller.viewState;
     if (playing is! GameplayPlaying) {
-      ref.read(unityRuntimePhaseProvider.notifier).state = UnityRuntimePhase.error;
+      ref.read(unityRuntimePhaseProvider.notifier).state =
+          UnityRuntimePhase.error;
       ref.read(unityRuntimeErrorMessageProvider.notifier).state =
           'اللعب غير جاهز بعد.';
       return false;
@@ -107,7 +107,8 @@ final class UnityRuntimeService {
 
     _readyTimer?.cancel();
     _readyTimer = Timer(readyTimeout, () {
-      if (ref.read(unityRuntimePhaseProvider) == UnityRuntimePhase.waitingReady) {
+      if (ref.read(unityRuntimePhaseProvider) ==
+          UnityRuntimePhase.waitingReady) {
         ref.read(unityRuntimePhaseProvider.notifier).state =
             UnityRuntimePhase.error;
         ref.read(unityRuntimeErrorMessageProvider.notifier).state =
@@ -155,7 +156,8 @@ final class UnityRuntimeService {
       await (_transport! as AndroidUnityBridgeTransport).finishUnityActivity();
     }
 
-    ref.read(unityRuntimePhaseProvider.notifier).state = UnityRuntimePhase.exited;
+    ref.read(unityRuntimePhaseProvider.notifier).state =
+        UnityRuntimePhase.exited;
     ref.read(unityRuntimeReadyProvider.notifier).state = false;
   }
 
@@ -177,21 +179,21 @@ final class UnityRuntimeService {
   }
 }
 
-final unityRuntimeServiceProvider = Provider.autoDispose<UnityRuntimeService?>(
-  (ref) {
-    final controller = ref.watch(gameplayControllerProvider.notifier);
-    final viewState = ref.watch(gameplayControllerProvider);
-    if (viewState is! GameplayPlaying) {
-      return null;
-    }
+final unityRuntimeServiceProvider = Provider.autoDispose<UnityRuntimeService?>((
+  ref,
+) {
+  final controller = ref.watch(gameplayControllerProvider.notifier);
+  final viewState = ref.watch(gameplayControllerProvider);
+  if (viewState is! GameplayPlaying) {
+    return null;
+  }
 
-    final level = ref.resolvePlayingLevel();
-    return UnityRuntimeService(
-      ref: ref,
-      controller: controller,
-      levelDefinitionId: level.levelDefinitionId,
-      chapterId: level.chapterId,
-      attemptId: viewState.gameState.attemptId,
-    );
-  },
-);
+  final level = ref.resolvePlayingLevel();
+  return UnityRuntimeService(
+    ref: ref,
+    controller: controller,
+    levelDefinitionId: level.levelDefinitionId,
+    chapterId: level.chapterId,
+    attemptId: viewState.gameState.attemptId,
+  );
+});

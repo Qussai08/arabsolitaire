@@ -1,6 +1,6 @@
 # ADR: Android Flutter ↔ Unity as a Library Integration v1.0
 
-**Status:** APPROVED (Phase 3)  
+**Status:** PAUSED; superseded for MVP by `ADR_FLAME_2_5D_FIRST_v1.0.md`
 **Date:** 2026-08-23  
 **Context:** [`FLUTTER_UNITY_HYBRID_ARCHITECTURE_v1.0.md`](FLUTTER_UNITY_HYBRID_ARCHITECTURE_v1.0.md)
 

@@ -92,14 +92,15 @@ May depend on:
 
 Must not bypass Solver acceptance.
 
-## Flutter + Unity hybrid
+## Flutter + Flame 2.5D
 
 - Flutter owns the application shell, Firebase, progression, economy, monetization, and non-gameplay UI.
-- Unity owns presentation only (3D board, animation, VFX, chapter environments, Shiboub presentation).
+- Flame owns the current 2.5D gameplay presentation only: board drawing, animation, VFX, and pointer intent.
 - Pure Dart packages remain authoritative for rules (`game_engine`, `game_solver`, `level_generator`).
-- Bridge contracts live in `packages/unity_bridge_contracts` (no Flutter/Firebase/Unity plugin deps).
-- Never implement a second rules engine in C#.
-- Keep Flutter 2D gameplay available behind the default presentation flag until Unity is proven.
+- Never implement rules or legality checks inside Flame rendering code.
+- Keep the Flutter widget board available behind `FORCE_FLUTTER2D` as a diagnostic fallback.
+- Unity and its bridge are paused legacy experiments, not the MVP default path.
+- A future 3D renderer must consume the same `GameState` / `GameAction` boundary.
 
 ---
 
