@@ -171,14 +171,14 @@ describe('Economy — transactions (ledger)', () => {
   const uid = 'user_dan';
 
   it('client CANNOT read ledger', async () => {
-    await seedDoc(`players/${uid}/economy/transactions/txn1`, {
+    await seedDoc(`players/${uid}/economy/wallet/transactions/txn1`, {
       amount: 100,
     });
     const ctx = await withAuth(uid);
     await assertFails(
       ctx
         .firestore()
-        .doc(`players/${uid}/economy/transactions/txn1`)
+        .doc(`players/${uid}/economy/wallet/transactions/txn1`)
         .get(),
     );
   });
@@ -188,7 +188,7 @@ describe('Economy — transactions (ledger)', () => {
     await assertFails(
       ctx
         .firestore()
-        .doc(`players/${uid}/economy/transactions/txn1`)
+        .doc(`players/${uid}/economy/wallet/transactions/txn1`)
         .set({ amount: 9999 }),
     );
   });
@@ -200,14 +200,14 @@ describe('Economy — operation receipts', () => {
   const uid = 'user_eve';
 
   it('player may read own operation receipts (crash recovery)', async () => {
-    await seedDoc(`players/${uid}/economy/operations/op1`, {
+    await seedDoc(`players/${uid}/economy/wallet/operations/op1`, {
       status: 'pending',
     });
     const ctx = await withAuth(uid);
     await assertSucceeds(
       ctx
         .firestore()
-        .doc(`players/${uid}/economy/operations/op1`)
+        .doc(`players/${uid}/economy/wallet/operations/op1`)
         .get(),
     );
   });
@@ -217,7 +217,7 @@ describe('Economy — operation receipts', () => {
     await assertFails(
       ctx
         .firestore()
-        .doc(`players/${uid}/economy/operations/op1`)
+        .doc(`players/${uid}/economy/wallet/operations/op1`)
         .set({ status: 'success' }),
     );
   });
@@ -377,7 +377,7 @@ describe('Content control plane', () => {
     await assertFails(
       ctx
         .firestore()
-        .doc('cmsContent/associations/item1')
+        .doc('cmsContent/catalog/associations/item1')
         .set({ text: 'hacked' }),
     );
   });
