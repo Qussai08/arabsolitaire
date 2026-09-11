@@ -190,7 +190,7 @@ Recommended:
 
 ```text
 players/{uid}/economy/wallet
-players/{uid}/economy/transactions/{transactionId}
+players/{uid}/economy/wallet/transactions/{transactionId}
 ```
 
 or equivalent trusted structure.
@@ -706,7 +706,7 @@ Use Firestore transaction or equivalent trusted transactional mechanism.
 Recommended record:
 
 ```text
-players/{uid}/economy/operations/{idempotencyKeyHash}
+players/{uid}/economy/wallet/operations/{idempotencyKeyHash}
 ```
 
 Contains:

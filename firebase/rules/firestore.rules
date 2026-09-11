@@ -25,19 +25,17 @@ service cloud.firestore {
       match /economy/wallet {
         allow read: if request.auth != null && request.auth.uid == uid;
         allow write: if false;
-      }
 
-      // ── Economy: transactions (ledger) ───────────────────────────────────
-      // Client may NOT read or write ledger directly.
-      match /economy/transactions/{txnId} {
-        allow read, write: if false;
-      }
+        // Client may NOT read or write ledger entries directly.
+        match /transactions/{txnId} {
+          allow read, write: if false;
+        }
 
-      // ── Economy: operation receipts ──────────────────────────────────────
-      // Client may read own receipts for crash recovery; MUST NOT write.
-      match /economy/operations/{opId} {
-        allow read: if request.auth != null && request.auth.uid == uid;
-        allow write: if false;
+        // Client may read own receipts for crash recovery; MUST NOT write.
+        match /operations/{opId} {
+          allow read: if request.auth != null && request.auth.uid == uid;
+          allow write: if false;
+        }
       }
 
       // ── Monetization: entitlements ──────────────────────────────────────
@@ -103,7 +101,7 @@ service cloud.firestore {
     }
 
     // CMS content entities (managed by trusted backend/admin; client never reads/writes directly).
-    match /cmsContent/{entityType}/{entityId} {
+    match /cmsContent/catalog/{entityType}/{entityId} {
       allow read, write: if false;
     }
   }
