@@ -10,7 +10,7 @@
 - [ ] Default-deny rule is the outermost catch-all.
 - [ ] No wildcard write rule (`allow write: if true` or `allow write: if request.auth != null`).
 - [ ] Client cannot write Wallet (`economy/wallet`).
-- [ ] Client cannot write ledger (`economy/transactions`).
+- [ ] Client cannot write ledger (`economy/wallet/transactions`).
 - [ ] Client cannot write entitlements.
 - [ ] Client cannot write purchase receipts.
 - [ ] Client cannot write content pointer (`content/pointer`).
