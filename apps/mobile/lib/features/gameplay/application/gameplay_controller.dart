@@ -118,6 +118,7 @@ class GameplayController extends Notifier<GameplayViewState>
   /// Applies [action] and returns the authoritative [GameTransition].
   ///
   /// Existing Flutter UI may ignore the return value. Bridge code observes it.
+  @override
   GameTransition? applyAction(GameAction action) {
     final playing = _asPlaying();
     if (playing == null) return null;
@@ -159,11 +160,14 @@ class GameplayController extends Notifier<GameplayViewState>
   }
 
   /// Public view of Riverpod [state] for bridge/coordinator callers.
+  @override
   GameplayViewState get viewState => state;
 
   /// Authoritative revision for bridge stale-intent checks.
+  @override
   int get revision => _revision;
 
+  @override
   Future<void> requestHint() async {
     final playing = _asPlaying();
     if (playing == null) return;
@@ -241,6 +245,7 @@ class GameplayController extends Notifier<GameplayViewState>
     }
   }
 
+  @override
   Future<void> restart() async {
     _revision = 0;
     _hintRevision = -1;

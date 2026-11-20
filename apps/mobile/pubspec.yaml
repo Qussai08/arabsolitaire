@@ -54,3 +54,20 @@ flutter:
     - assets/content/bundle/associations.json
     - assets/content/bundle/story_beats.json
     - assets/content/bundle/localization/ar.json
+    - assets/illustrations/
+
+  fonts:
+    - family: Reem Kufi
+      fonts:
+        - asset: assets/fonts/ReemKufi-Bold.ttf
+          weight: 700
+    - family: Readex Pro
+      fonts:
+        - asset: assets/fonts/ReadexPro-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/ReadexPro-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/ReadexPro-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/ReadexPro-Bold.ttf
+          weight: 700

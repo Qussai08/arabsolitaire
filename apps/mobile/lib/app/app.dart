@@ -4,6 +4,7 @@ import 'package:mobile/core/localization/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/bootstrap/bootstrap.dart';
 import 'package:mobile/app/navigation/app_router.dart';
+import 'package:mobile/design_system/mosaic_theme.dart';
 
 /// Arabic-first Material application shell (Sprint 0 — no gameplay).
 class SolitaireAlArabApp extends ConsumerWidget {
@@ -24,13 +25,7 @@ class SolitaireAlArabApp extends ConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF1F4E3D),
-          brightness: Brightness.light,
-        ),
-        useMaterial3: true,
-      ),
+      theme: MosaicThemeData.light(),
       initialRoute: AppRoutes.bootstrap,
       onGenerateRoute: AppRouter.onGenerateRoute,
       builder: (context, child) {
