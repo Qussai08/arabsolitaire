@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/core/localization/l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/bootstrap/bootstrap.dart';
+import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/app/bootstrap/bootstrap_controller.dart';
 import 'package:mobile/app/navigation/app_router.dart';
 import 'package:mobile/features/journey/application/journey_providers.dart';
@@ -32,12 +33,18 @@ class BootstrapScreen extends ConsumerWidget {
     });
 
     return Scaffold(
+      backgroundColor: MosaicColors.limestone,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              const MosaicArchImage(
+                asset: MosaicIllustrations.heroShiboub,
+                height: 220,
+              ),
+              const SizedBox(height: 24),
               Text(
                 l10n.appTitle,
                 textAlign: TextAlign.center,

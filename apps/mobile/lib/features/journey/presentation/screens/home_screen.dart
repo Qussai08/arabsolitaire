@@ -1,290 +1,342 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/navigation/app_router.dart';
+import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/economy/application/wallet_controller.dart';
 import 'package:mobile/features/gameplay/application/gameplay_providers.dart';
+import 'package:mobile/features/gameplay/data/level_content_factory.dart';
 import 'package:mobile/features/journey/application/journey_providers.dart';
 import 'package:mobile/features/journey/domain/journey_models.dart';
 
-/// Primary hub screen. Shows:
-/// - brand / title hero
-/// - Continue button (if active attempt or unlocked level exists)
-/// - Enter Journey
-/// - Story Archive
-/// - Settings
+/// Primary hub. Continue, journey, story archive, and settings stay wired
+/// to the existing routes. Shop and daily reward have no screens yet.
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final journeyState = ref.watch(journeyControllerProvider);
+    final wallet = ref.watch(walletControllerProvider);
+    final readyWallet = wallet is WalletReady ? wallet.snapshot : null;
+    final gutter = MosaicSpacing.gutterForWidth(
+      MediaQuery.sizeOf(context).width,
+    );
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1B2A),
-      body: Stack(
-        children: [
-          // Background glow
-          Positioned(
-            top: -100,
-            right: -100,
-            child: Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFFD4A017).withValues(alpha: 0.06),
-              ),
-            ),
+      backgroundColor: MosaicColors.limestone,
+      body: SafeArea(
+        child: switch (journeyState) {
+          JourneyReady() => _HomeBody(
+            state: journeyState,
+            coins: readyWallet?.effectiveCoinBalance,
+            hints: readyWallet?.effectiveHintBalance,
+            gutter: gutter,
           ),
-          Positioned(
-            bottom: -80,
-            left: -80,
-            child: Container(
-              width: 240,
-              height: 240,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFF1A4A7C).withValues(alpha: 0.1),
-              ),
-            ),
+          JourneyError(:final message) => Center(child: Text(message)),
+          JourneyLoading() => const Center(
+            child: CircularProgressIndicator(color: MosaicColors.emerald600),
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 28),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 48),
-                  // Brand hero
-                  const Text(
-                    'سوليتير',
-                    textDirection: TextDirection.rtl,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Color(0xFFD4A017),
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w900,
-                      fontSize: 48,
-                      height: 1.1,
-                    ),
-                  ),
-                  const Text(
-                    'العرب',
-                    textDirection: TextDirection.rtl,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 36,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'أسطورة المعاني',
-                    textDirection: TextDirection.rtl,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.5),
-                      fontFamily: 'Cairo',
-                      fontSize: 16,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                  const Spacer(),
-                  // Progress summary
-                  if (journeyState is JourneyReady)
-                    _ProgressSummary(state: journeyState),
-                  const SizedBox(height: 32),
-                  // Continue button
-                  _ContinueButton(journeyState: journeyState),
-                  const SizedBox(height: 12),
-                  // Enter Journey
-                  _NavButton(
-                    label: 'الرحلة الرئيسية',
-                    icon: Icons.map_outlined,
-                    onTap: () =>
-                        Navigator.of(context).pushNamed(AppRoutes.journey),
-                  ),
-                  const SizedBox(height: 8),
-                  // Story Archive
-                  _NavButton(
-                    label: 'أرشيف الحكاية',
-                    icon: Icons.menu_book_outlined,
-                    onTap: () =>
-                        Navigator.of(context).pushNamed(AppRoutes.storyArchive),
-                  ),
-                  const SizedBox(height: 8),
-                  // Settings
-                  _NavButton(
-                    label: 'الإعدادات',
-                    icon: Icons.settings_outlined,
-                    onTap: () =>
-                        Navigator.of(context).pushNamed(AppRoutes.settings),
-                  ),
-                  const SizedBox(height: 40),
-                ],
-              ),
-            ),
-          ),
-        ],
+        },
       ),
     );
   }
 }
 
-class _ProgressSummary extends StatelessWidget {
-  const _ProgressSummary({required this.state});
+class _HomeBody extends ConsumerWidget {
+  const _HomeBody({
+    required this.state,
+    required this.gutter,
+    this.coins,
+    this.hints,
+  });
+
   final JourneyReady state;
-
-  String _chapterTitle(JourneyReady s) {
-    final level = s.progress.highestUnlockedLevel;
-    final chapter = s.chapters.cast<ChapterDefinition?>().firstWhere(
-      (c) => c != null && c.levelStart <= level && c.levelEnd >= level,
-      orElse: () => s.chapters.isNotEmpty ? s.chapters.last : null,
-    );
-    return chapter?.titleAr ?? '';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final title = _chapterTitle(state);
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF162033),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: const Color(0xFFD4A017).withValues(alpha: 0.2),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  title,
-                  textDirection: TextDirection.rtl,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Cairo',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 15,
-                  ),
-                ),
-                Text(
-                  'المستوى ${state.progress.highestUnlockedLevel}',
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.55),
-                    fontFamily: 'Cairo',
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 16),
-          const Icon(
-            Icons.auto_stories_outlined,
-            color: Color(0xFFD4A017),
-            size: 28,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ContinueButton extends ConsumerWidget {
-  const _ContinueButton({required this.journeyState});
-  final JourneyViewState journeyState;
+  final double gutter;
+  final int? coins;
+  final int? hints;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final ready = journeyState is JourneyReady
-        ? journeyState as JourneyReady
-        : null;
-    if (ready == null) return const SizedBox.shrink();
+    final chapter = _currentChapter(state);
+    final level = _levelToPlay(state);
+    final completed = chapter == null
+        ? 0
+        : state.levels
+              .where(
+                (item) =>
+                    item.chapterId == chapter.chapterId &&
+                    state.progress.isLevelCompleted(item.levelDefinitionId),
+              )
+              .length;
+    final chapterSize = chapter == null
+        ? 1
+        : chapter.levelEnd - chapter.levelStart + 1;
+    final config = level == null ? null : levelConfigurationFor(level);
+    final cardCount = config == null
+        ? 0
+        : config.tableauColumnSizes.fold<int>(0, (sum, size) => sum + size) +
+              config.stockCardCount;
 
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {
-          // Set the current level so GameplayScreen can report result back.
-          final levelToPlay = ready.levels.cast<LevelDefinition?>().firstWhere(
-            (l) => l?.globalLevelNumber == ready.progress.highestUnlockedLevel,
-            orElse: () => ready.levels.isNotEmpty ? ready.levels.first : null,
-          );
-          if (levelToPlay != null) {
-            ref.read(currentPlayingLevelProvider.notifier).state = levelToPlay;
-          }
-          Navigator.of(context).pushNamed(AppRoutes.gameplay);
-        },
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFFD4A017),
-          foregroundColor: const Color(0xFF0D1B2A),
-          minimumSize: const Size.fromHeight(60),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
+    return ListView(
+      padding: EdgeInsets.fromLTRB(gutter, 8, gutter, 24),
+      children: [
+        Row(
+          children: [
+            if (coins != null)
+              MosaicHudChip.count(
+                icon: MosaicHudIcon.coin,
+                amount: coins!,
+                label: 'عملة',
+              ),
+            if (hints != null) ...[
+              const SizedBox(width: MosaicSpacing.s8),
+              MosaicHudChip.count(
+                icon: MosaicHudIcon.hint,
+                amount: hints!,
+                label: 'تلميحات',
+              ),
+            ],
+            const Spacer(),
+            MosaicIconButton(
+              kind: MosaicIconKind.settings,
+              semanticsLabel: 'الإعدادات',
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(AppRoutes.settings),
+            ),
+          ],
         ),
-        child: const Text(
-          'متابعة اللعب',
-          style: TextStyle(
-            fontFamily: 'Cairo',
-            fontWeight: FontWeight.w900,
-            fontSize: 20,
+        const SizedBox(height: MosaicSpacing.s16),
+        _HeroArch(chapter: chapter, completed: completed, total: chapterSize),
+        const SizedBox(height: MosaicSpacing.s16),
+        if (level != null)
+          MosaicButton(
+            label:
+                'متابعة — المستوى ${ArabicDigits.format(level.globalLevelNumber)}',
+            expanded: true,
+            onPressed: () {
+              ref.read(currentPlayingLevelProvider.notifier).state = level;
+              Navigator.of(context).pushNamed(AppRoutes.gameplay);
+            },
           ),
+        if (config != null) ...[
+          const SizedBox(height: MosaicSpacing.s8),
+          Text(
+            ArabicDigits.dashJoin(
+              [
+                '${ArabicDigits.format(cardCount)} بطاقة',
+                '${ArabicDigits.format(config.moveLimit)} حركة',
+                chapter?.subtitleAr ?? '',
+              ].where((part) => part.isNotEmpty).toList(),
+            ),
+            style: MosaicTheme.of(context).text.labelS,
+            textAlign: TextAlign.center,
+          ),
+        ],
+        const SizedBox(height: MosaicSpacing.s16),
+        Row(
+          children: [
+            Expanded(
+              child: _Shortcut(
+                label: 'الرحلة',
+                icon: MosaicIconKind.map,
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(AppRoutes.journey),
+              ),
+            ),
+            const SizedBox(width: MosaicSpacing.s8),
+            Expanded(
+              child: _Shortcut(
+                label: 'الحكاية',
+                icon: MosaicIconKind.archive,
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(AppRoutes.storyArchive),
+              ),
+            ),
+            const SizedBox(width: MosaicSpacing.s8),
+            Expanded(
+              child: _Shortcut(
+                label: 'الإعدادات',
+                icon: MosaicIconKind.settings,
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(AppRoutes.settings),
+              ),
+            ),
+          ],
         ),
-      ),
+      ],
+    );
+  }
+
+  ChapterDefinition? _currentChapter(JourneyReady ready) {
+    final number = ready.progress.highestUnlockedLevel;
+    for (final chapter in ready.chapters) {
+      if (chapter.levelStart <= number && chapter.levelEnd >= number) {
+        return chapter;
+      }
+    }
+    return ready.chapters.isEmpty ? null : ready.chapters.last;
+  }
+
+  LevelDefinition? _levelToPlay(JourneyReady ready) {
+    for (final level in ready.levels) {
+      if (level.globalLevelNumber == ready.progress.highestUnlockedLevel) {
+        return level;
+      }
+    }
+    return ready.levels.isEmpty ? null : ready.levels.first;
+  }
+}
+
+class _HeroArch extends StatelessWidget {
+  const _HeroArch({
+    required this.chapter,
+    required this.completed,
+    required this.total,
+  });
+
+  final ChapterDefinition? chapter;
+  final int completed;
+  final int total;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = MosaicTheme.of(context).text;
+    final fraction = total == 0 ? 0.0 : (completed / total).clamp(0.0, 1.0);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final radius = constraints.maxWidth / 2;
+        return DecoratedBox(
+          decoration: BoxDecoration(
+            color: MosaicColors.emerald900,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(radius),
+              bottom: const Radius.circular(MosaicRadii.md),
+            ),
+            border: Border.all(color: MosaicColors.saffron500, width: 2),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(28, 36, 28, 22),
+            child: Column(
+              children: [
+                const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    MosaicStar(
+                      size: 14,
+                      color: MosaicColors.saffron500,
+                      filled: true,
+                    ),
+                    SizedBox(width: 8),
+                    MosaicStar(
+                      size: 14,
+                      color: MosaicColors.saffron500,
+                      filled: true,
+                    ),
+                    SizedBox(width: 8),
+                    MosaicStar(
+                      size: 14,
+                      color: MosaicColors.saffron500,
+                      filled: true,
+                    ),
+                    SizedBox(width: 8),
+                    MosaicStar(size: 14, color: MosaicColors.saffron500),
+                    SizedBox(width: 8),
+                    MosaicStar(size: 14, color: MosaicColors.saffron500),
+                  ],
+                ),
+                const SizedBox(height: MosaicSpacing.s12),
+                FittedBox(
+                  child: Text(
+                    'سوليتير العرب',
+                    style: text.displayXl.copyWith(color: MosaicColors.onDark),
+                  ),
+                ),
+                Text(
+                  'أسطورة المعاني',
+                  style: text.titleM.copyWith(color: MosaicColors.saffron500),
+                ),
+                const SizedBox(height: MosaicSpacing.s16),
+                if (chapter != null)
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: MosaicColors.emerald600,
+                      borderRadius: BorderRadius.circular(MosaicRadii.md),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        children: [
+                          Text(
+                            '${chapter!.titleAr} ${ArabicDigits.progress(completed, total)}',
+                            style: text.labelM.copyWith(
+                              color: MosaicColors.onDark,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: MosaicSpacing.s8),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                              MosaicRadii.pill,
+                            ),
+                            child: LinearProgressIndicator(
+                              value: fraction,
+                              minHeight: 8,
+                              backgroundColor: MosaicColors.emerald900,
+                              color: MosaicColors.saffron500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
-class _NavButton extends StatelessWidget {
-  const _NavButton({
+class _Shortcut extends StatelessWidget {
+  const _Shortcut({
     required this.label,
     required this.icon,
-    required this.onTap,
+    required this.onPressed,
   });
+
   final String label;
-  final IconData icon;
-  final VoidCallback onTap;
+  final MosaicIconKind icon;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+    return MosaicPressable(
+      onPressed: onPressed,
+      semanticsLabel: label,
+      borderRadius: BorderRadius.circular(MosaicRadii.pill),
+      child: DecoratedBox(
         decoration: BoxDecoration(
-          color: const Color(0xFF162033),
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: const Color(0xFFD4A017).withValues(alpha: 0.15),
-          ),
+          color: MosaicColors.paper,
+          borderRadius: BorderRadius.circular(MosaicRadii.pill),
+          border: Border.all(color: MosaicColors.line),
         ),
-        child: Row(
-          children: [
-            Icon(icon, color: const Color(0xFFD4A017), size: 22),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                label,
-                textDirection: TextDirection.rtl,
-                textAlign: TextAlign.right,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontFamily: 'Cairo',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
+        child: SizedBox(
+          height: 40,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              MosaicIcon(icon, size: 18),
+              const SizedBox(width: MosaicSpacing.s6),
+              Flexible(
+                child: Text(
+                  label,
+                  style: MosaicTheme.of(context).text.labelM,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ),
-            const Icon(Icons.chevron_left, color: Colors.white38, size: 20),
-          ],
+            ],
+          ),
         ),
       ),
     );

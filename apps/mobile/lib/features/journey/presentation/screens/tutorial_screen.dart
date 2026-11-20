@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:game_engine/game_engine.dart';
 import 'package:mobile/app/navigation/app_router.dart';
+import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/gameplay/presentation/interaction/drag_payload.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/association_slots_view.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/tableau_view.dart';
@@ -55,17 +56,14 @@ GameState _buildTutorialState() {
 
 const _steps = [
   _TutorialHint(
-    icon: Icons.swipe_outlined,
     titleAr: 'حرّك البطاقة',
     bodyAr: 'اسحب بطاقة "نور" من العمود الأول إلى العمود الأوسط.',
   ),
   _TutorialHint(
-    icon: Icons.link_outlined,
     titleAr: 'اجمع الكلمات',
     bodyAr: 'اسحب بطاقة "كلمات الضوء" فوق بطاقة "نور" لتكوين مجموعة.',
   ),
   _TutorialHint(
-    icon: Icons.check_circle_outline,
     titleAr: 'أتمّ الجمعية',
     bodyAr: 'اسحب المجموعة إلى الخانة المضيئة لإتمام الجمعية.',
   ),
@@ -179,81 +177,70 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
   Widget build(BuildContext context) {
     final won = _step == 3;
 
+    final text = MosaicTheme.of(context).text;
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0D1B2A),
+        backgroundColor: MosaicColors.limestone,
         body: SafeArea(
           child: Column(
             children: [
-              _buildTopBar(),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Row(
+                  children: [
+                    MosaicButton(
+                      label: 'تخطي',
+                      kind: MosaicButtonKind.ghost,
+                      showIcon: false,
+                      onPressed: _skip,
+                    ),
+                    Expanded(
+                      child: Text(
+                        'الدرس التعليمي',
+                        style: text.titleS,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(width: 64),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (var i = 0; i < _steps.length; i++)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: MosaicPip(
+                        filled:
+                            i <= _step && _step < 3 ||
+                            (_step == 3 && i < _steps.length),
+                      ),
+                    ),
+                ],
+              ),
               const SizedBox(height: 12),
-              _buildProgressDots(),
-              const Spacer(),
-              _buildBoard(),
-              const Spacer(),
-              won ? _buildWonBanner() : _buildHintPanel(_steps[_step]),
-              const SizedBox(height: 32),
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: _buildBoard(),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                child: won
+                    ? _buildWonBanner()
+                    : MosaicShiboubBubble(
+                        line:
+                            '${_steps[_step].titleAr} — ${_steps[_step].bodyAr}',
+                      ),
+              ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTopBar() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          TextButton(
-            onPressed: _skip,
-            child: const Text(
-              'تخطي',
-              style: TextStyle(
-                color: Color(0xFFD4A017),
-                fontFamily: 'Cairo',
-                fontSize: 15,
-              ),
-            ),
-          ),
-          const Text(
-            'الدرس التعليمي',
-            style: TextStyle(
-              color: Colors.white,
-              fontFamily: 'Cairo',
-              fontWeight: FontWeight.w700,
-              fontSize: 17,
-            ),
-          ),
-          const SizedBox(width: 56), // balance
-        ],
-      ),
-    );
-  }
-
-  Widget _buildProgressDots() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(_steps.length, (i) {
-        final active = i == _step || (_step == 3 && i == _steps.length - 1);
-        final done = i < _step;
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          margin: const EdgeInsets.symmetric(horizontal: 5),
-          width: active ? 24 : 8,
-          height: 8,
-          decoration: BoxDecoration(
-            color: done
-                ? const Color(0xFFD4A017)
-                : active
-                ? const Color(0xFFD4A017)
-                : const Color(0xFFD4A017).withValues(alpha: 0.25),
-            borderRadius: BorderRadius.circular(4),
-          ),
-        );
-      }),
     );
   }
 
@@ -295,109 +282,22 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
     };
   }
 
-  Widget _buildHintPanel(_TutorialHint hint) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: const Color(0xFF162033),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: const Color(0xFFD4A017).withValues(alpha: 0.35),
-          ),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFFD4A017).withValues(alpha: 0.12),
-              ),
-              child: Icon(hint.icon, color: const Color(0xFFD4A017), size: 26),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    hint.titleAr,
-                    textDirection: TextDirection.rtl,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    hint.bodyAr,
-                    textDirection: TextDirection.rtl,
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.7),
-                      fontFamily: 'Cairo',
-                      fontSize: 13,
-                      height: 1.5,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildWonBanner() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: const Color(0xFF1A3A1A),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFD4A017)),
-        ),
-        child: const Column(
-          children: [
-            Icon(Icons.star, color: Color(0xFFD4A017), size: 48),
-            SizedBox(height: 12),
-            Text(
-              'أحسنت! أتممت الدرس',
-              style: TextStyle(
-                color: Colors.white,
-                fontFamily: 'Cairo',
-                fontWeight: FontWeight.w700,
-                fontSize: 20,
-              ),
-            ),
-            SizedBox(height: 6),
-            Text(
-              'ستنطلق رحلتك الآن...',
-              style: TextStyle(
-                color: Color(0xFFD4A017),
-                fontFamily: 'Cairo',
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return const Column(
+      children: [
+        MosaicMedallion(tone: MosaicMedallionTone.saffron),
+        SizedBox(height: MosaicSpacing.s12),
+        Text('أحسنت! أتممت الدرس'),
+        SizedBox(height: MosaicSpacing.s6),
+        Text('ستنطلق رحلتك الآن...'),
+      ],
     );
   }
 }
 
 class _TutorialHint {
-  const _TutorialHint({
-    required this.icon,
-    required this.titleAr,
-    required this.bodyAr,
-  });
-  final IconData icon;
+  const _TutorialHint({required this.titleAr, required this.bodyAr});
+
   final String titleAr;
   final String bodyAr;
 }

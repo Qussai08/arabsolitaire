@@ -7,6 +7,7 @@ import 'package:mobile/app/bootstrap/bootstrap.dart';
 import 'package:mobile/app/config/app_config.dart';
 import 'package:mobile/app/config/app_environment.dart';
 import 'package:mobile/core/logging/app_logger.dart';
+import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/bootstrap/presentation/home_placeholder_screen.dart';
 
 void main() {
@@ -21,8 +22,9 @@ void main() {
             AppLogger(environment: AppEnvironment.dev),
           ),
         ],
-        child: const MaterialApp(
-          locale: Locale('ar'),
+        child: MaterialApp(
+          theme: MosaicThemeData.light(),
+          locale: const Locale('ar'),
           localizationsDelegates: [
             AppLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
@@ -30,7 +32,7 @@ void main() {
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: AppLocalizations.supportedLocales,
-          home: Directionality(
+          home: const Directionality(
             textDirection: TextDirection.rtl,
             child: HomePlaceholderScreen(),
           ),

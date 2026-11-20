@@ -5,6 +5,7 @@ import 'package:game_engine/game_engine.dart';
 import 'package:game_solver/game_solver.dart';
 import 'package:level_generator/level_generator.dart';
 import 'package:mobile/app/bootstrap/bootstrap.dart';
+import 'package:mobile/design_system/design_system.dart';
 
 /// Placeholder Home after bootstrap — confirms package wiring + RTL shell.
 class HomePlaceholderScreen extends ConsumerWidget {
@@ -41,17 +42,10 @@ class HomePlaceholderScreen extends ConsumerWidget {
               Text('generator↔solver: ${generator.solverPackageVersion}'),
               Text('generatorVersion: ${generator.generatorVersion}'),
               const SizedBox(height: 24),
-              ElevatedButton(
+              MosaicButton(
+                label: 'العب الآن',
+                expanded: true,
                 onPressed: () => Navigator.of(context).pushNamed('/gameplay'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF1A4A7C),
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size.fromHeight(48),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text('العب الآن'),
               ),
             ],
           ),

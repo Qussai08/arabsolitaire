@@ -1,90 +1,137 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/navigation/app_router.dart';
+import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/economy/application/wallet_controller.dart';
 import 'package:mobile/features/gameplay/application/gameplay_providers.dart';
 import 'package:mobile/features/journey/application/journey_providers.dart';
 import 'package:mobile/features/journey/domain/journey_models.dart';
 import 'package:mobile/features/journey/presentation/screens/story_beat_screen.dart';
 
-/// Home screen: shows the chapter map. On first launch transitions to onboarding
-/// / tutorial; otherwise renders the chapter list with level progress.
+/// Chapter path. Tapping an unlocked level still opens that level.
 class JourneyScreen extends ConsumerWidget {
   const JourneyScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final journeyState = ref.watch(journeyControllerProvider);
-
     return switch (journeyState) {
-      JourneyLoading() => const _LoadingView(),
-      JourneyError(:final message) => _ErrorView(message: message),
+      JourneyLoading() => const Scaffold(
+        backgroundColor: MosaicColors.limestone,
+        body: Center(
+          child: CircularProgressIndicator(color: MosaicColors.emerald600),
+        ),
+      ),
+      JourneyError(:final message) => Scaffold(
+        backgroundColor: MosaicColors.limestone,
+        body: Center(child: Text(message)),
+      ),
       JourneyReady() => _JourneyReady(state: journeyState),
     };
   }
 }
 
-class _LoadingView extends StatelessWidget {
-  const _LoadingView();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      backgroundColor: Color(0xFF0D1B2A),
-      body: Center(child: CircularProgressIndicator(color: Color(0xFFD4A017))),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.message});
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0D1B2A),
-      body: Center(
-        child: Text(
-          message,
-          style: const TextStyle(color: Colors.white, fontFamily: 'Cairo'),
-        ),
-      ),
-    );
-  }
-}
-
 class _JourneyReady extends ConsumerWidget {
   const _JourneyReady({required this.state});
+
   final JourneyReady state;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final wallet = ref.watch(walletControllerProvider);
+    final coins = wallet is WalletReady
+        ? wallet.snapshot.effectiveCoinBalance
+        : null;
+    final current = _currentLevel();
+    final gutter = MosaicSpacing.gutterForWidth(
+      MediaQuery.sizeOf(context).width,
+    );
+    final chapters = state.chapters.toList()
+      ..sort((a, b) => b.order.compareTo(a.order));
+
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1B2A),
-      body: CustomScrollView(
-        slivers: [
-          _JourneyAppBar(progress: state.progress),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (ctx, i) => _ChapterCard(
-                  chapter: state.chapters[i],
-                  chapterState: state.chapterState(state.chapters[i]),
-                  levels: state.levels
-                      .where((l) => l.chapterId == state.chapters[i].chapterId)
-                      .toList(),
-                  state: state,
-                  onLevelTap: (level) =>
-                      _onLevelTap(context, ref, state, level),
-                ),
-                childCount: state.chapters.length,
+      backgroundColor: MosaicColors.limestone,
+      body: SafeArea(
+        child: Column(
+          children: [
+            MosaicHeader(
+              title: 'الرحلة',
+              subtitle: 'الموسم ١: صحوة الروابط',
+              backLabel: 'الرئيسية',
+              onBack: () => Navigator.of(context).maybePop(),
+              trailing: coins == null
+                  ? null
+                  : MosaicHudChip.count(
+                      icon: MosaicHudIcon.coin,
+                      amount: coins,
+                      showLabel: false,
+                    ),
+            ),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.fromLTRB(gutter, 0, gutter, 12),
+                children: [
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: MosaicColors.saffron100,
+                      borderRadius: BorderRadius.circular(MosaicRadii.lg),
+                      border: Border.all(color: MosaicColors.saffron500),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(14),
+                      child: Column(
+                        children: [
+                          for (var i = 0; i < chapters.length; i++) ...[
+                            _ChapterRow(
+                              chapter: chapters[i],
+                              chapterState: state.chapterState(chapters[i]),
+                              levels: state.levels
+                                  .where(
+                                    (level) =>
+                                        level.chapterId ==
+                                        chapters[i].chapterId,
+                                  )
+                                  .toList(),
+                              state: state,
+                              nodeFirst: chapters[i].order.isOdd,
+                              onLevelTap: (level) =>
+                                  _onLevelTap(context, ref, state, level),
+                            ),
+                            if (i != chapters.length - 1)
+                              const SizedBox(height: MosaicSpacing.s12),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: MosaicSpacing.s12),
+                  const _Legend(),
+                ],
               ),
             ),
-          ),
-        ],
+            if (current != null)
+              Padding(
+                padding: EdgeInsets.fromLTRB(gutter, 0, gutter, 16),
+                child: MosaicButton(
+                  label:
+                      'العب المستوى ${ArabicDigits.format(current.globalLevelNumber)}',
+                  expanded: true,
+                  onPressed: () => _onLevelTap(context, ref, state, current),
+                ),
+              ),
+          ],
+        ),
       ),
     );
+  }
+
+  LevelDefinition? _currentLevel() {
+    for (final level in state.levels) {
+      if (level.globalLevelNumber == state.progress.highestUnlockedLevel) {
+        return level;
+      }
+    }
+    return null;
   }
 
   void _onLevelTap(
@@ -93,10 +140,7 @@ class _JourneyReady extends ConsumerWidget {
     JourneyReady state,
     LevelDefinition level,
   ) {
-    // Register which level is being played before pushing gameplay.
     ref.read(currentPlayingLevelProvider.notifier).state = level;
-
-    // Check for pending story beats before entering level.
     final pendingBeats = state.pendingBeatsFor(level.globalLevelNumber);
     if (pendingBeats.isNotEmpty) {
       Navigator.of(context).push<void>(
@@ -116,68 +160,56 @@ class _JourneyReady extends ConsumerWidget {
   }
 }
 
-// ── App Bar ───────────────────────────────────────────────────────────────────
+class _ChapterRow extends StatelessWidget {
+  const _ChapterRow({
+    required this.chapter,
+    required this.chapterState,
+    required this.levels,
+    required this.state,
+    required this.nodeFirst,
+    required this.onLevelTap,
+  });
 
-class _JourneyAppBar extends StatelessWidget {
-  const _JourneyAppBar({required this.progress});
-  final JourneyProgress progress;
+  final ChapterDefinition chapter;
+  final ChapterState chapterState;
+  final List<LevelDefinition> levels;
+  final JourneyReady state;
+  final bool nodeFirst;
+  final void Function(LevelDefinition level) onLevelTap;
 
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar(
-      pinned: true,
-      expandedHeight: 160,
-      backgroundColor: const Color(0xFF0D1B2A),
-      flexibleSpace: FlexibleSpaceBar(
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            Positioned(
-              top: -40,
-              right: -40,
-              child: Container(
-                width: 200,
-                height: 200,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFFD4A017).withValues(alpha: 0.08),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(24, 60, 24, 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  const Text(
-                    'سوليتير العرب',
-                    style: TextStyle(
-                      color: Color(0xFFD4A017),
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w700,
-                      fontSize: 28,
-                    ),
-                  ),
-                  Text(
-                    'المستوى ${progress.highestUnlockedLevel}',
-                    style: TextStyle(
-                      color: Colors.white.withValues(alpha: 0.6),
-                      fontFamily: 'Cairo',
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+    final node = MosaicLevelNode(
+      state: switch (chapterState) {
+        ChapterState.completed => MosaicLevelNodeState.done,
+        ChapterState.locked => MosaicLevelNodeState.locked,
+        ChapterState.unlocked ||
+        ChapterState.inProgress => MosaicLevelNodeState.current,
+      },
+      number: chapter.order,
+      caption: switch (chapterState) {
+        ChapterState.completed => 'مكتملة',
+        ChapterState.locked => 'مقفلة',
+        ChapterState.unlocked || ChapterState.inProgress => 'جارية',
+      },
+    );
+    final card = Expanded(
+      child: _ChapterCard(
+        chapter: chapter,
+        chapterState: chapterState,
+        levels: levels,
+        state: state,
+        onLevelTap: onLevelTap,
       ),
+    );
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: nodeFirst
+          ? [node, const SizedBox(width: MosaicSpacing.s8), card]
+          : [card, const SizedBox(width: MosaicSpacing.s8), node],
     );
   }
 }
-
-// ── Chapter Card ─────────────────────────────────────────────────────────────
 
 class _ChapterCard extends StatelessWidget {
   const _ChapterCard({
@@ -192,143 +224,60 @@ class _ChapterCard extends StatelessWidget {
   final ChapterState chapterState;
   final List<LevelDefinition> levels;
   final JourneyReady state;
-  final void Function(LevelDefinition) onLevelTap;
+  final void Function(LevelDefinition level) onLevelTap;
 
   @override
   Widget build(BuildContext context) {
-    final isLocked = chapterState == ChapterState.locked;
-    final completedCount = levels
-        .where((l) => state.levelStatus(l) == LevelStatus.completed)
+    final text = MosaicTheme.of(context).text;
+    final locked = chapterState == ChapterState.locked;
+    final completed = levels
+        .where((level) => state.levelStatus(level) == LevelStatus.completed)
         .length;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: AnimatedOpacity(
-        duration: const Duration(milliseconds: 300),
-        opacity: isLocked ? 0.45 : 1.0,
-        child: Container(
-          decoration: BoxDecoration(
-            color: const Color(0xFF162033),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: chapterState == ChapterState.completed
-                  ? const Color(0xFFD4A017).withValues(alpha: 0.5)
-                  : const Color(0xFFD4A017).withValues(alpha: 0.15),
-            ),
-          ),
-          child: Column(
-            children: [
-              _ChapterHeader(
-                chapter: chapter,
-                chapterState: chapterState,
-                completedCount: completedCount,
-                totalCount: levels.length,
-              ),
-              if (!isLocked)
-                _LevelGrid(levels: levels, state: state, onTap: onLevelTap),
-            ],
-          ),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: locked ? MosaicColors.plaster : MosaicColors.paper,
+        borderRadius: BorderRadius.circular(MosaicRadii.md),
+        border: Border.all(
+          color: chapterState == ChapterState.completed
+              ? MosaicColors.success700
+              : MosaicColors.line,
+          width: chapterState == ChapterState.completed
+              ? MosaicBorder.emphasis
+              : MosaicBorder.hairline,
         ),
       ),
-    );
-  }
-}
-
-class _ChapterHeader extends StatelessWidget {
-  const _ChapterHeader({
-    required this.chapter,
-    required this.chapterState,
-    required this.completedCount,
-    required this.totalCount,
-  });
-
-  final ChapterDefinition chapter;
-  final ChapterState chapterState;
-  final int completedCount;
-  final int totalCount;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  chapter.titleAr,
-                  textDirection: TextDirection.rtl,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Cairo',
-                    fontWeight: FontWeight.w700,
-                    fontSize: 18,
-                  ),
-                ),
-                Text(
-                  chapter.subtitleAr,
-                  textDirection: TextDirection.rtl,
-                  style: TextStyle(
-                    color: Colors.white.withValues(alpha: 0.55),
-                    fontFamily: 'Cairo',
-                    fontSize: 13,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 16),
-          _ProgressRing(
-            completed: completedCount,
-            total: totalCount,
-            locked: chapterState == ChapterState.locked,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ProgressRing extends StatelessWidget {
-  const _ProgressRing({
-    required this.completed,
-    required this.total,
-    required this.locked,
-  });
-  final int completed;
-  final int total;
-  final bool locked;
-
-  @override
-  Widget build(BuildContext context) {
-    final fraction = total == 0 ? 0.0 : completed / total;
-    return SizedBox(
-      width: 56,
-      height: 56,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          CircularProgressIndicator(
-            value: fraction,
-            strokeWidth: 4,
-            backgroundColor: const Color(0xFFD4A017).withValues(alpha: 0.15),
-            valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFD4A017)),
-          ),
-          if (locked)
-            const Icon(Icons.lock_outline, color: Color(0xFFD4A017), size: 20)
-          else
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Text(
-              '$completed/$total',
-              style: const TextStyle(
-                color: Colors.white,
-                fontFamily: 'Cairo',
-                fontWeight: FontWeight.w700,
-                fontSize: 11,
-              ),
+              'الفصل ${ArabicDigits.format(chapter.order)} — المستويات ${ArabicDigits.format(chapter.levelStart)}–${ArabicDigits.format(chapter.levelEnd)}',
+              style: text.labelS,
             ),
-        ],
+            Text(chapter.titleAr, style: text.titleS),
+            Text(locked ? 'مقفلة' : chapter.subtitleAr, style: text.labelS),
+            if (!locked) ...[
+              const SizedBox(height: MosaicSpacing.s8),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(MosaicRadii.pill),
+                child: LinearProgressIndicator(
+                  value: levels.isEmpty ? 0 : completed / levels.length,
+                  minHeight: 6,
+                  backgroundColor: MosaicColors.plaster,
+                  color: MosaicColors.terracotta600,
+                ),
+              ),
+              const SizedBox(height: MosaicSpacing.s4),
+              Text(
+                ArabicDigits.progress(completed, levels.length),
+                style: text.labelS,
+              ),
+              const SizedBox(height: MosaicSpacing.s8),
+              _LevelGrid(levels: levels, state: state, onTap: onLevelTap),
+            ],
+          ],
+        ),
       ),
     );
   }
@@ -340,66 +289,154 @@ class _LevelGrid extends StatelessWidget {
     required this.state,
     required this.onTap,
   });
+
   final List<LevelDefinition> levels;
   final JourneyReady state;
-  final void Function(LevelDefinition) onTap;
+  final void Function(LevelDefinition level) onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 10,
-          crossAxisSpacing: 4,
-          mainAxisSpacing: 4,
-          childAspectRatio: 1,
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 10,
+        crossAxisSpacing: 4,
+        mainAxisSpacing: 4,
+      ),
+      itemCount: levels.length,
+      itemBuilder: (context, index) {
+        final level = levels[index];
+        final status = state.levelStatus(level);
+        return _LevelCell(
+          status: status,
+          number: level.chapterLevelNumber,
+          onTap: status == LevelStatus.locked ? null : () => onTap(level),
+        );
+      },
+    );
+  }
+}
+
+class _LevelCell extends StatelessWidget {
+  const _LevelCell({
+    required this.status,
+    required this.number,
+    required this.onTap,
+  });
+
+  final LevelStatus status;
+  final int number;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final locked = status == LevelStatus.locked;
+    final done = status == LevelStatus.completed;
+    final current =
+        status == LevelStatus.inProgress || status == LevelStatus.unlocked;
+    final label = done
+        ? 'مكتمل ${ArabicDigits.format(number)}'
+        : locked
+        ? 'مقفل'
+        : ArabicDigits.format(number);
+    return Semantics(
+      button: onTap != null,
+      label: label,
+      child: GestureDetector(
+        onTap: onTap,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: done
+                ? MosaicColors.mint100
+                : current
+                ? MosaicColors.paper
+                : MosaicColors.plaster,
+            borderRadius: BorderRadius.circular(6),
+            border: Border.all(
+              color: status == LevelStatus.inProgress
+                  ? MosaicColors.saffron500
+                  : done
+                  ? MosaicColors.emerald600
+                  : MosaicColors.line,
+              width: status == LevelStatus.inProgress ? 2 : 1,
+            ),
+          ),
+          child: Center(
+            child: locked
+                ? const MosaicIcon(
+                    MosaicIconKind.lock,
+                    size: 12,
+                    color: MosaicColors.textMuted,
+                  )
+                : done
+                ? const MosaicIcon(
+                    MosaicIconKind.check,
+                    size: 12,
+                    color: MosaicColors.success700,
+                  )
+                : Text(
+                    ArabicDigits.format(number),
+                    style: const TextStyle(
+                      fontFamily: MosaicFonts.readexPro,
+                      fontSize: 9,
+                      color: MosaicColors.emerald900,
+                    ),
+                  ),
+          ),
         ),
-        itemCount: levels.length,
-        itemBuilder: (_, i) {
-          final level = levels[i];
-          final status = state.levelStatus(level);
-          return _LevelDot(status: status, onTap: () => onTap(level));
-        },
       ),
     );
   }
 }
 
-class _LevelDot extends StatelessWidget {
-  const _LevelDot({required this.status, required this.onTap});
-  final LevelStatus status;
-  final VoidCallback onTap;
+class _Legend extends StatelessWidget {
+  const _Legend();
 
   @override
   Widget build(BuildContext context) {
-    final (bg, border) = switch (status) {
-      LevelStatus.completed => (
-        const Color(0xFFD4A017),
-        const Color(0xFFD4A017),
-      ),
-      LevelStatus.inProgress => (
-        const Color(0xFF1A4A7C),
-        const Color(0xFF4A9EFF),
-      ),
-      LevelStatus.unlocked => (
-        const Color(0xFF1C2C42),
-        const Color(0xFFD4A017).withValues(alpha: 0.4),
-      ),
-      LevelStatus.locked => (const Color(0xFF111D2C), const Color(0xFF1C2C42)),
-    };
-
-    return GestureDetector(
-      onTap: status != LevelStatus.locked ? onTap : null,
-      child: Container(
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(4),
-          border: Border.all(color: border, width: 1),
+    final text = MosaicTheme.of(context).text.labelS;
+    return Wrap(
+      alignment: WrapAlignment.center,
+      spacing: 12,
+      children: [
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const MosaicIcon(
+              MosaicIconKind.check,
+              size: 14,
+              color: MosaicColors.success700,
+            ),
+            const SizedBox(width: 4),
+            Text('مكتملة', style: text),
+          ],
         ),
-      ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const MosaicIcon(
+              MosaicIconKind.flame,
+              size: 14,
+              color: MosaicColors.terracotta600,
+            ),
+            const SizedBox(width: 4),
+            Text('جارية', style: text),
+          ],
+        ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const MosaicIcon(
+              MosaicIconKind.lock,
+              size: 14,
+              color: MosaicColors.textMuted,
+            ),
+            const SizedBox(width: 4),
+            Text('مقفلة', style: text),
+          ],
+        ),
+      ],
     );
   }
 }

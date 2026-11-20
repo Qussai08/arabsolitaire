@@ -44,6 +44,14 @@ Import `package:mobile/design_system/design_system.dart`.
 | `MosaicSlot` | empty, active, drop target, completed | Dashed outline and instruction, progress chip `٢/٤` plus pips, a thicker dashed outline with one extra pip, or the completed title. |
 | `MosaicButton` | primary, secondary, reward, ghost, danger | Fill versus outline versus text-only, and the icon (forward, back, coin). |
 | `MosaicHudChip` | coin, hint, flame | The icon identifies the stat. `MosaicHudChip.count` formats the number. |
+| `MosaicToolButton` | enabled, disabled, badge | Label under the icon. A count badge, including `٠`, is the hint inventory. Disabled is opacity 0.45. |
+| `MosaicShiboubBubble` | line | Speaker name «شيبوب» plus the portrait already inside the bubble. |
+| `MosaicToast` | info, success, error, hint | Icon in the badge (restart, check, close, bulb). |
+| `MosaicRow` | chevron, toggle, value | Chevron navigates. The toggle knob sits at the end when on and at the start when off. |
+| `MosaicHeader` | back + title | Back pill on the start, with the back arrow and the label. |
+| `MosaicMedallion` | emerald, saffron, terracotta, lapis, danger | Icon inside the dashed disc. |
+| `MosaicLevelNode` | done, current, locked | Caption «✓ مكتمل» / «الحالي», or a lock with «مقفل». Current also draws the saffron ring and glow. |
+| `MosaicIcon` / `MosaicIconButton` | line icons | Directional back/forward follow RTL. |
 
 Cards are 72×96 on every window size. The badge sits on the **start** corner, which is the top-right in RTL, as in the component sheet. Pips fill from the right: pass `filled` / `total` and the first pips are the filled ones.
 
@@ -63,7 +71,7 @@ Illustrations:
 
 `MosaicArchImage` clips an illustration with a semicircular top and a 14px bottom radius.
 
-Not built in this change: toast, row, header, tool button, Shiboub bubble, medallion, and level node. Their measurements are in the Figma file (page **01 · الهوية والمكوّنات**).
+Toast, row, header, tool button, Shiboub bubble, medallion, and level node live in the same module. Measurements follow page **01 · الهوية والمكوّنات**.
 
 ## RTL, digits, and the middle dot
 
