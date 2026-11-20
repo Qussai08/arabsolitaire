@@ -17,20 +17,18 @@ class BootstrapScreen extends ConsumerWidget {
     final config = ref.watch(appConfigProvider);
     final bootstrap = ref.watch(bootstrapControllerProvider);
 
-    ref.listen(bootstrapControllerProvider, (previous, next) {
-      next.whenData((state) {
-        if (state.status == BootstrapStatus.ready) {
-          final journeyState = ref.read(journeyControllerProvider);
-          final isFirstLaunch = switch (journeyState) {
-            JourneyReady(:final flags) => flags.isFirstLaunch,
-            _ => true,
-          };
-          Navigator.of(context).pushReplacementNamed(
-            isFirstLaunch ? AppRoutes.tutorial : AppRoutes.home,
-          );
+    final ready = bootstrap.valueOrNull?.status == BootstrapStatus.ready;
+    final journey = ready ? ref.watch(journeyControllerProvider) : null;
+    if (journey is JourneyReady) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!context.mounted || ModalRoute.of(context)?.isCurrent != true) {
+          return;
         }
+        Navigator.of(context).pushReplacementNamed(
+          journey.flags.isFirstLaunch ? AppRoutes.tutorial : AppRoutes.home,
+        );
       });
-    });
+    }
 
     return Scaffold(
       backgroundColor: MosaicColors.limestone,
@@ -70,10 +68,10 @@ class BootstrapScreen extends ConsumerWidget {
                   BootstrapStatus.initializing => const Center(
                     child: CircularProgressIndicator(),
                   ),
-                  BootstrapStatus.ready => Text(
-                    l10n.bootstrapReady,
-                    textAlign: TextAlign.center,
-                  ),
+                  BootstrapStatus.ready =>
+                    journey is JourneyError
+                        ? Text(l10n.bootstrapError, textAlign: TextAlign.center)
+                        : const Center(child: CircularProgressIndicator()),
                   BootstrapStatus.recoverableError ||
                   BootstrapStatus.fatalError => Text(
                     l10n.bootstrapError,

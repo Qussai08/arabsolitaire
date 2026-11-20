@@ -300,8 +300,47 @@ void main() {
 
       final s = await _awaitReady(container2);
       expect(s.flags.tutorialCompleted, isTrue);
+      expect(s.flags.isFirstLaunch, isFalse);
     });
   });
+
+  test(
+    'local journey reset clears the attempt and preserves settings',
+    () async {
+      final db = _openTestDb();
+      addTearDown(db.close);
+      final repo = DriftJourneyRepository(db);
+      await repo.saveProgress(const JourneyProgress(highestUnlockedLevel: 3));
+      await repo.saveFlags(
+        const PlayerLocalFlags(
+          tutorialCompleted: true,
+          unlockedStoryBeatIds: {'cairo-start'},
+        ),
+      );
+      await db
+          .into(db.activeAttempts)
+          .insert(
+            ActiveAttemptsCompanion.insert(
+              id: 'active',
+              levelDefinitionId: 'level-2',
+              attemptId: 'attempt-1',
+              seed: 1,
+              gameStateJson: '{}',
+              rulesVersion: '1.0.0',
+              saveSchemaVersion: 1,
+            ),
+          );
+      await db.upsertMetadata('settings.sound.music', 'false');
+
+      await repo.resetLocalJourney();
+
+      expect((await repo.loadProgress()).highestUnlockedLevel, 1);
+      expect((await repo.loadFlags()).unlockedStoryBeatIds, isEmpty);
+      expect((await repo.loadFlags()).tutorialCompleted, isFalse);
+      expect(await db.select(db.activeAttempts).get(), isEmpty);
+      expect(await db.readMetadata('settings.sound.music'), 'false');
+    },
+  );
 
   // ── Story beat tests ─────────────────────────────────────────────────────────
 

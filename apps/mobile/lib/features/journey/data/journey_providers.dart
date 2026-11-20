@@ -20,6 +20,11 @@ final class _NoOpJourneyRepository implements JourneyRepository {
 
   @override
   Future<void> saveFlags(PlayerLocalFlags flags) async {}
+
+  @override
+  Future<void> resetLocalJourney() async {
+    throw StateError('Local storage is unavailable');
+  }
 }
 
 // ── Providers ─────────────────────────────────────────────────────────────────

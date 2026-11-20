@@ -75,6 +75,7 @@ class TableauColumnView extends StatelessWidget {
         );
         final top = unit.cards.last;
         return Draggable<DragPayload>(
+          hitTestBehavior: HitTestBehavior.opaque,
           data: payload,
           feedback: Material(
             color: Colors.transparent,
