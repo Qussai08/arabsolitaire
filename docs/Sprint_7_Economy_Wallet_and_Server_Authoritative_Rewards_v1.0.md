@@ -190,10 +190,10 @@ Recommended:
 
 ```text
 players/{uid}/economy/wallet
-players/{uid}/economy/wallet/transactions/{transactionId}
+players/{uid}/economy/transactions/{transactionId}
 ```
 
-or equivalent trusted structure. The ledger is a subcollection of the wallet document so the path has an even number of segments.
+or equivalent trusted structure.
 
 Client may read wallet.
 
@@ -706,7 +706,7 @@ Use Firestore transaction or equivalent trusted transactional mechanism.
 Recommended record:
 
 ```text
-players/{uid}/economy/wallet/operations/{idempotencyKeyHash}
+players/{uid}/economy/operations/{idempotencyKeyHash}
 ```
 
 Contains:
