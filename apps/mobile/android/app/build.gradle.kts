@@ -4,17 +4,11 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-val unityLibraryPresent = project.findProject(":unityLibrary") != null
-
 android {
     // PLACEHOLDER_ORG_ID — replace with approved organization reverse-domain.
     namespace = "com.arabsolitaire.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
-
-    buildFeatures {
-        buildConfig = true
-    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -28,26 +22,6 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        buildConfigField(
-            "boolean",
-            "UNITY_LIBRARY_AVAILABLE",
-            unityLibraryPresent.toString(),
-        )
-        ndk {
-            if (unityLibraryPresent) {
-                abiFilters += listOf("arm64-v8a")
-            }
-        }
-    }
-
-    sourceSets {
-        getByName("main") {
-            if (unityLibraryPresent) {
-                kotlin.setSrcDirs(listOf("src/main/kotlin", "src/unity/kotlin"))
-            } else {
-                kotlin.setSrcDirs(listOf("src/main/kotlin", "src/noUnity/kotlin"))
-            }
-        }
     }
 
     flavorDimensions += "environment"
@@ -73,12 +47,6 @@ android {
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("debug")
-            if (unityLibraryPresent) {
-                proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-unity-bridge.pro",
-                )
-            }
         }
     }
 }
@@ -91,16 +59,4 @@ kotlin {
 
 flutter {
     source = "../.."
-}
-
-dependencies {
-    if (unityLibraryPresent) {
-        implementation(project(":unityLibrary"))
-        // unityLibrary uses `implementation` for jars/deps; expose them to the app compile classpath.
-        implementation(files("../unityLibrary/libs/unity-classes.jar"))
-        implementation("androidx.appcompat:appcompat:1.6.1")
-        implementation("androidx.core:core:1.9.0")
-        implementation("androidx.games:games-activity:4.4.0")
-    }
-    testImplementation("junit:junit:4.13.2")
 }

@@ -1,6 +1,6 @@
 # فسيفساء المعاني — design system
 
-Visual foundation for سوليتير العرب. Screens are not rebuilt here; this is the token and component layer they should be built from.
+Visual foundation for سوليتير العرب. Home, journey, gameplay, pause, results, settings, story, tutorial, and splash are built from these tokens and components.
 
 Figma: [فسيفساء المعاني](https://www.figma.com/design/7ScCtdjsqnZz7pyIHP2nUD)
 
@@ -8,9 +8,7 @@ Source export (do not edit by hand): [`apps/mobile/design/tokens.json`](../apps/
 
 ## Theme
 
-`SolitaireAlArabApp` uses `MosaicThemeData.light()` as `ThemeData`.
-
-The shell previously had no shared theme module. `MaterialApp` used a generic Material seed, and the journey and gameplay screens paint their own navy (`#0D1B2A`) and gold (`#D4A017`) with `fontFamily: 'Cairo'`. Cairo is not bundled. Those screens are left as they are so this change does not restyle the current product loop. New UI should use the mosaic widgets and `Theme.of(context)` instead of new hardcoded colors.
+`SolitaireAlArabApp` uses `MosaicThemeData.light()` as `ThemeData`. Product UI uses these tokens and widgets. Do not introduce a second palette or an unbundled font.
 
 What the theme sets:
 
