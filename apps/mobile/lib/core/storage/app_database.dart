@@ -91,6 +91,11 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
+  Stream<String?> watchMetadata(String key) =>
+      (select(appMetadata)..where((t) => t.key.equals(key)))
+          .watchSingleOrNull()
+          .map((row) => row?.value);
+
   Future<String?> readMetadata(String key) async {
     final row = await (select(
       appMetadata,

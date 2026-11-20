@@ -5,4 +5,5 @@ abstract interface class JourneyRepository {
   Future<void> saveProgress(JourneyProgress progress);
   Future<PlayerLocalFlags> loadFlags();
   Future<void> saveFlags(PlayerLocalFlags flags);
+  Future<void> resetLocalJourney();
 }

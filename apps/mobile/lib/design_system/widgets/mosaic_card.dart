@@ -106,6 +106,7 @@ class MosaicCard extends StatelessWidget {
   }
 
   Widget _content(MosaicTextStyles text, _CardChrome chrome) {
+    final onClue = state == MosaicCardState.clue;
     final body = switch (state) {
       MosaicCardState.faceDown => const Center(
         child: MosaicStar(
@@ -114,17 +115,21 @@ class MosaicCard extends StatelessWidget {
           strokeWidth: 1.5,
         ),
       ),
-      MosaicCardState.clue => Column(
+      _ when clue != null || state == MosaicCardState.clue => Column(
         mainAxisSize: MainAxisSize.min,
         spacing: 3,
         children: [
           Text(
             'مجموعة',
-            style: text.labelS.copyWith(color: MosaicColors.saffron100),
+            style: text.labelS.copyWith(
+              color: onClue ? MosaicColors.saffron100 : chrome.wordColor,
+            ),
           ),
           Text(
             clue ?? '',
-            style: text.cardClue,
+            style: text.cardClue.copyWith(
+              color: onClue ? MosaicColors.onDark : chrome.wordColor,
+            ),
             textAlign: TextAlign.center,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -144,7 +149,9 @@ class MosaicCard extends StatelessWidget {
                   const SizedBox(width: 3),
                   Text(
                     countLabel!,
-                    style: text.labelS.copyWith(color: MosaicColors.onDark),
+                    style: text.labelS.copyWith(
+                      color: onClue ? MosaicColors.onDark : chrome.wordColor,
+                    ),
                   ),
                 ],
               ),

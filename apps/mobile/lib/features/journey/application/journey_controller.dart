@@ -57,13 +57,27 @@ class JourneyController extends Notifier<JourneyViewState> {
   Future<void> completeTutorial() async {
     final r = _ready;
     if (r == null) return;
-    final newFlags = r.flags.copyWith(tutorialCompleted: true);
+    final newFlags = r.flags.copyWith(
+      isFirstLaunch: false,
+      onboardingCompleted: true,
+      tutorialCompleted: true,
+    );
     await _repo.saveFlags(newFlags);
     state = JourneyReady(
       chapters: r.chapters,
       levels: r.levels,
       progress: r.progress,
       flags: newFlags,
+    );
+  }
+
+  Future<void> resetLocalJourney() async {
+    await _repo.resetLocalJourney();
+    state = JourneyReady(
+      chapters: JourneyContent.chapters,
+      levels: JourneyContent.buildLevels(),
+      progress: const JourneyProgress(),
+      flags: const PlayerLocalFlags(),
     );
   }
 

@@ -115,6 +115,21 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
 
   void _applyAction(GameAction action) {
     if (_state.status != AttemptStatus.inProgress) return;
+    final expected = switch ((_step, action)) {
+      (0, MoveTableauToTableau(fromColumn: 0, toColumn: 1)) ||
+      (1, MoveTableauToTableau(fromColumn: 2, toColumn: 1)) ||
+      (2, MoveTableauToSlot(fromColumn: 1, slotIndex: 0)) => true,
+      _ => false,
+    };
+    if (!expected) {
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(
+          const SnackBar(content: Text('جرّب الحركة اللي شرحها شيبوب.')),
+        );
+      return;
+    }
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     final transition = _engine.applyAction(_state, action);
     if (!transition.accepted) return;
 
@@ -129,32 +144,28 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
     });
 
     if (_state.status == AttemptStatus.won) {
-      _completeTutorial();
+      unawaited(_completeTutorial());
     }
   }
 
-  void _completeTutorial() {
+  Future<void> _completeTutorial({bool skipped = false}) async {
     if (_navigating) return;
     _navigating = true;
-    unawaited(
-      ref.read(journeyControllerProvider.notifier).completeTutorial().then((
-        _,
-      ) async {
-        if (!mounted) return;
+    try {
+      await ref.read(journeyControllerProvider.notifier).completeTutorial();
+      if (!skipped) {
         await Future<void>.delayed(const Duration(milliseconds: 1200));
-        if (!mounted) return;
-        unawaited(Navigator.of(context).pushReplacementNamed(AppRoutes.home));
-      }),
-    );
-  }
-
-  void _skip() {
-    unawaited(
-      ref.read(journeyControllerProvider.notifier).completeTutorial().then((_) {
-        if (!mounted) return;
-        Navigator.of(context).pushReplacementNamed(AppRoutes.home);
-      }),
-    );
+      }
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      unawaited(Navigator.of(context).pushReplacementNamed(AppRoutes.home));
+    } catch (_) {
+      _navigating = false;
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('تعذّر حفظ الدرس. حاول مرة أخرى.')),
+      );
+    }
   }
 
   // ── Drop handlers ────────────────────────────────────────────────────────
@@ -193,7 +204,8 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
                       label: 'تخطي',
                       kind: MosaicButtonKind.ghost,
                       showIcon: false,
-                      onPressed: _skip,
+                      onPressed: () =>
+                          unawaited(_completeTutorial(skipped: true)),
                     ),
                     Expanded(
                       child: Text(

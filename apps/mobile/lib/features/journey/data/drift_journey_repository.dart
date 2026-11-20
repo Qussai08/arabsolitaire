@@ -10,6 +10,19 @@ final class DriftJourneyRepository implements JourneyRepository {
   final db_lib.AppDatabase _db;
   static const _mainId = 'main';
 
+  @override
+  Future<void> resetLocalJourney() => _db.transaction(() async {
+    await (_db.delete(
+      _db.journeyProgressRows,
+    )..where((row) => row.id.equals(_mainId))).go();
+    await (_db.delete(
+      _db.playerFlagRows,
+    )..where((row) => row.id.equals(_mainId))).go();
+    await (_db.delete(
+      _db.activeAttempts,
+    )..where((row) => row.id.equals('active'))).go();
+  });
+
   // ── JourneyProgress ─────────────────────────────────────────────────────────
 
   @override
