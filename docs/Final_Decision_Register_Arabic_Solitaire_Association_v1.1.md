@@ -157,11 +157,9 @@
 
 # 5. APPROVED — Client Architecture
 
-- Mobile framework: Flutter (application shell).
-- Optional gameplay presentation runtime: Unity (presentation-only; no C# rules engine).
+- Mobile framework: Flutter (application shell and gameplay presentation).
+- Gameplay presentation: Flutter Mosaic board only. Unity is not part of the client.
 - Authoritative rules remain Pure Dart (`game_engine` / `game_solver` / `level_generator`).
-- Default presentation mode: Flutter 2D until Unity readiness gates pass.
-- Hybrid architecture reference: `docs/architecture/FLUTTER_UNITY_HYBRID_ARCHITECTURE_v1.0.md`.
 - State management: Riverpod.
 - Local database: Drift / SQLite.
 - Orientation: Portrait only.
@@ -176,7 +174,7 @@
   - on-device Hint/Dead-End where practical.
   - same Solver core reusable in CMS/CI/backend simulation.
   - backend fallback available if needed.
-- Content blocker: `story_beats.json` still contains Layla/ليلى lines that conflict with Narrative Canon — do not build final Unity cinematics from it until corrected.
+- Content blocker: `story_beats.json` still contains Layla/ليلى lines that conflict with Narrative Canon — do not treat that file as final story copy until corrected.
 
 ---
 

@@ -22,21 +22,6 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity
-            android:name=".unity.UnityGameplayActivity"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:configChanges="mcc|mnc|locale|touchscreen|keyboard|keyboardHidden|navigation|orientation|screenLayout|uiMode|screenSize|smallestScreenSize|fontScale|layoutDirection|density"
-            android:hardwareAccelerated="true"
-            android:theme="@style/BaseUnityGameActivityTheme">
-            <meta-data
-                android:name="unityplayer.UnityActivity"
-                android:value="true" />
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="game" />
-        </activity>
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />

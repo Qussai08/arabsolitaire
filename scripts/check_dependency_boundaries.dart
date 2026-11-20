@@ -44,10 +44,6 @@ void main() {
   scanPackage(packagePath: 'packages/game_engine', forbidden: flutterOrUi);
   scanPackage(packagePath: 'packages/game_solver', forbidden: flutterOrUi);
   scanPackage(
-    packagePath: 'packages/unity_bridge_contracts',
-    forbidden: flutterOrUi,
-  );
-  scanPackage(
     packagePath: 'packages/level_generator',
     forbidden: [
       RegExp(r"import\s+'package:flutter/"),

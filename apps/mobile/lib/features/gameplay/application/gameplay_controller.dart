@@ -5,14 +5,12 @@ import 'package:game_engine/game_engine.dart';
 import 'package:game_solver/game_solver.dart';
 import 'package:level_generator/level_generator.dart';
 import 'package:mobile/features/gameplay/application/gameplay_providers.dart';
-import 'package:mobile/features/gameplay/application/gameplay_bridge_host.dart';
 import 'package:mobile/features/gameplay/application/gameplay_state.dart';
 import 'package:mobile/features/gameplay/data/active_attempt_repository.dart';
 import 'package:mobile/features/journey/domain/journey_models.dart';
 
 /// Manages the full gameplay lifecycle for one attempt.
-class GameplayController extends Notifier<GameplayViewState>
-    implements GameplayBridgeHost {
+class GameplayController extends Notifier<GameplayViewState> {
   GameplayController({
     LevelConfiguration? config,
     ContentSelector? contentSelector,
@@ -117,8 +115,7 @@ class GameplayController extends Notifier<GameplayViewState>
 
   /// Applies [action] and returns the authoritative [GameTransition].
   ///
-  /// Existing Flutter UI may ignore the return value. Bridge code observes it.
-  @override
+  /// The Flutter board may ignore the return value.
   GameTransition? applyAction(GameAction action) {
     final playing = _asPlaying();
     if (playing == null) return null;
@@ -159,15 +156,6 @@ class GameplayController extends Notifier<GameplayViewState>
     return transition;
   }
 
-  /// Public view of Riverpod [state] for bridge/coordinator callers.
-  @override
-  GameplayViewState get viewState => state;
-
-  /// Authoritative revision for bridge stale-intent checks.
-  @override
-  int get revision => _revision;
-
-  @override
   Future<void> requestHint() async {
     final playing = _asPlaying();
     if (playing == null) return;
@@ -245,7 +233,6 @@ class GameplayController extends Notifier<GameplayViewState>
     }
   }
 
-  @override
   Future<void> restart() async {
     _revision = 0;
     _hintRevision = -1;

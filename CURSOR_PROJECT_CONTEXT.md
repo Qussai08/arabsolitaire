@@ -857,25 +857,15 @@ No:
 
 ## Flutter
 
-Primary application shell and client framework:
+Primary application shell and gameplay presentation:
 - bootstrap, auth, Firebase;
 - content bundles;
-- home / journey / settings and non-gameplay screens;
+- home / journey / settings;
+- the Mosaic gameplay board;
 - progression, economy, monetization;
-- navigation into and out of gameplay;
 - persistence and analytics orchestration.
 
-## Unity (presentation runtime — APPROVED hybrid)
-
-Unity is approved as an optional **presentation-only** gameplay runtime:
-- 3D board, cards, interaction feedback, animation, VFX, lighting, camera;
-- chapter environments, Shiboub presentation, short in-runtime cinematics.
-
-Unity must never implement or validate gameplay rules. Authoritative flow:
-
-`Unity action intent → Dart GameplayController/GameEngine → GameTransition → authoritative GameState + events → Unity presentation`
-
-Default presentation remains Flutter 2D until Unity init, round-trips, pause/resume, process recreation, performance, and tests are confirmed. See `docs/architecture/FLUTTER_UNITY_HYBRID_ARCHITECTURE_v1.0.md`.
+Authoritative rules stay in pure Dart (`game_engine`, `game_solver`, `level_generator`). The Flutter board must not change legality. There is no Unity runtime.
 
 ## Riverpod
 

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/navigation/app_router.dart';
+import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/gameplay/application/gameplay_state.dart';
 import 'package:mobile/features/journey/application/journey_providers.dart';
 
 /// Shown after the player wins a level.
-/// Displays the reward breakdown and provides navigation to the next level
-/// or the journey screen. Progression is updated here.
+///
+/// Displays the reward breakdown and returns to the existing home route.
+/// Progression is updated here. Navigation is unchanged.
 class LevelResultScreen extends ConsumerStatefulWidget {
   const LevelResultScreen({
     super.key,
@@ -52,7 +54,6 @@ class _LevelResultScreenState extends ConsumerState<LevelResultScreen>
       globalNumber: widget.globalLevelNumber,
     );
 
-    // Check if this was a chapter-ending level (every 50th)
     if (mounted) {
       setState(() {
         _isChapterComplete = widget.globalLevelNumber % 50 == 0;
@@ -68,94 +69,129 @@ class _LevelResultScreenState extends ConsumerState<LevelResultScreen>
 
   void _continue() {
     Navigator.of(context)
-      ..pop() // pop result
-      ..pop() // pop gameplay
+      ..pop()
+      ..pop()
       ..pushReplacementNamed(AppRoutes.home);
   }
 
   void _goJourney() {
     Navigator.of(context)
-      ..popUntil((r) => r.settings.name == AppRoutes.home || r.isFirst)
+      ..popUntil(
+        (route) => route.settings.name == AppRoutes.home || route.isFirst,
+      )
       ..pushReplacementNamed(AppRoutes.home);
   }
 
   @override
   Widget build(BuildContext context) {
-    final r = widget.reward;
+    final reward = widget.reward;
+    final text = MosaicTheme.of(context).text;
+    final gutter = MosaicSpacing.gutterForWidth(
+      MediaQuery.sizeOf(context).width,
+    );
+    final total = reward.total + (_isChapterComplete ? 500 : 0);
     return Scaffold(
-      backgroundColor: const Color(0xFF0D1B2A),
+      backgroundColor: MosaicColors.limestone,
       body: SafeArea(
         child: FadeTransition(
           opacity: _fadeIn,
           child: Padding(
-            padding: const EdgeInsets.all(28),
+            padding: EdgeInsets.fromLTRB(gutter, 8, gutter, 16),
             child: Column(
               children: [
-                const SizedBox(height: 24),
-                const _WinBadge(),
-                const SizedBox(height: 32),
-                if (_isChapterComplete) ...[
-                  const _ChapterCompleteLabel(),
-                  const SizedBox(height: 12),
-                ],
-                const _RewardRow(label: 'المكافأة الأساسية', value: 50),
-                const SizedBox(height: 8),
-                _RewardRow(
-                  label: 'مكافأة الحركات (${r.remainingMoves}×2)',
-                  value: r.movesBonus,
-                ),
-                const SizedBox(height: 8),
-                if (r.earnedStreakCoins > 0)
-                  _RewardRow(
-                    label: 'مكافأة التسلسل',
-                    value: r.earnedStreakCoins,
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(MosaicRadii.lg),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: MosaicColors.saffron500,
+                        width: 2,
+                      ),
+                      borderRadius: BorderRadius.circular(MosaicRadii.lg),
+                    ),
+                    child: Image.asset(
+                      MosaicIllustrations.win,
+                      height: 200,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) =>
+                          const SizedBox(
+                            height: 120,
+                            child: MosaicMedallion(
+                              tone: MosaicMedallionTone.saffron,
+                            ),
+                          ),
+                    ),
                   ),
-                if (_isChapterComplete) ...[
-                  const SizedBox(height: 8),
-                  const _RewardRow(label: 'مكافأة إتمام الفصل', value: 500),
-                ],
-                const Divider(
-                  color: Color(0xFFD4A017),
-                  thickness: 0.5,
-                  height: 32,
                 ),
-                _TotalRow(total: r.total + (_isChapterComplete ? 500 : 0)),
+                const SizedBox(height: MosaicSpacing.s16),
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: MosaicColors.paper,
+                    borderRadius: BorderRadius.circular(MosaicRadii.md),
+                    border: Border.all(color: MosaicColors.line),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        const _RewardLine(
+                          label: 'المكافأة الأساسية',
+                          value: 50,
+                        ),
+                        _RewardLine(
+                          label:
+                              'مكافأة الحركات (${ArabicDigits.format(reward.remainingMoves)} × ٢)',
+                          value: reward.movesBonus,
+                        ),
+                        if (reward.earnedStreakCoins > 0)
+                          _RewardLine(
+                            label: 'مكافأة التسلسل',
+                            value: reward.earnedStreakCoins,
+                          ),
+                        if (_isChapterComplete)
+                          const _RewardLine(
+                            label: 'مكافأة إتمام الفصل',
+                            value: 500,
+                          ),
+                        const Divider(height: 24),
+                        Row(
+                          children: [
+                            Text(
+                              '${ArabicDigits.format(total)} عملة',
+                              style: text.titleM.copyWith(
+                                color: MosaicColors.terracotta600,
+                              ),
+                            ),
+                            const Spacer(),
+                            Text('المجموع', style: text.titleS),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                if (_isChapterComplete) ...[
+                  const SizedBox(height: MosaicSpacing.s12),
+                  const MosaicToast(
+                    tone: MosaicToastTone.success,
+                    title: 'اكتمل الفصل',
+                    message: 'فُتحت صفحة جديدة في أرشيف الحكاية.',
+                    icon: MosaicIconKind.archive,
+                  ),
+                ],
                 const Spacer(),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: _continue,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFFD4A017),
-                      foregroundColor: const Color(0xFF0D1B2A),
-                      minimumSize: const Size.fromHeight(54),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                    ),
-                    child: const Text(
-                      'متابعة',
-                      style: TextStyle(
-                        fontFamily: 'Cairo',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
+                MosaicButton(
+                  label: 'متابعة',
+                  expanded: true,
+                  onPressed: _continue,
                 ),
-                const SizedBox(height: 12),
-                TextButton(
+                MosaicButton(
+                  label: 'العودة للرحلة',
+                  kind: MosaicButtonKind.ghost,
+                  expanded: true,
                   onPressed: _goJourney,
-                  child: const Text(
-                    'العودة للرحلة',
-                    style: TextStyle(
-                      color: Color(0xFFD4A017),
-                      fontFamily: 'Cairo',
-                      fontSize: 15,
-                    ),
-                  ),
                 ),
-                const SizedBox(height: 8),
               ],
             ),
           ),
@@ -165,108 +201,29 @@ class _LevelResultScreenState extends ConsumerState<LevelResultScreen>
   }
 }
 
-class _WinBadge extends StatelessWidget {
-  const _WinBadge();
+class _RewardLine extends StatelessWidget {
+  const _RewardLine({required this.label, required this.value});
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(28),
-      decoration: const BoxDecoration(
-        shape: BoxShape.circle,
-        color: Color(0xFFD4A017),
-      ),
-      child: const Icon(Icons.star, color: Color(0xFF0D1B2A), size: 56),
-    );
-  }
-}
-
-class _ChapterCompleteLabel extends StatelessWidget {
-  const _ChapterCompleteLabel();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      decoration: BoxDecoration(
-        color: const Color(0xFFD4A017).withValues(alpha: 0.15),
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFD4A017)),
-      ),
-      child: const Text(
-        'اكتمل الفصل!',
-        style: TextStyle(
-          color: Color(0xFFD4A017),
-          fontFamily: 'Cairo',
-          fontWeight: FontWeight.w700,
-          fontSize: 16,
-        ),
-      ),
-    );
-  }
-}
-
-class _RewardRow extends StatelessWidget {
-  const _RewardRow({required this.label, required this.value});
   final String label;
   final int value;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          '+$value عملة',
-          style: const TextStyle(
-            color: Color(0xFFD4A017),
-            fontFamily: 'Cairo',
-            fontWeight: FontWeight.w700,
-            fontSize: 15,
+    final text = MosaicTheme.of(context).text;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        children: [
+          Text(
+            '+${ArabicDigits.format(value)}',
+            style: text.titleS.copyWith(color: MosaicColors.emerald900),
           ),
-        ),
-        const Spacer(),
-        Text(
-          label,
-          textDirection: TextDirection.rtl,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.8),
-            fontFamily: 'Cairo',
-            fontSize: 14,
+          const Spacer(),
+          Flexible(
+            child: Text(label, style: text.bodyS, textAlign: TextAlign.end),
           ),
-        ),
-      ],
-    );
-  }
-}
-
-class _TotalRow extends StatelessWidget {
-  const _TotalRow({required this.total});
-  final int total;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          '$total عملة',
-          style: const TextStyle(
-            color: Colors.white,
-            fontFamily: 'Cairo',
-            fontWeight: FontWeight.w900,
-            fontSize: 24,
-          ),
-        ),
-        const Spacer(),
-        Text(
-          'إجمالي المكافأة',
-          textDirection: TextDirection.rtl,
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.7),
-            fontFamily: 'Cairo',
-            fontSize: 14,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
