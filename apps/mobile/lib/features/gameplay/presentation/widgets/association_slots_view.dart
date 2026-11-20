@@ -25,35 +25,41 @@ class AssociationSlotsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final children = [
-      for (var i = 0; i < slots.length; i++)
-        Padding(
-          padding: vertical
-              ? EdgeInsets.only(top: i == 0 ? 0 : 10)
-              : EdgeInsetsDirectional.only(start: i == 0 ? 0 : 10),
-          child: vertical
-              ? _AssociationSlotView(
-                  slot: slots[i],
-                  revision: revision,
-                  onDrop: (payload) => onDrop(payload, i),
-                  highlighted: highlightedSlotIndex == i,
-                  associations: associations,
-                )
-              : Expanded(
-                  child: _AssociationSlotView(
-                    slot: slots[i],
-                    revision: revision,
-                    onDrop: (payload) => onDrop(payload, i),
-                    highlighted: highlightedSlotIndex == i,
-                    associations: associations,
-                  ),
-                ),
-        ),
-    ];
     if (vertical) {
-      return Column(children: children);
+      return Column(
+        children: [
+          for (var i = 0; i < slots.length; i++)
+            Padding(
+              padding: EdgeInsets.only(top: i == 0 ? 0 : 10),
+              child: _AssociationSlotView(
+                slot: slots[i],
+                revision: revision,
+                onDrop: (payload) => onDrop(payload, i),
+                highlighted: highlightedSlotIndex == i,
+                associations: associations,
+              ),
+            ),
+        ],
+      );
     }
-    return Row(children: children);
+    // Expanded must be a direct Row child; padding goes inside.
+    return Row(
+      children: [
+        for (var i = 0; i < slots.length; i++)
+          Expanded(
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(start: i == 0 ? 0 : 10),
+              child: _AssociationSlotView(
+                slot: slots[i],
+                revision: revision,
+                onDrop: (payload) => onDrop(payload, i),
+                highlighted: highlightedSlotIndex == i,
+                associations: associations,
+              ),
+            ),
+          ),
+      ],
+    );
   }
 }
 
