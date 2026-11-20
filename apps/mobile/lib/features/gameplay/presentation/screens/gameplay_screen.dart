@@ -9,11 +9,15 @@ import 'package:mobile/features/gameplay/application/gameplay_presentation_provi
 import 'package:mobile/features/gameplay/application/gameplay_providers.dart';
 import 'package:mobile/features/gameplay/application/gameplay_state.dart';
 import 'package:mobile/features/gameplay/bridge/unity_runtime_service.dart';
+import 'package:mobile/design_system/design_system.dart';
+import 'package:mobile/features/economy/application/wallet_controller.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/association_slots_view.dart';
+import 'package:mobile/features/gameplay/presentation/widgets/gameplay_chrome.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/gameplay_overlay.dart';
-import 'package:mobile/features/gameplay/presentation/widgets/gameplay_toolbar.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/stock_view.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/tableau_view.dart';
+import 'package:mobile/features/journey/data/journey_content.dart';
+import 'package:mobile/features/journey/domain/journey_models.dart';
 import 'package:mobile/features/journey/presentation/screens/level_result_screen.dart';
 
 /// Main gameplay screen — Sprint 4 vertical slice.
@@ -133,7 +137,7 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen>
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0A1628),
+        backgroundColor: MosaicColors.limestone,
         body: SafeArea(
           child: _buildBody(
             context,
@@ -166,9 +170,18 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen>
         unityPhase,
         unityError,
       ),
-      GameplayWon() ||
-      GameplayOutOfMoves() ||
-      GameplayConfirmedDeadEnd() ||
+      GameplayWon(:final gameState) ||
+      GameplayOutOfMoves(:final gameState) ||
+      GameplayConfirmedDeadEnd(:final gameState) => Stack(
+        children: [
+          _flutterBoard(context, gameState, 0, controller, interactive: false),
+          GameplayOverlay(
+            state: viewState,
+            onRestart: controller.restart,
+            onExit: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
       GameplayError() => GameplayOverlay(
         state: viewState,
         onRestart: controller.restart,
@@ -224,97 +237,164 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen>
       );
     }
 
-    return Column(
-      children: [
-        GameplayToolbar(
-          state: state,
-          onUndo: () => controller.applyAction(const UndoLastMove()),
-          onHint: controller.requestHint,
-        ),
-        Expanded(
-          child: _buildBoard(
-            context,
-            state.gameState,
-            state.revision,
-            controller,
-            hintAction: state.hint.suggestedAction,
-          ),
-        ),
-        if (state.hint.phase == HintPhase.noResult)
-          const _HintBanner(text: 'لا توجد حركة مقترحة'),
-        if (state.hint.phase == HintPhase.inconclusive)
-          const _HintBanner(text: 'تعذر إيجاد تلميح الآن'),
-        if (state.deadEnd.phase == DeadEndPhase.checking)
-          const _DeadEndCheckIndicator(),
-      ],
+    return _flutterBoard(
+      context,
+      state.gameState,
+      state.revision,
+      controller,
+      hintAction: state.hint.suggestedAction,
+      hintPhase: state.hint.phase,
+      deadEndChecking: state.deadEnd.phase == DeadEndPhase.checking,
     );
   }
 
-  Widget _buildBoard(
+  Widget _flutterBoard(
     BuildContext context,
     GameState gameState,
     int revision,
     GameplayController controller, {
     GameAction? hintAction,
+    HintPhase hintPhase = HintPhase.idle,
+    bool deadEndChecking = false,
+    bool interactive = true,
   }) {
-    String? highlightedCardId;
-    int? highlightedSlotIndex;
+    final wide = MediaQuery.sizeOf(context).width >= MosaicSizes.tabletWidth;
+    final level =
+        ref.watch(currentPlayingLevelProvider) ??
+        JourneyContent.buildLevels().first;
+    final chapter = JourneyContent.chapters
+        .cast<ChapterDefinition?>()
+        .firstWhere(
+          (item) => item?.chapterId == level.chapterId,
+          orElse: () => JourneyContent.chapters.first,
+        );
+    final wallet = ref.watch(walletControllerProvider);
+    final readyWallet = wallet is WalletReady ? wallet.snapshot : null;
+    final line = switch (hintPhase) {
+      HintPhase.loading => 'أبحث عن حركة مناسبة…',
+      HintPhase.available => 'جرّب البطاقة المظلّلة.',
+      HintPhase.noResult => 'لا توجد حركة مقترحة',
+      HintPhase.inconclusive => 'تعذر إيجاد تلميح الآن',
+      HintPhase.idle => null,
+    };
 
-    if (hintAction != null) {
-      switch (hintAction) {
-        case MoveTableauToTableau(:final fromColumn):
-          highlightedCardId =
-              gameState.tableau[fromColumn].exposedUnit?.cards.first.id;
-        case MoveTableauToSlot(:final fromColumn):
-          highlightedCardId =
-              gameState.tableau[fromColumn].exposedUnit?.cards.first.id;
-        case MoveStockToTableau():
-          highlightedCardId = gameState.stock.playableCard?.id;
-        case MoveStockToSlot(:final slotIndex):
-          highlightedCardId = gameState.stock.playableCard?.id;
-          highlightedSlotIndex = slotIndex;
-        default:
-          break;
-      }
+    final board = GameplayBoardLayout(
+      header: GameplayTopBar(
+        levelLabel: 'المستوى ${ArabicDigits.format(level.globalLevelNumber)}',
+        chapterLabel: chapter?.titleAr ?? '',
+        coins: readyWallet?.effectiveCoinBalance,
+        onPause: interactive
+            ? () {
+                unawaited(
+                  showGameplayPauseSheet(
+                    context: context,
+                    onRestart: () {
+                      unawaited(controller.restart());
+                    },
+                    onExit: () => Navigator.of(context).pop(),
+                  ),
+                );
+              }
+            : () {},
+      ),
+      stats: GameplayStats(
+        movesRemaining: gameState.movesRemaining,
+        moveLimit: gameState.moveLimit,
+        streakCurrent: gameState.streak.currentCounter,
+        streakTarget: gameState.streak.targetTier,
+      ),
+      slots: AssociationSlotsView(
+        slots: gameState.slots,
+        revision: revision,
+        vertical: wide,
+        associations: gameState.associations,
+        onDrop: (payload, slotIndex) {
+          if (!interactive || payload.revision != revision) return;
+          final action = payload.toSlotAction(slotIndex);
+          if (action != null) controller.applyAction(action);
+        },
+        highlightedSlotIndex: _highlightedSlot(gameState, hintAction),
+      ),
+      tableau: TableauView(
+        tableau: gameState.tableau,
+        revision: revision,
+        associations: gameState.associations,
+        onDrop: (payload, targetColumn) {
+          if (!interactive || payload.revision != revision) return;
+          final action = payload.toTableauAction(targetColumn);
+          if (action != null) controller.applyAction(action);
+        },
+        highlightedCardId: _highlightedCard(gameState, hintAction),
+      ),
+      stock: StockView(
+        stock: gameState.stock,
+        revision: revision,
+        associations: gameState.associations,
+        onAdvance: interactive
+            ? () => controller.applyAction(const AdvanceStock())
+            : () {},
+        onRestore: interactive
+            ? () => controller.applyAction(const RestoreStock())
+            : () {},
+        onDropFromStock: (_) {},
+        highlightedCardId: _highlightedCard(gameState, hintAction),
+      ),
+      tools: GameplayBottomTools(
+        canUndo: interactive && gameState.undo.available,
+        hintLoading: hintPhase == HintPhase.loading,
+        hintCount: readyWallet?.effectiveHintBalance,
+        onHint: () {
+          unawaited(controller.requestHint());
+        },
+        onUndo: () => controller.applyAction(const UndoLastMove()),
+        onRestart: () {
+          unawaited(controller.restart());
+        },
+      ),
+      note: _boardNote(line, deadEndChecking),
+    );
+    if (!interactive) {
+      return IgnorePointer(child: board);
     }
+    return board;
+  }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        children: [
-          AssociationSlotsView(
-            slots: gameState.slots,
-            revision: revision,
-            onDrop: (payload, slotIndex) {
-              if (payload.revision != revision) return;
-              final action = payload.toSlotAction(slotIndex);
-              if (action != null) controller.applyAction(action);
-            },
-            highlightedSlotIndex: highlightedSlotIndex,
-          ),
-          const SizedBox(height: 14),
-          TableauView(
-            tableau: gameState.tableau,
-            revision: revision,
-            onDrop: (payload, targetColumn) {
-              if (payload.revision != revision) return;
-              final action = payload.toTableauAction(targetColumn);
-              if (action != null) controller.applyAction(action);
-            },
-            highlightedCardId: highlightedCardId,
-          ),
-          const SizedBox(height: 16),
-          StockView(
-            stock: gameState.stock,
-            revision: revision,
-            onAdvance: () => controller.applyAction(const AdvanceStock()),
-            onRestore: () => controller.applyAction(const RestoreStock()),
-            onDropFromStock: (_) {},
-            highlightedCardId: highlightedCardId,
+  Widget? _boardNote(String? line, bool deadEndChecking) {
+    if (line == null && !deadEndChecking) {
+      return null;
+    }
+    return Column(
+      children: [
+        if (line != null) MosaicShiboubBubble(line: line),
+        if (deadEndChecking) ...[
+          if (line != null) const SizedBox(height: MosaicSpacing.s8),
+          const MosaicToast(
+            tone: MosaicToastTone.info,
+            title: 'جاري التحقق',
+            message: 'نراجع إن كان للوضع مسار للفوز.',
           ),
         ],
-      ),
+      ],
     );
+  }
+
+  String? _highlightedCard(GameState gameState, GameAction? hintAction) {
+    return switch (hintAction) {
+      MoveTableauToTableau(:final fromColumn) ||
+      MoveTableauToSlot(
+        :final fromColumn,
+      ) => gameState.tableau[fromColumn].exposedUnit?.cards.last.id,
+      MoveStockToTableau() ||
+      MoveStockToSlot() => gameState.stock.playableCard?.id,
+      _ => null,
+    };
+  }
+
+  int? _highlightedSlot(GameState gameState, GameAction? hintAction) {
+    return switch (hintAction) {
+      MoveStockToSlot(:final slotIndex) => slotIndex,
+      _ => null,
+    };
   }
 }
 
@@ -327,62 +407,15 @@ class _LoadingView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CircularProgressIndicator(color: Color(0xFF4ECDC4)),
+          CircularProgressIndicator(color: MosaicColors.emerald600),
           SizedBox(height: 16),
           Text(
             'جاري التجهيز...',
-            style: TextStyle(color: Colors.white54, fontSize: 14),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _HintBanner extends StatelessWidget {
-  const _HintBanner({required this.text});
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFF1A2D50),
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      width: double.infinity,
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: const TextStyle(color: Colors.white54, fontSize: 13),
-      ),
-    );
-  }
-}
-
-class _DeadEndCheckIndicator extends StatelessWidget {
-  const _DeadEndCheckIndicator();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFF1A1A2D),
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      width: double.infinity,
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 12,
-            height: 12,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: Colors.white30,
+            style: TextStyle(
+              color: MosaicColors.textMuted,
+              fontFamily: MosaicFonts.readexPro,
+              fontSize: 14,
             ),
-          ),
-          SizedBox(width: 8),
-          Text(
-            'جاري التحقق...',
-            style: TextStyle(color: Colors.white30, fontSize: 11),
           ),
         ],
       ),
