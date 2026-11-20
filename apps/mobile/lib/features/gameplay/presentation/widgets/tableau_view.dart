@@ -3,7 +3,7 @@ import 'package:game_engine/game_engine.dart';
 import 'package:mobile/features/gameplay/presentation/interaction/drag_payload.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/tableau_column_view.dart';
 
-/// Horizontal row of Tableau columns.
+/// Horizontal row of Tableau columns. The first column sits on the start side.
 class TableauView extends StatelessWidget {
   const TableauView({
     super.key,
@@ -11,12 +11,14 @@ class TableauView extends StatelessWidget {
     required this.revision,
     required this.onDrop,
     this.highlightedCardId,
+    this.associations = const {},
   });
 
   final List<TableauColumn> tableau;
   final int revision;
   final void Function(DragPayload payload, int targetColumn) onDrop;
   final String? highlightedCardId;
+  final Map<AssociationId, AssociationDefinition> associations;
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +27,15 @@ class TableauView extends StatelessWidget {
       children: [
         for (var i = 0; i < tableau.length; i++)
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 3),
+            child: Align(
+              alignment: Alignment.topCenter,
               child: TableauColumnView(
                 column: tableau[i],
                 columnIndex: i,
                 revision: revision,
                 onDrop: (payload) => onDrop(payload, i),
                 highlightedCardId: highlightedCardId,
+                associations: associations,
               ),
             ),
           ),

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:game_engine/game_engine.dart';
+import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/gameplay/presentation/interaction/drag_payload.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/game_card_view.dart';
 
-/// Stock pile + visible card fan + Advance/Restore controls.
+/// Stock pile, waste fan, and restore control inside the caller's well.
 class StockView extends StatelessWidget {
   const StockView({
     super.key,
@@ -13,6 +14,7 @@ class StockView extends StatelessWidget {
     required this.onRestore,
     required this.onDropFromStock,
     this.highlightedCardId,
+    this.associations = const {},
   });
 
   final StockState stock;
@@ -21,132 +23,179 @@ class StockView extends StatelessWidget {
   final VoidCallback onRestore;
   final void Function(DragPayload payload) onDropFromStock;
   final String? highlightedCardId;
+  final Map<AssociationId, AssociationDefinition> associations;
 
   @override
   Widget build(BuildContext context) {
+    final text = MosaicTheme.of(context).text;
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Pile / controls
-        _buildPileArea(),
-        const SizedBox(width: 12),
-        // Visible fan (up to 3)
-        ..._buildVisibleCards(),
+        _captioned(
+          text,
+          _buildPile(),
+          'السحب: ${ArabicDigits.format(stock.undealt.length)}',
+        ),
+        const SizedBox(width: MosaicSpacing.s12),
+        Expanded(
+          child: _captioned(text, _buildFan(), 'العلوية فقط قابلة للعب'),
+        ),
+        _captioned(text, _buildRestore(), 'استعادة الورق'),
       ],
     );
   }
 
-  Widget _buildPileArea() {
-    if (stock.canRestore) {
-      return GestureDetector(
-        onTap: onRestore,
+  Widget _captioned(MosaicTextStyles text, Widget child, String caption) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        child,
+        const SizedBox(height: MosaicSpacing.s6),
+        Text(caption, style: text.labelS, textAlign: TextAlign.center),
+      ],
+    );
+  }
+
+  Widget _buildPile() {
+    if (!stock.canAdvance) {
+      return const MosaicDashedBorder(
+        color: MosaicColors.line,
+        strokeWidth: MosaicBorder.normal,
+        radius: MosaicRadii.md,
+        dashPattern: MosaicDash.slotEmpty,
+        child: SizedBox(
+          width: MosaicSizes.cardWidth,
+          height: MosaicSizes.cardHeight,
+          child: Center(
+            child: MosaicIcon(
+              MosaicIconKind.deck,
+              size: 22,
+              color: MosaicColors.textMuted,
+            ),
+          ),
+        ),
+      );
+    }
+    return GestureDetector(
+      onTap: onAdvance,
+      child: Semantics(
+        label: 'سحب ورقة',
+        button: true,
+        child: const FaceDownCardView(),
+      ),
+    );
+  }
+
+  Widget _buildRestore() {
+    final enabled = stock.canRestore;
+    return Opacity(
+      opacity: enabled ? 1 : MosaicOpacity.disabled,
+      child: GestureDetector(
+        onTap: enabled ? onRestore : null,
         child: Semantics(
           label: 'استعادة الورق',
           button: true,
+          enabled: enabled,
           child: Container(
-            width: 72,
-            height: 58,
+            width: MosaicSizes.minTouchTarget,
+            height: MosaicSizes.minTouchTarget,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: const Color(0xFFFFD700), width: 1.5),
-              color: const Color(0xFF1A3060),
+              color: MosaicColors.paper,
+              shape: BoxShape.circle,
+              border: Border.all(color: MosaicColors.line),
             ),
             child: const Center(
-              child: Icon(Icons.refresh, color: Color(0xFFFFD700), size: 24),
+              child: MosaicIcon(MosaicIconKind.restart, size: 22),
             ),
           ),
-        ),
-      );
-    }
-
-    if (stock.canAdvance) {
-      return GestureDetector(
-        onTap: onAdvance,
-        child: Semantics(
-          label: 'سحب ورقة',
-          button: true,
-          child: Container(
-            width: 72,
-            height: 58,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: const Color(0xFF3A5A8C), width: 1.5),
-              color: const Color(0xFF1A3060),
-            ),
-            child: const Center(
-              child: Icon(Icons.arrow_forward, color: Colors.white70, size: 24),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Container(
-      width: 72,
-      height: 58,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(
-          color: const Color(0xFF3A5A8C).withAlpha((255 * 0.4).round()),
-          width: 1,
         ),
       ),
     );
   }
 
-  List<Widget> _buildVisibleCards() {
+  Widget _buildFan() {
     final visible = stock.visibleCards;
-    if (visible.isEmpty) return [];
-
-    return visible.asMap().entries.map((entry) {
-      final i = entry.key;
-      final card = entry.value;
-      final isPlayable = i == visible.length - 1;
-      final highlighted = highlightedCardId == card.id;
-
-      if (!isPlayable) {
-        return Padding(
-          padding: const EdgeInsets.only(right: 6),
-          child: SizedBox(
-            width: 72,
-            child: Opacity(
-              opacity: 0.6,
-              child: GameCardView(card: card, isSmall: true),
-            ),
+    if (visible.isEmpty) {
+      return const SizedBox(
+        width: MosaicSizes.cardWidth,
+        height: MosaicSizes.cardHeight,
+      );
+    }
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final maxWidth = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : MosaicSizes.cardWidth * visible.length;
+        final step = visible.length <= 1
+            ? 0.0
+            : ((maxWidth - MosaicSizes.cardWidth) / (visible.length - 1)).clamp(
+                18.0,
+                36.0,
+              );
+        return SizedBox(
+          height: MosaicSizes.cardHeight,
+          width: MosaicSizes.cardWidth + step * (visible.length - 1),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              for (var i = 0; i < visible.length; i++)
+                PositionedDirectional(
+                  start: step * i,
+                  child: _wasteCard(
+                    visible[i],
+                    playable: i == visible.length - 1,
+                  ),
+                ),
+            ],
           ),
         );
-      }
+      },
+    );
+  }
 
-      final payload = DragPayload(
-        sourceType: DragSourceType.stock,
-        sourceIndex: 0,
-        revision: revision,
-      );
-
-      return Semantics(
-        label: 'ورقة من المخزون',
-        child: Draggable<DragPayload>(
-          data: payload,
-          feedback: Material(
-            color: Colors.transparent,
-            child: SizedBox(
-              width: 72,
-              child: GameCardView(card: card, highlighted: true),
-            ),
-          ),
-          childWhenDragging: Opacity(
-            opacity: 0.3,
-            child: SizedBox(
-              width: 72,
-              child: GameCardView(card: card, highlighted: highlighted),
-            ),
-          ),
-          child: SizedBox(
-            width: 72,
-            child: GameCardView(card: card, highlighted: highlighted),
+  Widget _wasteCard(GameCard card, {required bool playable}) {
+    final view = GameCardView(
+      card: card,
+      highlighted: highlightedCardId == card.id,
+      countLabel: _count(card),
+    );
+    if (!playable) {
+      return Opacity(opacity: MosaicOpacity.disabled, child: view);
+    }
+    final payload = DragPayload(
+      sourceType: DragSourceType.stock,
+      sourceIndex: 0,
+      revision: revision,
+    );
+    return Semantics(
+      label: 'ورقة من المخزون',
+      child: Draggable<DragPayload>(
+        data: payload,
+        feedback: Material(
+          color: Colors.transparent,
+          child: GameCardView(
+            card: card,
+            highlighted: true,
+            countLabel: _count(card),
           ),
         ),
-      );
-    }).toList();
+        childWhenDragging: Opacity(
+          opacity: MosaicOpacity.disabled,
+          child: view,
+        ),
+        child: view,
+      ),
+    );
+  }
+
+  String? _count(GameCard card) {
+    if (card is! AssociationCard) {
+      return null;
+    }
+    final definition = associations[card.associationId];
+    if (definition == null) {
+      return null;
+    }
+    return cardCountLabel(definition.requiredMemberCount);
   }
 }

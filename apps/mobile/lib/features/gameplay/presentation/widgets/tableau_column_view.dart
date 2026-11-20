@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:game_engine/game_engine.dart';
+import 'package:mobile/design_system/design_system.dart';
 import 'package:mobile/features/gameplay/presentation/interaction/drag_payload.dart';
 import 'package:mobile/features/gameplay/presentation/widgets/game_card_view.dart';
 
-/// One Tableau column: hidden cards (face-down stack) + exposed draggable unit.
+/// One Tableau column: face-down stack, then the exposed unit overlapping by 34px.
 class TableauColumnView extends StatelessWidget {
   const TableauColumnView({
     super.key,
@@ -12,7 +13,7 @@ class TableauColumnView extends StatelessWidget {
     required this.revision,
     required this.onDrop,
     this.highlightedCardId,
-    this.isDropTarget = false,
+    this.associations = const {},
   });
 
   final TableauColumn column;
@@ -20,7 +21,7 @@ class TableauColumnView extends StatelessWidget {
   final int revision;
   final void Function(DragPayload payload) onDrop;
   final String? highlightedCardId;
-  final bool isDropTarget;
+  final Map<AssociationId, AssociationDefinition> associations;
 
   @override
   Widget build(BuildContext context) {
@@ -28,74 +29,112 @@ class TableauColumnView extends StatelessWidget {
       onWillAcceptWithDetails: (details) => details.data.revision == revision,
       onAcceptWithDetails: (details) => onDrop(details.data),
       builder: (context, candidates, rejected) {
-        final accepting = candidates.isNotEmpty && isDropTarget;
-        return AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: accepting
-                ? const Color(0xFF2A5C2A).withAlpha((255 * 0.3).round())
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
+        final accepting = candidates.isNotEmpty;
+        final unit = column.exposedUnit;
+        final faces = <Widget>[
+          for (final _ in column.hiddenCards) const FaceDownCardView(),
+          if (unit != null)
+            for (final card in unit.cards)
+              GameCardView(
+                card: card,
+                highlighted: highlightedCardId == card.id && !accepting,
+                validTarget: accepting && card == unit.cards.last,
+                countLabel: _countLabel(card),
+              ),
+        ];
+
+        if (faces.isEmpty) {
+          return _EmptyColumn(accepting: accepting);
+        }
+
+        const strip = MosaicSpacing.columnStackVisibleStrip;
+        final height = strip * (faces.length - 1) + MosaicSizes.cardHeight;
+        final stack = SizedBox(
+          width: MosaicSizes.cardWidth,
+          height: height,
+          child: Stack(
+            clipBehavior: Clip.none,
             children: [
-              // Hidden cards — compact stack
-              for (final _ in column.hiddenCards)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 2),
-                  child: FaceDownCardView(
-                    isSmall: column.hiddenCards.length > 3,
-                  ),
+              for (var i = 0; i < faces.length; i++)
+                Positioned(
+                  top: strip * i,
+                  child: IgnorePointer(child: faces[i]),
                 ),
-              // Exposed unit — draggable
-              if (column.exposedUnit != null)
-                _buildExposedUnit(context, column.exposedUnit!)
-              else if (column.hiddenCards.isEmpty)
-                _buildEmptyColumn(),
             ],
           ),
+        );
+
+        if (unit == null) {
+          return stack;
+        }
+
+        final payload = DragPayload(
+          sourceType: DragSourceType.tableau,
+          sourceIndex: columnIndex,
+          revision: revision,
+        );
+        final top = unit.cards.last;
+        return Draggable<DragPayload>(
+          data: payload,
+          feedback: Material(
+            color: Colors.transparent,
+            child: GameCardView(
+              card: top,
+              highlighted: true,
+              countLabel: _countLabel(top),
+            ),
+          ),
+          childWhenDragging: Opacity(
+            opacity: MosaicOpacity.disabled,
+            child: stack,
+          ),
+          child: stack,
         );
       },
     );
   }
 
-  Widget _buildExposedUnit(BuildContext context, MovableUnit unit) {
-    final card = unit.cards.first;
-    final highlighted = highlightedCardId == card.id;
-    final payload = DragPayload(
-      sourceType: DragSourceType.tableau,
-      sourceIndex: columnIndex,
-      revision: revision,
-    );
-
-    return Draggable<DragPayload>(
-      data: payload,
-      feedback: Material(
-        color: Colors.transparent,
-        child: SizedBox(
-          width: 72,
-          child: GameCardView(card: card, highlighted: true),
-        ),
-      ),
-      childWhenDragging: Opacity(
-        opacity: 0.3,
-        child: GameCardView(card: card, highlighted: highlighted),
-      ),
-      child: GameCardView(card: card, highlighted: highlighted),
-    );
+  String? _countLabel(GameCard card) {
+    if (card is! AssociationCard) {
+      return null;
+    }
+    final definition = associations[card.associationId];
+    if (definition == null) {
+      return null;
+    }
+    return cardCountLabel(definition.requiredMemberCount);
   }
+}
 
-  Widget _buildEmptyColumn() {
-    return Container(
-      width: double.infinity,
-      height: 58,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6),
-        border: Border.all(
-          color: const Color(0xFF3A5A8C).withAlpha((255 * 0.4).round()),
-          width: 1.2,
-          strokeAlign: BorderSide.strokeAlignInside,
+class _EmptyColumn extends StatelessWidget {
+  const _EmptyColumn({required this.accepting});
+
+  final bool accepting;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = MosaicTheme.of(context).text;
+    return MosaicDashedBorder(
+      color: accepting ? MosaicColors.emerald600 : MosaicColors.line,
+      strokeWidth: accepting ? MosaicBorder.dropTarget : MosaicBorder.normal,
+      radius: MosaicRadii.md,
+      dashPattern: MosaicDash.slotEmpty,
+      child: SizedBox(
+        width: MosaicSizes.cardWidth,
+        height: MosaicSizes.cardHeight,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            MosaicIcon(
+              MosaicIconKind.plus,
+              size: 22,
+              color: accepting
+                  ? MosaicColors.emerald600
+                  : MosaicColors.textMuted,
+            ),
+            const SizedBox(height: MosaicSpacing.s4),
+            Text('عمود فارغ', style: text.labelS, textAlign: TextAlign.center),
+          ],
         ),
       ),
     );
