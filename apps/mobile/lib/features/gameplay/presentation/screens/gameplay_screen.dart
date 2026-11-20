@@ -82,7 +82,8 @@ class _GameplayScreenState extends ConsumerState<GameplayScreen>
 
   Future<void> _maybeLaunchUnity(GameplayPlaying state) async {
     final requested = ref.read(gameplayPresentationModeProvider);
-    if (requested != GameplayPresentationMode.unity3d || _unityLaunchAttempted) {
+    if (requested != GameplayPresentationMode.unity3d ||
+        _unityLaunchAttempted) {
       return;
     }
 
@@ -391,10 +392,7 @@ class _DeadEndCheckIndicator extends StatelessWidget {
 
 /// Shown while Unity Activity is foreground or reconnecting.
 class _UnityActivePlaceholder extends StatelessWidget {
-  const _UnityActivePlaceholder({
-    required this.revision,
-    required this.onExit,
-  });
+  const _UnityActivePlaceholder({required this.revision, required this.onExit});
 
   final int revision;
   final VoidCallback onExit;
@@ -421,10 +419,7 @@ class _UnityActivePlaceholder extends StatelessWidget {
 }
 
 class _UnityLaunchingView extends StatelessWidget {
-  const _UnityLaunchingView({
-    required this.phase,
-    required this.onCancel,
-  });
+  const _UnityLaunchingView({required this.phase, required this.onCancel});
 
   final UnityRuntimePhase phase;
   final VoidCallback onCancel;

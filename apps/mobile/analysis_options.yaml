@@ -3,3 +3,16 @@ include: ../../analysis_options.yaml
 analyzer:
   exclude:
     - '**/*.g.dart'
+    - 'build/**'
+    - 'android/**'
+    - 'ios/**'
+    - 'web/**'
+    - 'windows/**'
+    - 'macos/**'
+    - 'linux/**'
+  errors:
+    # Flutter 3.50 marks package:flutter/material.dart and the global
+    # Material/Cupertino localization delegates deprecated, and tells callers
+    # to import package:material_ui and package:cupertino_ui. Those packages
+    # are not part of the SDK, so the app keeps the current imports.
+    deprecated_member_use: ignore
